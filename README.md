@@ -310,4 +310,4 @@ For issues or questions, contact the QA team lead or development team.
 
 ---
 
-**Built with ❤️ for Vantage Circle QA Team**
+**Built with love for Vantage Circle QA Team**
