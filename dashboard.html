@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bug Dashboard — QA Team</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#111318;color:#E4E8F0;min-height:100vh;font-size:14px;}
+
+/* Gate */
+.gate{position:fixed;inset:0;background:#111318;z-index:99;display:flex;align-items:center;justify-content:center;}
+.gate-box{background:#1C1F26;border:1px solid #2a2d35;border-radius:12px;padding:40px 36px;width:100%;max-width:380px;text-align:center;}
+.gate-box .gi{font-size:36px;margin-bottom:14px;}
+.gate-box h2{font-size:20px;font-weight:700;color:#fff;margin-bottom:6px;}
+.gate-box p{font-size:13px;color:#555;margin-bottom:24px;}
+.gate-input{width:100%;font-family:'Inter',sans-serif;font-size:15px;text-align:center;letter-spacing:3px;background:#13151A;color:#E4E8F0;border:1px solid #2a2d35;border-radius:8px;padding:11px 16px;outline:none;margin-bottom:10px;transition:border-color .15s;}
+.gate-input:focus{border-color:#3B82F6;box-shadow:0 0 0 3px rgba(59,130,246,.12);}
+.gate-input.shake{animation:shake .3s;}
+.gate-btn{width:100%;background:#2563EB;color:#fff;border:none;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;padding:11px;border-radius:8px;cursor:pointer;transition:background .15s;}
+.gate-btn:hover{background:#1D4ED8;}
+.gate-err{font-size:12px;color:#F87171;margin-top:8px;display:none;}
+
+/* Page */
+.page{max-width:1200px;margin:0 auto;padding:28px 20px 60px;}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid #2a2d35;}
+.header-left{display:flex;align-items:center;gap:12px;}
+.header-left h1{font-size:18px;font-weight:700;color:#fff;}
+.header-left p{font-size:12px;color:#555;margin-top:1px;}
+.report-link{font-size:13px;font-weight:500;color:#60A5FA;text-decoration:none;border:1px solid #2a4a7f;padding:6px 14px;border-radius:6px;transition:all .15s;}
+.report-link:hover{background:#2563EB;color:#fff;border-color:#2563EB;}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.stat{background:#1C1F26;border:1px solid #2a2d35;border-radius:10px;padding:18px 20px;}
+.stat .lbl{font-size:11px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
+.stat .val{font-size:26px;font-weight:700;line-height:1;}
+.stat .sub{font-size:11px;color:#444;margin-top:4px;}
+.stat.s1 .val{color:#60A5FA;}
+.stat.s2 .val{color:#F87171;}
+.stat.s3 .val{color:#FCD34D;}
+.stat.s4 .val{color:#4ADE80;}
+
+/* Controls */
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center;}
+.ctrl{font-family:'Inter',sans-serif;font-size:12px;color:#CBD5E1;background:#1C1F26;border:1px solid #2a2d35;border-radius:6px;padding:7px 12px;outline:none;-webkit-appearance:none;transition:border-color .15s;}
+.ctrl:focus{border-color:#3B82F6;}
+.ctrl-sel{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23555'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 9px center;padding-right:26px;cursor:pointer;
+}
+.ctrl-sel option{background:#1C1F26;}
+.ctrl-search{width:200px;}
+.btn-refresh{background:#1C1F26;border:1px solid #2a2d35;color:#9CA3AF;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;padding:7px 14px;border-radius:6px;cursor:pointer;transition:all .15s;}
+.btn-refresh:hover{border-color:#3B82F6;color:#60A5FA;}
+.btn-export{margin-left:auto;background:#1C1F26;border:1px solid #166534;color:#4ADE80;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:7px 14px;border-radius:6px;cursor:pointer;transition:all .15s;}
+.btn-export:hover{background:#16A34A;color:#fff;border-color:#16A34A;}
+
+/* Table */
+.tbl-wrap{background:#1C1F26;border:1px solid #2a2d35;border-radius:10px;overflow:hidden;}
+.tbl-wrap table{width:100%;border-collapse:collapse;}
+.tbl-wrap thead th{background:#181B22;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#555;padding:11px 14px;text-align:left;border-bottom:1px solid #2a2d35;white-space:nowrap;cursor:pointer;user-select:none;}
+.tbl-wrap thead th:hover{color:#60A5FA;}
+.tbl-wrap tbody tr{border-bottom:1px solid #22252e;transition:background .1s;}
+.tbl-wrap tbody tr:last-child{border-bottom:none;}
+.tbl-wrap tbody tr:hover{background:#181B22;}
+.tbl-wrap tbody td{padding:11px 14px;font-size:13px;vertical-align:top;color:#CBD5E1;}
+
+.td-id{font-size:11px;font-weight:700;color:#60A5FA;white-space:nowrap;}
+.td-tester{display:inline-block;background:#1e2d4a;border:1px solid #2a4a7f;color:#60A5FA;font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;white-space:nowrap;}
+.td-desc{max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;}
+.td-mono{font-size:12px;color:#555;}
+.proof-a{color:#60A5FA;font-size:12px;text-decoration:none;}
+.proof-a:hover{text-decoration:underline;}
+
+.sev-badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;white-space:nowrap;}
+.sb-Critical{background:rgba(220,38,38,.15);color:#F87171;}
+.sb-High    {background:rgba(234,88,12,.15);color:#FB923C;}
+.sb-Medium  {background:rgba(217,119,6,.15);color:#FCD34D;}
+.sb-Low     {background:rgba(22,163,74,.15);color:#4ADE80;}
+.sb-Trivial {background:rgba(75,85,99,.2);color:#9CA3AF;}
+
+.st-badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;white-space:nowrap;}
+.stb-Open       {background:rgba(220,38,38,.15);color:#F87171;}
+.stb-In-Progress{background:rgba(217,119,6,.15);color:#FCD34D;}
+.stb-Fixed      {background:rgba(22,163,74,.15);color:#4ADE80;}
+.stb-Verified   {background:rgba(37,99,235,.15);color:#60A5FA;}
+.stb-Closed     {background:rgba(75,85,99,.15);color:#9CA3AF;}
+.stb-Reopened   {background:rgba(124,58,237,.15);color:#A78BFA;}
+
+.loading-row{text-align:center;padding:48px 20px;color:#444;font-size:13px;}
+.loader{width:22px;height:22px;border:2px solid #2a2d35;border-top-color:#3B82F6;border-radius:50%;animation:spin .6s linear infinite;margin:0 auto 10px;}
+.empty-row{text-align:center;padding:48px 20px;color:#444;font-size:13px;}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@media(max-width:900px){
+  .stats{grid-template-columns:1fr 1fr;}
+  .tbl-wrap{overflow-x:auto;}
+  .btn-export{margin-left:0;}
+}
+</style>
+</head>
+<body>
+
+<!-- Password gate -->
+<div class="gate" id="gate">
+  <div class="gate-box">
+    <div class="gi">🔒</div>
+    <h2>Admin Login</h2>
+    <p>Enter the dashboard password to continue</p>
+    <input class="gate-input" type="password" id="gateInput" placeholder="••••••••" maxlength="40"/>
+    <button class="gate-btn" id="gateBtn">Unlock Dashboard</button>
+    <div class="gate-err" id="gateErr">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<div class="page" id="mainPage" style="display:none">
+
+  <div class="header">
+    <div class="header-left">
+      <div style="font-size:26px;line-height:1">🐛</div>
+      <div>
+        <h1>Bug Dashboard</h1>
+        <p>Master view · Team Lead · Vantage Circle</p>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <a href="index.html" class="report-link">+ Report Bug</a>
+      <button id="logoutBtn" onclick="sessionStorage.removeItem('unlocked');location.reload();" style="background:transparent;border:1px solid #3a2020;color:#F87171;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;padding:6px 14px;border-radius:6px;cursor:pointer;transition:all .15s;" onmouseover="this.style.background='#2a1010'" onmouseout="this.style.background='transparent'">Logout</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat s1"><div class="lbl">Total Bugs</div><div class="val" id="sv0">—</div><div class="sub">all time</div></div>
+    <div class="stat s2"><div class="lbl">Open</div><div class="val" id="sv1">—</div><div class="sub">need attention</div></div>
+    <div class="stat s3"><div class="lbl">Critical / High</div><div class="val" id="sv2">—</div><div class="sub">priority</div></div>
+    <div class="stat s4"><div class="lbl">Resolved</div><div class="val" id="sv3">—</div><div class="sub">fixed + verified</div></div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <input class="ctrl ctrl-search" type="text" id="fSearch" placeholder="Search bugs…"/>
+    <select class="ctrl ctrl-sel" id="fSprint"><option value="">All Sprints</option></select>
+    <select class="ctrl ctrl-sel" id="fTester"><option value="">All Testers</option></select>
+    <select class="ctrl ctrl-sel" id="fProduct"><option value="">All Products</option></select>
+    <select class="ctrl ctrl-sel" id="fSev">
+      <option value="">All Severities</option>
+      <option>Critical</option><option>High</option><option>Medium</option><option>Low</option>
+    </select>
+    <select class="ctrl ctrl-sel" id="fStatus">
+      <option value="">All Statuses</option>
+      <option>Open</option><option>In Progress</option><option>Fixed</option><option>Verified</option><option>Closed</option><option>Reopened</option>
+    </select>
+    <button class="btn-refresh" id="btnRefresh">↻ Refresh</button>
+    <button class="btn-export" id="btnExport">↓ Export CSV</button>
+  </div>
+
+  <!-- Table -->
+  <div class="tbl-wrap">
+    <div class="loading-row" id="loadingRow"><div class="loader"></div>Loading bugs…</div>
+    <table id="bugTable" style="display:none">
+      <thead>
+        <tr>
+          <th data-col="bugId">Bug ID</th>
+          <th data-col="tester">Tester</th>
+          <th data-col="sprint">Sprint</th>
+          <th data-col="product">Product</th>
+          <th data-col="module">Module</th>
+          <th data-col="platform">Platform</th>
+          <th data-col="description">Description</th>
+          <th data-col="severity">Severity</th>
+          <th data-col="status">Status</th>
+          <th data-col="assignedTo">Assigned To</th>
+          <th data-col="proof">Proof</th>
+        </tr>
+      </thead>
+      <tbody id="bugBody"></tbody>
+    </table>
+    <div class="empty-row" id="emptyRow" style="display:none">No bugs found matching your filters.</div>
+  </div>
+
+</div>
+
+<script>
+// ── CONFIGURATION ─────────────────────────────────────────────────
+const SCRIPT_URL        = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+const DASHBOARD_PASSWORD = "Quality2026";
+// ─────────────────────────────────────────────────────────────────
+
+// ── Gate ──────────────────────────────────────────────────────────
+if(sessionStorage.getItem('unlocked')==='1') unlock();
+
+document.getElementById('gateBtn').addEventListener('click', checkPw);
+document.getElementById('gateInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkPw();});
+
+function checkPw(){
+  const v=document.getElementById('gateInput').value;
+  if(v===DASHBOARD_PASSWORD){sessionStorage.setItem('unlocked','1');unlock();}
+  else{
+    const i=document.getElementById('gateInput');
+    i.classList.add('shake');
+    document.getElementById('gateErr').style.display='block';
+    setTimeout(()=>i.classList.remove('shake'),300);
+  }
+}
+function unlock(){
+  document.getElementById('gate').style.display='none';
+  document.getElementById('mainPage').style.display='block';
+  loadBugs();
+}
+
+// ── Data ─────────────────────────────────────────────────────────
+let allBugs=[],sortCol='bugId',sortAsc=false;
+
+async function loadBugs(){
+  document.getElementById('loadingRow').style.display='block';
+  document.getElementById('bugTable').style.display='none';
+  document.getElementById('emptyRow').style.display='none';
+
+  if(!SCRIPT_URL||SCRIPT_URL==='YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'){
+    allBugs=demoData(); render(); return;
+  }
+  try{
+    const r=await fetch(SCRIPT_URL+'?action=get');
+    const j=await r.json();
+    allBugs=j.data||[];
+    render();
+  }catch{allBugs=demoData();render();}
+}
+
+function render(){
+  updateStats();
+  populateFilters();
+  applyFilters();
+}
+
+function updateStats(){
+  document.getElementById('sv0').textContent=allBugs.length;
+  document.getElementById('sv1').textContent=allBugs.filter(b=>b.status==='Open'||b.status==='Reopened').length;
+  document.getElementById('sv2').textContent=allBugs.filter(b=>b.severity==='Critical'||b.severity==='High').length;
+  document.getElementById('sv3').textContent=allBugs.filter(b=>b.status==='Fixed'||b.status==='Verified'||b.status==='Closed').length;
+}
+
+function populateFilters(){
+  [['fSprint','sprint','All Sprints'],['fTester','tester','All Testers'],['fProduct','product','All Products']].forEach(([id,key,label])=>{
+    const el=document.getElementById(id);
+    const cur=el.value;
+    const vals=[...new Set(allBugs.map(b=>b[key]).filter(Boolean))].sort();
+    el.innerHTML=`<option value="">${label}</option>`+vals.map(v=>`<option ${v===cur?'selected':''}>${v}</option>`).join('');
+  });
+}
+
+function applyFilters(){
+  const q=document.getElementById('fSearch').value.toLowerCase();
+  const sp=document.getElementById('fSprint').value;
+  const te=document.getElementById('fTester').value;
+  const pr=document.getElementById('fProduct').value;
+  const sv=document.getElementById('fSev').value;
+  const st=document.getElementById('fStatus').value;
+
+  let bugs=allBugs.filter(b=>{
+    if(sp&&b.sprint!==sp)return false;
+    if(te&&b.tester!==te)return false;
+    if(pr&&b.product!==pr)return false;
+    if(sv&&b.severity!==sv)return false;
+    if(st&&b.status!==st)return false;
+    if(q&&!Object.values(b).join(' ').toLowerCase().includes(q))return false;
+    return true;
+  });
+
+  bugs.sort((a,b)=>{
+    const av=a[sortCol]||'',bv=b[sortCol]||'';
+    return sortAsc?(av<bv?-1:av>bv?1:0):(av>bv?-1:av<bv?1:0);
+  });
+
+  document.getElementById('loadingRow').style.display='none';
+  if(!bugs.length){
+    document.getElementById('bugTable').style.display='none';
+    document.getElementById('emptyRow').style.display='block';
+    return;
+  }
+  document.getElementById('bugTable').style.display='table';
+  document.getElementById('emptyRow').style.display='none';
+
+  const e=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  document.getElementById('bugBody').innerHTML=bugs.map(b=>`
+    <tr>
+      <td><span class="td-id">${e(b.bugId||'—')}</span></td>
+      <td><span class="td-tester">${e(b.tester||'—')}</span></td>
+      <td><span class="td-mono">${e(b.sprint||'—')}</span></td>
+      <td>${e(b.product||'—')}</td>
+      <td>${e(b.module||'—')}</td>
+      <td><span class="td-mono">${e(b.platform||'—')}</span></td>
+      <td><div class="td-desc" title="${e(b.description||'')}">${e(b.description||'—')}</div></td>
+      <td><span class="sev-badge sb-${e(b.severity)}">${e(b.severity||'—')}</span></td>
+      <td><span class="st-badge stb-${e((b.status||'').replace(' ','-'))}">${e(b.status||'Open')}</span></td>
+      <td>${e(b.assignedTo||'—')}</td>
+      <td>${b.proof?`<a href="${e(b.proof)}" class="proof-a" target="_blank">Link ↗</a>`:'<span style="color:#ccc">—</span>'}</td>
+    </tr>`).join('');
+}
+
+document.querySelectorAll('th[data-col]').forEach(th=>{
+  th.addEventListener('click',()=>{
+    const c=th.dataset.col;
+    if(sortCol===c)sortAsc=!sortAsc;else{sortCol=c;sortAsc=true;}
+    applyFilters();
+  });
+});
+['fSearch','fSprint','fTester','fProduct','fSev','fStatus'].forEach(id=>
+  document.getElementById(id).addEventListener('input',applyFilters));
+
+document.getElementById('btnRefresh').addEventListener('click',loadBugs);
+
+document.getElementById('btnExport').addEventListener('click',()=>{
+  const h=['Bug ID','Tester','Sprint','Product','Module','Platform','Description','Expected','Actual','Severity','Proof','Status','Assigned To','Submitted At'];
+  const rows=allBugs.map(b=>[b.bugId,b.tester,b.sprint,b.product,b.module,b.platform,b.description,b.expected,b.actual,b.severity,b.proof,b.status,b.assignedTo,b.submittedAt].map(v=>`"${(v||'').replace(/"/g,'""')}"`));
+  const csv=[h.join(','),...rows.map(r=>r.join(','))].join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download=`bugs_export_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+});
+
+function demoData(){
+  return[
+    {bugId:'KUM-001',tester:'Kumar Ankit',sprint:'Sprint 12',product:'Vantage Reward',module:'Login',platform:'Web',description:'Login button unresponsive on Safari',expected:'Login succeeds',actual:'Nothing happens',severity:'Critical',proof:'',status:'Open',assignedTo:'Abhishek Das'},
+    {bugId:'SHA-001',tester:'Sharique Zarar Rahman',sprint:'Sprint 12',product:'Vantage Fit',module:'Dashboard',platform:'Android',description:'Step count not syncing correctly',expected:'Accurate step count',actual:'Shows zero steps',severity:'High',proof:'',status:'In Progress',assignedTo:'Devashish'},
+    {bugId:'SAN-001',tester:'Sanjay Singha',sprint:'Sprint 12',product:'Vantage Pulse',module:'Survey',platform:'Web',description:'Survey submission fails silently',expected:'Success message shown',actual:'No feedback given',severity:'Medium',proof:'',status:'Fixed',assignedTo:'Gaurav'},
+    {bugId:'ANK-001',tester:'Ankur Duarah',sprint:'Sprint 11',product:'Vantage Perks',module:'Redemption',platform:'iOS',description:'Coupon code not copying to clipboard',expected:'Code copied',actual:'Nothing copied',severity:'Low',proof:'',status:'Verified',assignedTo:'Preetam'},
+  ];
+}
+</script>
+</body>
+</html>

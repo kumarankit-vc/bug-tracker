@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bug Report — QA Team</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:#111318;color:#E4E8F0;min-height:100vh;font-size:14px;line-height:1.5;}
+
+.page{max-width:860px;margin:0 auto;padding:32px 20px 80px;}
+
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid #2a2d35;}
+.header-left{display:flex;align-items:center;gap:12px;}
+.header-left h1{font-size:18px;font-weight:700;color:#fff;}
+.header-left p{font-size:12px;color:#666;margin-top:1px;}
+.dash-link{font-size:13px;font-weight:500;color:#60A5FA;text-decoration:none;border:1px solid #2a4a7f;padding:6px 14px;border-radius:6px;transition:all .15s;}
+.dash-link:hover{background:#2563EB;color:#fff;border-color:#2563EB;}
+
+.card{background:#1C1F26;border:1px solid #2a2d35;border-radius:10px;padding:24px;margin-bottom:16px;}
+.card-title{font-size:12px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #22252e;}
+
+.row{display:grid;gap:14px;margin-bottom:14px;}
+.row.c1{grid-template-columns:1fr;}
+.row.c2{grid-template-columns:1fr 1fr;}
+.row.c3{grid-template-columns:1fr 1fr 1fr;}
+.row:last-child{margin-bottom:0;}
+
+.field{display:flex;flex-direction:column;gap:5px;}
+label{font-size:12px;font-weight:600;color:#8A8F9E;}
+label .req{color:#F87171;}
+
+input[type="text"],input[type="url"],select,textarea{
+  font-family:'Inter',sans-serif;font-size:13px;color:#E4E8F0;
+  background:#13151A;border:1px solid #2a2d35;border-radius:6px;
+  padding:8px 11px;outline:none;width:100%;
+  transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;
+}
+input:focus,select:focus,textarea:focus{border-color:#3B82F6;box-shadow:0 0 0 3px rgba(59,130,246,.12);}
+input::placeholder,textarea::placeholder{color:#3a3e4a;}
+textarea{resize:vertical;min-height:72px;line-height:1.5;}
+select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23555'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;cursor:pointer;
+}
+select option{background:#1C1F26;}
+
+.field.err input,.field.err select,.field.err textarea{border-color:#EF4444;box-shadow:0 0 0 3px rgba(239,68,68,.1);}
+.ferr{font-size:11px;color:#F87171;display:none;}
+.field.err .ferr{display:block;}
+
+.sev-group{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
+.sev-opt{position:relative;}
+.sev-opt input[type="radio"]{position:absolute;opacity:0;width:0;height:0;}
+.sev-opt label{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:20px;border:1px solid #2a2d35;background:#13151A;font-size:12px;font-weight:500;color:#8A8F9E;cursor:pointer;transition:all .12s;white-space:nowrap;}
+.sev-opt label:hover{border-color:#555;color:#E4E8F0;}
+.sev-opt input:checked+label{color:#fff;border-color:transparent;}
+.sev-opt[data-s="Critical"] input:checked+label{background:#DC2626;}
+.sev-opt[data-s="High"]     input:checked+label{background:#EA580C;}
+.sev-opt[data-s="Medium"]   input:checked+label{background:#D97706;}
+.sev-opt[data-s="Low"]      input:checked+label{background:#16A34A;}
+.sev-opt[data-s="Trivial"]  input:checked+label{background:#4B5563;}
+.sev-err{font-size:11px;color:#F87171;margin-top:4px;display:none;}
+
+.bug-card{background:#1C1F26;border:1px solid #2a2d35;border-radius:10px;margin-bottom:10px;overflow:hidden;}
+.bug-card.collapsed .bug-body{display:none;}
+.bug-head{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;user-select:none;background:#181B22;border-bottom:1px solid #2a2d35;}
+.bug-card.collapsed .bug-head{border-bottom:none;}
+.bug-num{width:24px;height:24px;border-radius:5px;background:#1e2d4a;border:1px solid #2a4a7f;color:#60A5FA;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.bug-summary{flex:1;font-size:13px;color:#444;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bug-summary.has-text{color:#CBD5E1;font-weight:500;}
+.sev-tag{font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.tag-Critical{background:rgba(220,38,38,.15);color:#F87171;}
+.tag-High    {background:rgba(234,88,12,.15);color:#FB923C;}
+.tag-Medium  {background:rgba(217,119,6,.15);color:#FCD34D;}
+.tag-Low     {background:rgba(22,163,74,.15);color:#4ADE80;}
+.tag-Trivial {background:rgba(75,85,99,.2);color:#9CA3AF;}
+.btn-tog{background:none;border:none;cursor:pointer;color:#444;font-size:13px;padding:2px 6px;border-radius:4px;transition:all .1s;flex-shrink:0;}
+.btn-tog:hover{background:#22252e;color:#E4E8F0;}
+.bug-card.collapsed .btn-tog{transform:rotate(-90deg);}
+.btn-del{background:none;border:none;cursor:pointer;color:#333;font-size:13px;padding:2px 6px;border-radius:4px;transition:all .1s;flex-shrink:0;}
+.btn-del:hover{background:rgba(239,68,68,.12);color:#F87171;}
+.bug-body{padding:16px;}
+.bug-body .row{margin-bottom:12px;}
+.bug-body .row:last-child{margin-bottom:0;}
+
+.section-bar{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.section-bar h2{font-size:15px;font-weight:700;color:#fff;}
+.badge{background:#1e2d4a;border:1px solid #2a4a7f;color:#60A5FA;font-size:11px;font-weight:600;padding:2px 10px;border-radius:20px;}
+.btn-add{margin-left:auto;background:#2563EB;color:#fff;border:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;padding:8px 18px;border-radius:7px;cursor:pointer;transition:background .15s;}
+.btn-add:hover{background:#1D4ED8;}
+
+.empty{text-align:center;padding:40px 20px;color:#444;font-size:13px;background:#1C1F26;border:1px dashed #2a2d35;border-radius:10px;margin-bottom:12px;}
+.empty .ei{font-size:28px;display:block;margin-bottom:8px;}
+
+.submit-bar{position:sticky;bottom:0;background:linear-gradient(to top,#111318 85%,transparent);padding:16px 0 10px;display:flex;align-items:center;gap:14px;}
+.submit-info{font-size:12px;color:#555;line-height:1.7;}
+.submit-info strong{color:#9CA3AF;}
+.btn-submit{margin-left:auto;background:#16A34A;color:#fff;border:none;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;padding:11px 28px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .15s;white-space:nowrap;}
+.btn-submit:hover{background:#15803D;}
+.btn-submit:disabled{background:#2a2d35;color:#555;cursor:not-allowed;}
+.btn-submit .spin{display:none;width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;}
+.btn-submit.loading .lbl{display:none;}
+.btn-submit.loading .spin{display:block;}
+
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;}
+.overlay.show{display:flex;}
+.ov-box{background:#1C1F26;border:1px solid #2a2d35;border-radius:12px;padding:36px 44px;text-align:center;min-width:300px;}
+.ov-box h3{font-size:16px;font-weight:700;color:#fff;margin-bottom:6px;}
+.ov-box p{font-size:13px;color:#666;margin-bottom:22px;}
+.prog-wrap{background:#13151A;border-radius:99px;height:6px;overflow:hidden;}
+.prog-fill{height:100%;background:#2563EB;border-radius:99px;transition:width .4s;width:0;}
+.prog-txt{font-size:11px;color:#444;margin-top:8px;}
+
+.success{position:fixed;inset:0;z-index:60;background:#111318;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:40px;}
+.success.show{display:flex;}
+.success .si{font-size:52px;margin-bottom:14px;}
+.success h2{font-size:22px;font-weight:700;color:#fff;margin-bottom:8px;}
+.success p{font-size:14px;color:#666;max-width:360px;line-height:1.6;margin-bottom:22px;}
+.s-meta{background:#1C1F26;border:1px solid #2a2d35;border-radius:8px;padding:16px 24px;font-size:13px;color:#9CA3AF;margin-bottom:22px;line-height:2.1;}
+.btn-again{background:#2563EB;color:#fff;border:none;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;padding:11px 28px;border-radius:8px;cursor:pointer;transition:background .15s;}
+.btn-again:hover{background:#1D4ED8;}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:#22252e;border:1px solid #2a2d35;color:#E4E8F0;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:transform .3s ease;z-index:99;white-space:nowrap;display:flex;align-items:center;gap:8px;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.w{border-color:#92400E;background:#1c1208;}
+.toast.e{border-color:#7f1d1d;background:#1a0a0a;}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:640px){
+  .row.c2,.row.c3{grid-template-columns:1fr;}
+  .submit-bar{flex-wrap:wrap;}
+  .btn-submit{width:100%;justify-content:center;}
+  .header{flex-wrap:wrap;gap:10px;}
+}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay">
+  <div class="ov-box">
+    <h3>Submitting…</h3>
+    <p id="ovMsg">Sending bugs to Google Sheets</p>
+    <div class="prog-wrap"><div class="prog-fill" id="pFill"></div></div>
+    <div class="prog-txt" id="pTxt"></div>
+  </div>
+</div>
+
+<div class="success" id="successScreen">
+  <div class="si">✅</div>
+  <h2>All Bugs Submitted!</h2>
+  <p>Your bugs have been saved. The team lead can review them on the dashboard.</p>
+  <div class="s-meta" id="sMeta"></div>
+  <button class="btn-again" id="btnAgain">Start New Session</button>
+</div>
+
+<div class="toast" id="toast"><span id="tIcon"></span><span id="tMsg"></span></div>
+
+<div class="page">
+
+  <div class="header">
+    <div class="header-left">
+      <div style="font-size:28px;line-height:1">🐛</div>
+      <div>
+        <h1>Bug Report</h1>
+        <p>QA Team · Vantage Circle</p>
+      </div>
+    </div>
+    <a href="dashboard.html" class="dash-link">View Dashboard →</a>
+  </div>
+
+  <!-- Session info -->
+  <div class="card">
+    <div class="card-title">Session Info — fill once, applies to all bugs below</div>
+    <div class="row c3">
+      <div class="field" id="sf0">
+        <label>Your Name <span class="req">*</span></label>
+        <select id="testerSel"><option value="">— Select your name —</option></select>
+        <span class="ferr">Please select your name</span>
+      </div>
+      <div class="field" id="sf1">
+        <label>Sprint <span class="req">*</span></label>
+        <input type="text" id="sprintInput" placeholder="e.g. Sprint 14"/>
+        <span class="ferr">Sprint is required</span>
+      </div>
+      <div class="field" id="sf2">
+        <label>Product <span class="req">*</span></label>
+        <select id="productSel">
+          <option value="">— Select product —</option>
+          <option>Vantage Reward</option>
+          <option>Vantage Fit</option>
+          <option>Vantage Pulse</option>
+          <option>Vantage Perks</option>
+        </select>
+        <span class="ferr">Please select a product</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bugs -->
+  <div class="section-bar">
+    <h2>Bugs</h2>
+    <span class="badge" id="bugCount">0 bugs</span>
+    <button class="btn-add" id="btnAdd">+ Add Bug</button>
+  </div>
+
+  <div id="bugsList"></div>
+
+  <div class="empty" id="emptyState">
+    <span class="ei">🐞</span>
+    No bugs added yet. Click <strong>+ Add Bug</strong> above to get started.
+  </div>
+
+  <div class="submit-bar" id="submitBar" style="display:none">
+    <div class="submit-info">
+      <strong id="readyCount">0 bugs</strong> ready to submit<br>
+      <strong id="sessionInfo">—</strong>
+    </div>
+    <button class="btn-submit" id="btnSubmit" disabled>
+      <span class="lbl">✓ Submit All Bugs</span>
+      <span class="spin"></span>
+    </button>
+  </div>
+
+</div>
+
+<script>
+// ── PASTE YOUR GOOGLE APPS SCRIPT URL BELOW ──────────────────────
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwG9wrY-6DGt03TaqS6i0FKM5SdCfI0qg_qzu4b26CR6BAOuIb-VbNuLBW7Cu0wZHkt/exec";
+// ─────────────────────────────────────────────────────────────────
+
+const TESTERS = [
+  "Kumar Ankit","Sharique Zarar Rahman","Sanjay Singha","Ankur Duarah",
+  "Nipjyoti Saikia","Ayushman Chaudhury","Raktim Kakati","Adin Ankur Saikia",
+  "Kongkona Das","Mushtaq Rejowan","Meghna Dutta"
+];
+const DEVS = [
+  "Abhishek Das","Anirban C","Anirban D","Anjan","ArindamParashar","Bidyut",
+  "Chirantan","David","Devashish","Dhruba","Gaurav","Gayatri","Gitanjal",
+  "Golap","Gyan","Jaspreet","Kamal","Kinshuk","Manab","Mark","Nabajeet",
+  "Netranjit","Nibir","Nihal","Nizam","Pallav","Prajnadeep","Preetam",
+  "Priyank","Proytush","Priyakshi","Rahul Roy","Sachita","Sagarika",
+  "Sanjoy Debnath","Sayed","Somir","Sumyadeep Das","Subhendu","Sujuma",
+  "Surajeet","Tapobrata","Vishal","Bhagyajeet Borah","Sukhbir Singh",
+  "Bikoshita Gogoi","Debashree Borah","Abhishek Chakrabarty","Dibyajoti",
+  "Pulak Bordoloi","Rongon Kumar","Phukan","Anisha Haque"
+];
+const PLATS = ["Web","Android","iOS","Desktop","API","Other"];
+const SEVS  = ["Critical","High","Medium","Low"];
+const SICO  = {Critical:"🔴",High:"🟠",Medium:"🟡",Low:"🟢",Trivial:"⚪"};
+const STATS = ["Open","In Progress","Fixed","Verified","Closed","Reopened"];
+
+const tSel = document.getElementById('testerSel');
+const sIn  = document.getElementById('sprintInput');
+const pSel = document.getElementById('productSel');
+
+TESTERS.forEach(t=>{ const o=document.createElement('option'); o.value=o.textContent=t; tSel.appendChild(o); });
+
+// Restore session
+const sv=JSON.parse(localStorage.getItem('qt')||'null');
+if(sv){if(sv.t)tSel.value=sv.t;if(sv.s)sIn.value=sv.s;if(sv.p)pSel.value=sv.p;}
+
+const saveS=()=>localStorage.setItem('qt',JSON.stringify({t:tSel.value,s:sIn.value,p:pSel.value}));
+[tSel,sIn,pSel].forEach(el=>el.addEventListener('input',()=>{saveS();bar();}));
+
+// Clear session errors
+tSel.addEventListener('change',()=>document.getElementById('sf0').classList.remove('err'));
+pSel.addEventListener('change',()=>document.getElementById('sf2').classList.remove('err'));
+sIn.addEventListener('input',()=>document.getElementById('sf1').classList.remove('err'));
+
+let ctr=0;
+
+function addBug(){
+  ctr++;
+  const id=ctr;
+  const dOpts='<option value="">— Unassigned —</option>'+DEVS.map(d=>`<option>${d}</option>`).join('');
+  const pOpts='<option value="">Select…</option>'+PLATS.map(p=>`<option>${p}</option>`).join('');
+  const sevH=SEVS.map(s=>`<div class="sev-opt" data-s="${s}"><input type="radio" name="sev_${id}" id="sv${id}${s}" value="${s}"><label for="sv${id}${s}">${SICO[s]} ${s}</label></div>`).join('');
+
+  const c=document.createElement('div');
+  c.className='bug-card'; c.dataset.id=id;
+  c.innerHTML=`
+    <div class="bug-head">
+      <div class="bug-num">${id}</div>
+      <div class="bug-summary" id="sm${id}">Click to expand and fill details…</div>
+      <span class="sev-tag" id="st${id}" style="display:none"></span>
+      <button class="btn-tog">▾</button>
+      <button class="btn-del">✕</button>
+    </div>
+    <div class="bug-body">
+      <div class="row c3">
+        <div class="field" id="fm${id}">
+          <label>Module <span class="req">*</span></label>
+          <input type="text" name="module" placeholder="e.g. Login, Dashboard, Cart"/>
+          <span class="ferr">Required</span>
+        </div>
+        <div class="field" id="fp${id}">
+          <label>Platform <span class="req">*</span></label>
+          <select name="platform">${pOpts}</select>
+          <span class="ferr">Required</span>
+        </div>
+        <div class="field">
+          <label>Assign To Developer</label>
+          <select name="assignedTo">${dOpts}</select>
+        </div>
+      </div>
+      <div class="row c1">
+        <div class="field" id="fd${id}">
+          <label>Description / Summary <span class="req">*</span></label>
+          <textarea name="description" placeholder="Clear, concise summary of the bug…" rows="2"></textarea>
+          <span class="ferr">Required</span>
+        </div>
+      </div>
+      <div class="row c2">
+        <div class="field" id="fe${id}">
+          <label>Expected Result <span class="req">*</span></label>
+          <textarea name="expected" placeholder="What should have happened…" rows="2"></textarea>
+          <span class="ferr">Required</span>
+        </div>
+        <div class="field" id="fa${id}">
+          <label>Actual Result <span class="req">*</span></label>
+          <textarea name="actual" placeholder="What actually happened…" rows="2"></textarea>
+          <span class="ferr">Required</span>
+        </div>
+      </div>
+      <div class="row c1" style="margin-bottom:6px">
+        <div class="field">
+          <label>Severity <span class="req">*</span></label>
+          <div class="sev-group">${sevH}</div>
+          <div class="sev-err" id="se${id}">Please select a severity level</div>
+        </div>
+      </div>
+      <div class="row c2">
+        <div class="field">
+          <label>Proof Link</label>
+          <input type="url" name="proof" placeholder="Screenshot / video URL (optional)"/>
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <select name="status">${STATS.map((s,i)=>`<option ${i===0?'selected':''}>${s}</option>`).join('')}</select>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('bugsList').appendChild(c);
+  document.getElementById('emptyState').style.display='none';
+
+  c.querySelector('.bug-head').addEventListener('click',e=>{
+    if(e.target.closest('.btn-del'))return;
+    c.classList.toggle('collapsed');
+  });
+  c.querySelector('.btn-del').addEventListener('click',e=>{
+    e.stopPropagation();
+    c.style.cssText='opacity:0;transform:scale(.98);transition:all .18s';
+    setTimeout(()=>{c.remove();cnt();bar();if(!document.querySelector('.bug-card'))document.getElementById('emptyState').style.display='block';},180);
+  });
+  c.querySelector('[name="description"]').addEventListener('input',function(){
+    const el=document.getElementById('sm'+id);
+    el.textContent=this.value.trim()||'Click to expand and fill details…';
+    el.classList.toggle('has-text',!!this.value.trim());
+  });
+  c.querySelectorAll(`[name="sev_${id}"]`).forEach(r=>r.addEventListener('change',()=>{
+    const t=document.getElementById('st'+id);
+    t.textContent=r.value;t.className='sev-tag tag-'+r.value;t.style.display='';
+    document.getElementById('se'+id).style.display='none';
+  }));
+  c.querySelectorAll('input,select,textarea').forEach(el=>
+    el.addEventListener('input',()=>{const f=el.closest('.field');if(f)f.classList.remove('err');}));
+
+  cnt();bar();
+  setTimeout(()=>c.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+}
+
+document.getElementById('btnAdd').addEventListener('click',addBug);
+
+function cnt(){
+  const n=document.querySelectorAll('.bug-card').length;
+  document.getElementById('bugCount').textContent=n+(n===1?' bug':' bugs');
+}
+function bar(){
+  const n=document.querySelectorAll('.bug-card').length;
+  document.getElementById('submitBar').style.display=n>0?'flex':'none';
+  document.getElementById('readyCount').textContent=n+(n===1?' bug':' bugs');
+  document.getElementById('sessionInfo').textContent=`${tSel.value||'—'} · ${sIn.value||'—'} · ${pSel.value||'—'}`;
+  document.getElementById('btnSubmit').disabled=!(n>0&&tSel.value&&sIn.value&&pSel.value);
+}
+
+function valCard(c){
+  const id=c.dataset.id;let ok=true;
+  [['module','fm'],['platform','fp'],['description','fd'],['expected','fe'],['actual','fa']].forEach(([n,p])=>{
+    const el=c.querySelector(`[name="${n}"]`),fg=document.getElementById(p+id);
+    if(!el||!el.value.trim()){if(fg)fg.classList.add('err');ok=false;}
+  });
+  if(!c.querySelector(`[name="sev_${id}"]:checked`)){document.getElementById('se'+id).style.display='block';ok=false;}
+  if(!ok)c.classList.remove('collapsed');
+  return ok;
+}
+function getData(c){
+  const id=c.dataset.id,g=n=>(c.querySelector(`[name="${n}"]`)||{}).value||'';
+  return{module:g('module'),platform:g('platform'),description:g('description'),
+    expected:g('expected'),actual:g('actual'),
+    severity:(c.querySelector(`[name="sev_${id}"]:checked`)||{}).value||'',
+    proof:g('proof'),status:g('status')||'Open',assignedTo:g('assignedTo')};
+}
+
+document.getElementById('btnSubmit').addEventListener('click',async()=>{
+  let ok=true;
+  if(!tSel.value){document.getElementById('sf0').classList.add('err');ok=false;}
+  if(!sIn.value){document.getElementById('sf1').classList.add('err');ok=false;}
+  if(!pSel.value){document.getElementById('sf2').classList.add('err');ok=false;}
+  if(!ok)return toast('w','⚠','Fill in the session info at the top first');
+
+  const cards=[...document.querySelectorAll('.bug-card')];
+  if(!cards.length)return toast('w','⚠','No bugs added yet');
+
+  let allOk=true;
+  cards.forEach(c=>{if(!valCard(c))allOk=false;});
+  if(!allOk)return toast('e','⚠','Fix the fields highlighted in red');
+
+  if(!SCRIPT_URL||SCRIPT_URL==='YOUR_GOOGLE_APPS_SCRIPT_URL_HERE')
+    return toast('e','⚠','Script URL not set in index.html');
+
+  const tester=tSel.value,sprint=sIn.value.trim(),product=pSel.value,ts=new Date().toISOString();
+  const payload=cards.map((c,i)=>({...getData(c),tester,sprint,product,timestamp:ts,batchIndex:i+1,batchTotal:cards.length}));
+
+  const btn=document.getElementById('btnSubmit');
+  btn.disabled=true;btn.classList.add('loading');
+  document.getElementById('ovMsg').textContent=`Sending ${payload.length} bug${payload.length>1?'s':''}…`;
+  document.getElementById('pFill').style.width='20%';
+  document.getElementById('pTxt').textContent=`0 / ${payload.length}`;
+  document.getElementById('overlay').classList.add('show');
+
+  try{
+    await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({batch:payload})});
+    document.getElementById('pFill').style.width='100%';
+    document.getElementById('pTxt').textContent=`${payload.length} / ${payload.length}`;
+    setTimeout(()=>{
+      document.getElementById('overlay').classList.remove('show');
+      document.getElementById('sMeta').innerHTML=
+        `Tester: <strong>${tester}</strong><br>Sprint: <strong>${sprint}</strong><br>Product: <strong>${product}</strong><br>Bugs submitted: <strong style="color:#16A34A">${payload.length}</strong>`;
+      document.getElementById('successScreen').classList.add('show');
+    },600);
+  }catch(e){
+    document.getElementById('overlay').classList.remove('show');
+    btn.disabled=false;btn.classList.remove('loading');
+    toast('e','✕','Submission failed — check your connection');
+  }
+});
+
+document.getElementById('btnAgain').addEventListener('click',()=>{
+  document.getElementById('successScreen').classList.remove('show');
+  document.getElementById('bugsList').innerHTML='';ctr=0;
+  cnt();bar();document.getElementById('emptyState').style.display='block';
+  sIn.value='';pSel.value='';saveS();window.scrollTo({top:0,behavior:'smooth'});
+});
+
+let tt;
+function toast(type,icon,msg){
+  const t=document.getElementById('toast');
+  document.getElementById('tIcon').textContent=icon;
+  document.getElementById('tMsg').textContent=msg;
+  t.className='toast'+(type==='w'?' w':type==='e'?' e':'');
+  requestAnimationFrame(()=>t.classList.add('show'));
+  clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+addBug();
+</script>
+</body>
+</html>
