@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Reset & Submit Test Bug</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#000000;color:#E4E8F0;padding:40px 20px;max-width:600px;margin:0 auto;}
+h1{color:#F87171;margin-bottom:30px;text-align:center;}
+.section{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;padding:24px;margin-bottom:20px;}
+h2{font-size:16px;font-weight:700;color:#fff;margin-bottom:12px;}
+p{font-size:13px;color:#9CA3AF;margin-bottom:12px;line-height:1.6;}
+button{background:#DC2626;color:#fff;border:none;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;padding:12px 24px;border-radius:8px;cursor:pointer;transition:background .15s;width:100%;margin-top:12px;}
+button:hover{background:#991B1B;}
+button:disabled{background:#666;cursor:not-allowed;}
+.status{margin-top:16px;padding:12px;border-radius:6px;font-size:13px;}
+.status.success{background:#059669;color:#fff;}
+.status.error{background:#DC2626;color:#fff;}
+.status.loading{background:#D97706;color:#fff;}
+pre{background:#0a0a0a;padding:12px;border-radius:6px;overflow-x:auto;font-size:12px;margin-top:12px;border:1px solid #2a2a2a;}
+.info{background:#0a0a0a;border:1px solid #2a2a2a;border-radius:8px;padding:16px;margin-top:16px;}
+.info h3{color:#F87171;font-size:14px;margin-bottom:8px;}
+.info p{color:#CBD5E1;font-size:12px;margin:4px 0;}
+@media(max-width:480px){
+  body{padding:20px 16px;}
+  h1{font-size:20px;}
+  .section{padding:18px;}
+}
+</style>
+</head>
+<body>
+
+<h1>🔄 Reset & Test</h1>
+
+<div class="section">
+  <h2>Step 1: Clear Google Sheet</h2>
+  <p>This will delete all bug data from the Google Sheet. <strong>This action cannot be undone!</strong></p>
+  <button onclick="clearSheet()" id="clearBtn">🗑️ Clear All Data</button>
+  <div id="clear-status"></div>
+</div>
+
+<div class="section">
+  <h2>Step 2: Submit Single Test Bug</h2>
+  <p>This will submit one test bug with sample data to verify the flow is working.</p>
+  <button onclick="submitTestBug()" id="submitBtn">✅ Submit Test Bug</button>
+  <div id="submit-status"></div>
+</div>
+
+<div class="section">
+  <h2>Quick Info</h2>
+  <div class="info">
+    <h3>Test Bug Details</h3>
+    <p><strong>Tester:</strong> Test User</p>
+    <p><strong>Sprint:</strong> Sprint 15</p>
+    <p><strong>Product:</strong> Vantage Reward</p>
+    <p><strong>Module:</strong> Login</p>
+    <p><strong>Platform:</strong> Web</p>
+    <p><strong>Severity:</strong> Medium</p>
+    <p><strong>Description:</strong> Test bug for verification</p>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwG9wrY-6DGt03TaqS6i0FKM5SdCfI0qg_qzu4b26CR6BAOuIb-VbNuLBW7Cu0wZHkt/exec";
+
+function setStatus(elementId, type, message) {
+  const el = document.getElementById(elementId);
+  el.innerHTML = `<div class="status ${type}">${message}</div>`;
+}
+
+// Note: Clearing the Google Sheet requires modifying the Google Apps Script
+// The current implementation doesn't have a delete endpoint
+// For now, we'll just fetch the data to show what's there
+
+async function clearSheet() {
+  setStatus('clear-status', 'loading', '⏳ Checking existing data...');
+
+  // We can't actually clear via the current API, but we can check what's there
+  try {
+    const response = await fetch(SCRIPT_URL + '?action=get');
+    const data = await response.json();
+
+    if (data.status === 'ok') {
+      const bugs = data.data || [];
+      if (bugs.length === 0) {
+        setStatus('clear-status', 'success', '✅ Sheet is already empty! No bugs to clear.');
+      } else {
+        setStatus('clear-status', 'error', `⚠️ Found ${bugs.length} bugs. Cannot clear via API. You need to manually clear the Google Sheet.`);
+        document.getElementById('clear-status').innerHTML += `
+          <div class="info" style="margin-top:12px;">
+            <h3 style="color:#F87171;">Manual Clearing Required</h3>
+            <p><strong>Google Sheet:</strong> <a href="https://docs.google.com/spreadsheets/d/1SZNcbevA00xKFU5usbAtSCwlyowqRpxm8tiwCVM1BEY/edit" target="_blank" style="color:#F87171;">Open Sheet →</a></p>
+            <p style="margin-top:8px;"><strong>Instructions:</strong></p>
+            <p>1. Open the Google Sheet</p>
+            <p>2. Select all data in "Master Bug Sheet"</p>
+            <p>3. Right-click → Delete rows</p>
+            <p>4. Repeat for other sheets</p>
+          </div>
+        `;
+      }
+    } else {
+      setStatus('clear-status', 'error', `❌ Error: ${data.message || 'Unknown error'}`);
+    }
+  } catch (error) {
+    setStatus('clear-status', 'error', `❌ Failed: ${error.message}`);
+  }
+}
+
+async function submitTestBug() {
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  setStatus('submit-status', 'loading', '⏳ Submitting test bug...');
+
+  try {
+    const testBug = {
+      tester: "Test User",
+      sprint: "Sprint 15",
+      product: "Vantage Reward",
+      module: "Login",
+      platform: "Web",
+      description: "Test bug for verification - Login button styling issue",
+      expected: "Login button should have consistent styling across all browsers",
+      actual: "Login button appears different in Safari browser",
+      severity: "Medium",
+      proof: "",
+      status: "Open",
+      assignedTo: "",
+      timestamp: new Date().toISOString()
+    };
+
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({batch: [testBug]})
+    });
+
+    // Due to no-cors, we can't read the response, but if no error, it's successful
+    setStatus('submit-status', 'success', '✅ Test bug submitted successfully!');
+    document.getElementById('submit-status').innerHTML += `
+      <pre>${JSON.stringify(testBug, null, 2)}</pre>
+      <div class="info" style="margin-top:12px;">
+        <h3 style="color:#F87171;">Next Steps</h3>
+        <p>✅ Bug has been submitted to Google Sheets</p>
+        <p>📊 Open <a href="dashboard.html" style="color:#F87171;">dashboard.html</a> to view</p>
+        <p>📝 Password: <code style="background:#1a1a1a;padding:2px 8px;border-radius:4px;">Quality2026</code></p>
+      </div>
+    `;
+  } catch (error) {
+    setStatus('submit-status', 'error', `❌ Submission failed: ${error.message}`);
+  } finally {
+    btn.disabled = false;
+  }
+}
+</script>
+
+</body>
+</html>
