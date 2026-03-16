@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Test Bug Flow</title>
+<style>
+body{font-family:'Inter',sans-serif;background:#450a0a;color:#E4E8F0;padding:40px;max-width:800px;margin:0 auto;}
+h1{color:#F87171;margin-bottom:30px;}
+.test-section{background:#7f1d1d;border:1px solid #991b1b;border-radius:10px;padding:24px;margin-bottom:20px;}
+h2{font-size:16px;font-weight:700;color:#fff;margin-bottom:16px;}
+button{background:#DC2626;color:#fff;border:none;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;padding:12px 24px;border-radius:8px;cursor:pointer;transition:background .15s;margin-right:10px;margin-bottom:10px;}
+button:hover{background:#991B1B;}
+button:disabled{background:#666;cursor:not-allowed;}
+.status{margin-top:12px;padding:12px;border-radius:6px;font-size:13px;}
+.status.success{background:#059669;color:#fff;}
+.status.error{background:#DC2626;color:#fff;}
+.status.loading{background:#D97706;color:#fff;}
+pre{background:#450a0a;padding:12px;border-radius:6px;overflow-x:auto;font-size:12px;margin-top:12px;}
+</style>
+</head>
+<body>
+
+<h1>🧪 Bug Tracker Flow Test</h1>
+
+<div class="test-section">
+  <h2>Step 1: Test Google Apps Script Connection</h2>
+  <p>This will verify if the Google Apps Script is accessible and responding.</p>
+  <button onclick="testConnection()">Test Connection</button>
+  <div id="connection-status"></div>
+</div>
+
+<div class="test-section">
+  <h2>Step 2: Submit Test Bug</h2>
+  <p>Submit a test bug to the Google Sheets via the Apps Script.</p>
+  <button onclick="submitTestBug()">Submit Test Bug</button>
+  <div id="submit-status"></div>
+</div>
+
+<div class="test-section">
+  <h2>Step 3: Fetch Bugs from Dashboard</h2>
+  <p>Retrieve all bugs from the Google Sheet to verify data was saved.</p>
+  <button onclick="fetchBugs()">Fetch All Bugs</button>
+  <div id="fetch-status"></div>
+</div>
+
+<div class="test-section">
+  <h2>Step 4: Complete Flow Test</h2>
+  <p>Run all tests in sequence automatically.</p>
+  <button onclick="runAllTests()">Run All Tests</button>
+  <div id="all-tests-status"></div>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwG9wrY-6DGt03TaqS6i0FKM5SdCfI0qg_qzu4b26CR6BAOuIb-VbNuLBW7Cu0wZHkt/exec";
+
+function setStatus(elementId, type, message) {
+  const el = document.getElementById(elementId);
+  el.innerHTML = `<div class="status ${type}">${message}</div>`;
+}
+
+function setHtml(elementId, html) {
+  document.getElementById(elementId).innerHTML = html;
+}
+
+async function testConnection() {
+  setStatus('connection-status', 'loading', '⏳ Testing connection...');
+  try {
+    const response = await fetch(SCRIPT_URL + '?action=get');
+    const data = await response.json();
+    if (data.status === 'ok') {
+      setStatus('connection-status', 'success', `✅ Connection successful! Found ${data.data ? data.data.length : 0} bugs in database.`);
+      if (data.data && data.data.length > 0) {
+        setHtml('connection-status', `
+          <div class="status success">✅ Connection successful! Found ${data.data.length} bugs in database.</div>
+          <pre>${JSON.stringify(data.data.slice(0, 3), null, 2)}</pre>
+          <p style="margin-top:8px;font-size:12px;color:#fecaca;">Showing first 3 bugs...</p>
+        `);
+      }
+    } else {
+      setStatus('connection-status', 'error', `❌ Error: ${data.message || 'Unknown error'}`);
+    }
+  } catch (error) {
+    setStatus('connection-status', 'error', `❌ Connection failed: ${error.message}`);
+  }
+}
+
+async function submitTestBug() {
+  setStatus('submit-status', 'loading', '⏳ Submitting test bug...');
+  try {
+    const testBug = {
+      tester: "Test User",
+      sprint: "Test Sprint " + new Date().getFullYear(),
+      product: "Vantage Reward",
+      module: "Test Module",
+      platform: "Web",
+      description: "Test bug from automated test script - " + new Date().toISOString(),
+      expected: "Test should pass",
+      actual: "Test executed successfully",
+      severity: "Medium",
+      proof: "",
+      status: "Open",
+      assignedTo: "",
+      timestamp: new Date().toISOString()
+    };
+
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({batch: [testBug]})
+    });
+
+    // Note: Due to no-cors mode, we can't read the response
+    // But if no error is thrown, the request was successful
+    setStatus('submit-status', 'success', `✅ Test bug submitted successfully! Check the dashboard to verify.`);
+    setHtml('submit-status', `
+      <div class="status success">✅ Test bug submitted successfully!</div>
+      <pre>${JSON.stringify(testBug, null, 2)}</pre>
+      <p style="margin-top:8px;font-size:12px;color:#fecaca;">Open <a href="dashboard.html" style="color:#F87171;">dashboard.html</a> to see the bug.</p>
+    `);
+  } catch (error) {
+    setStatus('submit-status', 'error', `❌ Submission failed: ${error.message}`);
+  }
+}
+
+async function fetchBugs() {
+  setStatus('fetch-status', 'loading', '⏳ Fetching bugs...');
+  try {
+    const response = await fetch(SCRIPT_URL + '?action=get');
+    const data = await response.json();
+    if (data.status === 'ok') {
+      const bugs = data.data || [];
+      setStatus('fetch-status', 'success', `✅ Retrieved ${bugs.length} bugs successfully!`);
+      setHtml('fetch-status', `
+        <div class="status success">✅ Retrieved ${bugs.length} bugs successfully!</div>
+        <pre>${JSON.stringify(bugs, null, 2)}</pre>
+      `);
+    } else {
+      setStatus('fetch-status', 'error', `❌ Error: ${data.message || 'Unknown error'}`);
+    }
+  } catch (error) {
+    setStatus('fetch-status', 'error', `❌ Fetch failed: ${error.message}`);
+  }
+}
+
+async function runAllTests() {
+  setHtml('all-tests-status', '<div class="status loading">⏳ Running all tests...</div>');
+
+  await testConnection();
+  await new Promise(resolve => setTimeout(resolve, 1000));
+
+  await submitTestBug();
+  await new Promise(resolve => setTimeout(resolve, 2000));
+
+  await fetchBugs();
+
+  setHtml('all-tests-status', `
+    <div class="status success">✅ All tests completed!</div>
+    <p style="margin-top:12px;font-size:13px;color:#fecaca;">
+      All steps executed. Check results above and verify in
+      <a href="dashboard.html" style="color:#F87171;">dashboard.html</a>
+    </p>
+  `);
+}
+</script>
+
+</body>
+</html>
