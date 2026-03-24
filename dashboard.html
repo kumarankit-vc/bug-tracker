@@ -558,15 +558,6 @@ function fetchGAS() {
     .catch(() => null);
 }
 
-// ── Pre-fetch fires immediately at page load — before user types password ────
-// The response arrives while the user authenticates (~2–4 s), so unlock()
-// renders data with zero additional wait on the first visit.
-let prefetch = fetchGAS();
-
-// Auto-unlock must come AFTER prefetch is defined — loadBugs() references
-// prefetch synchronously and let has a temporal dead zone before this line.
-if (sessionStorage.getItem('unlocked') === '1') unlock();
-
 // ── State ─────────────────────────────────────────────────────────
 let allBugs      = [];   // full normalised dataset
 let filteredBugs = [];   // after client-side filtering + sorting
@@ -574,6 +565,15 @@ let currentPage  = 1;
 let sortCol      = 'submittedAt';
 let sortAsc      = false;
 let searchTimer  = null;
+
+// ── Pre-fetch fires immediately at page load — before user types password ────
+// The response arrives while the user authenticates (~2–4 s), so unlock()
+// renders data with zero additional wait on the first visit.
+let prefetch = fetchGAS();
+
+// Auto-unlock must come AFTER all let declarations above — accessing any let
+// variable before its declaration throws a ReferenceError (temporal dead zone).
+if (sessionStorage.getItem('unlocked') === '1') unlock();
 
 // ── Field normalisation ───────────────────────────────────────────
 // Handles both FIELD_MAP keys (description) and legacy toCamel keys
