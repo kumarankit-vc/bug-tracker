@@ -42,6 +42,16 @@ body{font-family:'Inter',sans-serif;background:#000000;color:#E4E8F0;min-height:
 .stat.s3 .val{color:#FCD34D;}
 .stat.s4 .val{color:#4ADE80;}
 
+/* Date range */
+.date-range{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;padding:12px 14px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;}
+.date-range-label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;}
+.date-input{font-family:'Inter',sans-serif;font-size:12px;color:#CBD5E1;background:#0d0d0d;border:1px solid #2a2a2a;border-radius:6px;padding:6px 10px;outline:none;transition:border-color .15s;color-scheme:dark;}
+.date-input:focus{border-color:#DC2626;}
+.date-sep{font-size:12px;color:#555;}
+.btn-clear-date{background:transparent;border:1px solid #3a2020;color:#F87171;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;padding:5px 10px;border-radius:6px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-clear-date:hover{background:#2a1010;border-color:#DC2626;}
+.date-range-info{font-size:11px;color:#555;margin-left:auto;}
+
 /* Controls */
 .controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center;}
 .ctrl{font-family:'Inter',sans-serif;font-size:12px;color:#CBD5E1;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:6px;padding:7px 12px;outline:none;-webkit-appearance:none;transition:border-color .15s;}
@@ -102,6 +112,8 @@ body{font-family:'Inter',sans-serif;background:#000000;color:#E4E8F0;min-height:
   .controls{flex-wrap:wrap;}
 }
 @media(max-width:640px){
+  .date-range{gap:8px;padding:10px 12px;}
+  .date-range-info{margin-left:0;width:100%;}
   .page{padding:20px 16px 50px;}
   .header{flex-wrap:wrap;gap:10px;padding-bottom:16px;}
   .header-left h1{font-size:16px;}
@@ -171,6 +183,16 @@ body{font-family:'Inter',sans-serif;background:#000000;color:#E4E8F0;min-height:
     <div class="stat s2"><div class="lbl">Open</div><div class="val" id="sv1">—</div><div class="sub">need attention</div></div>
     <div class="stat s3"><div class="lbl">Critical / High</div><div class="val" id="sv2">—</div><div class="sub">priority</div></div>
     <div class="stat s4"><div class="lbl">Resolved</div><div class="val" id="sv3">—</div><div class="sub">fixed + verified</div></div>
+  </div>
+
+  <!-- Date Range Filter -->
+  <div class="date-range">
+    <span class="date-range-label">📅 Date Range</span>
+    <input class="date-input" type="date" id="fDateFrom" title="From date"/>
+    <span class="date-sep">→</span>
+    <input class="date-input" type="date" id="fDateTo" title="To date"/>
+    <button class="btn-clear-date" id="btnClearDate">✕ Clear</button>
+    <span class="date-range-info" id="dateRangeInfo"></span>
   </div>
 
   <!-- Controls -->
@@ -246,7 +268,7 @@ function unlock(){
 }
 
 // ── Data ─────────────────────────────────────────────────────────
-let allBugs=[],sortCol='bugId',sortAsc=false;
+let allBugs=[],filteredBugs=[],sortCol='bugId',sortAsc=false;
 
 async function loadBugs(){
   document.getElementById('loadingRow').style.display='block';
@@ -286,6 +308,13 @@ function populateFilters(){
   });
 }
 
+function parseDate(str){
+  if(!str)return null;
+  // Try ISO and common formats
+  const d=new Date(str);
+  return isNaN(d.getTime())?null:d;
+}
+
 function applyFilters(){
   const q=document.getElementById('fSearch').value.toLowerCase();
   const sp=document.getElementById('fSprint').value;
@@ -293,6 +322,12 @@ function applyFilters(){
   const pr=document.getElementById('fProduct').value;
   const sv=document.getElementById('fSev').value;
   const st=document.getElementById('fStatus').value;
+  const dfrom=document.getElementById('fDateFrom').value;
+  const dto=document.getElementById('fDateTo').value;
+
+  // Build date boundaries (compare as YYYY-MM-DD strings for simplicity)
+  const fromDate=dfrom?new Date(dfrom+'T00:00:00'):null;
+  const toDate=dto?new Date(dto+'T23:59:59'):null;
 
   let bugs=allBugs.filter(b=>{
     if(sp&&b.sprint!==sp)return false;
@@ -301,14 +336,32 @@ function applyFilters(){
     if(sv&&b.severity!==sv)return false;
     if(st&&b.status!==st)return false;
     if(q&&!Object.values(b).join(' ').toLowerCase().includes(q))return false;
+    if(fromDate||toDate){
+      const sd=parseDate(b.submittedAt);
+      if(!sd)return false;
+      if(fromDate&&sd<fromDate)return false;
+      if(toDate&&sd>toDate)return false;
+    }
     return true;
   });
+
+  // Update date range info label
+  const infoEl=document.getElementById('dateRangeInfo');
+  if(dfrom||dto){
+    const parts=[];
+    if(dfrom)parts.push('From '+dfrom);
+    if(dto)parts.push('To '+dto);
+    infoEl.textContent=parts.join(' · ')+' — '+bugs.length+' bug'+(bugs.length===1?'':'s');
+  }else{
+    infoEl.textContent='';
+  }
 
   bugs.sort((a,b)=>{
     const av=a[sortCol]||'',bv=b[sortCol]||'';
     return sortAsc?(av<bv?-1:av>bv?1:0):(av>bv?-1:av<bv?1:0);
   });
 
+  filteredBugs=bugs;
   document.getElementById('loadingRow').style.display='none';
   if(!bugs.length){
     document.getElementById('bugTable').style.display='none';
@@ -342,27 +395,40 @@ document.querySelectorAll('th[data-col]').forEach(th=>{
     applyFilters();
   });
 });
-['fSearch','fSprint','fTester','fProduct','fSev','fStatus'].forEach(id=>
+['fSearch','fSprint','fTester','fProduct','fSev','fStatus','fDateFrom','fDateTo'].forEach(id=>
   document.getElementById(id).addEventListener('input',applyFilters));
+
+document.getElementById('btnClearDate').addEventListener('click',()=>{
+  document.getElementById('fDateFrom').value='';
+  document.getElementById('fDateTo').value='';
+  document.getElementById('dateRangeInfo').textContent='';
+  applyFilters();
+});
 
 document.getElementById('btnRefresh').addEventListener('click',loadBugs);
 
 document.getElementById('btnExport').addEventListener('click',()=>{
+  const exportBugs=filteredBugs.length?filteredBugs:allBugs;
   const h=['Bug ID','Tester','Sprint','Product','Module','Platform','Description','Expected','Actual','Severity','Proof','Status','Assigned To','Submitted At'];
-  const rows=allBugs.map(b=>[b.bugId,b.tester,b.sprint,b.product,b.module,b.platform,b.description,b.expected,b.actual,b.severity,b.proof,b.status,b.assignedTo,b.submittedAt].map(v=>`"${(v||'').replace(/"/g,'""')}"`));
+  const rows=exportBugs.map(b=>[b.bugId,b.tester,b.sprint,b.product,b.module,b.platform,b.description,b.expected,b.actual,b.severity,b.proof,b.status,b.assignedTo,b.submittedAt].map(v=>`"${(v||'').replace(/"/g,'""')}"`));
   const csv=[h.join(','),...rows.map(r=>r.join(','))].join('\n');
+  const dfrom=document.getElementById('fDateFrom').value;
+  const dto=document.getElementById('fDateTo').value;
+  const te=document.getElementById('fTester').value;
+  const datePart=(dfrom||dto)?`_${dfrom||'start'}_to_${dto||'end'}`:`_${new Date().toISOString().slice(0,10)}`;
+  const testerPart=te?`_${te.replace(/\s+/g,'_')}`:'';
   const a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
-  a.download=`bugs_export_${new Date().toISOString().slice(0,10)}.csv`;
+  a.download=`bugs${testerPart}${datePart}.csv`;
   a.click();
 });
 
 function demoData(){
   return[
-    {bugId:'KUM-001',tester:'Kumar Ankit',sprint:'Sprint 12',product:'Vantage Reward',module:'Login',platform:'Web',description:'Login button unresponsive on Safari',expected:'Login succeeds',actual:'Nothing happens',severity:'Critical',proof:'',status:'Open',assignedTo:'Abhishek Das'},
-    {bugId:'SHA-001',tester:'Sharique Zarar Rahman',sprint:'Sprint 12',product:'Vantage Fit',module:'Dashboard',platform:'Android',description:'Step count not syncing correctly',expected:'Accurate step count',actual:'Shows zero steps',severity:'High',proof:'',status:'In Progress',assignedTo:'Devashish'},
-    {bugId:'SAN-001',tester:'Sanjay Singha',sprint:'Sprint 12',product:'Vantage Pulse',module:'Survey',platform:'Web',description:'Survey submission fails silently',expected:'Success message shown',actual:'No feedback given',severity:'Medium',proof:'',status:'Fixed',assignedTo:'Gaurav'},
-    {bugId:'ANK-001',tester:'Ankur Duarah',sprint:'Sprint 11',product:'Vantage Perks',module:'Redemption',platform:'iOS',description:'Coupon code not copying to clipboard',expected:'Code copied',actual:'Nothing copied',severity:'Low',proof:'',status:'Verified',assignedTo:'Preetam'},
+    {bugId:'KUM-001',tester:'Kumar Ankit',sprint:'Sprint 12',product:'Vantage Reward',module:'Login',platform:'Web',description:'Login button unresponsive on Safari',expected:'Login succeeds',actual:'Nothing happens',severity:'Critical',proof:'',status:'Open',assignedTo:'Abhishek Das',submittedAt:'2026-03-20T10:30:00'},
+    {bugId:'SHA-001',tester:'Sharique Zarar Rahman',sprint:'Sprint 12',product:'Vantage Fit',module:'Dashboard',platform:'Android',description:'Step count not syncing correctly',expected:'Accurate step count',actual:'Shows zero steps',severity:'High',proof:'',status:'In Progress',assignedTo:'Devashish',submittedAt:'2026-03-21T14:15:00'},
+    {bugId:'SAN-001',tester:'Sanjay Singha',sprint:'Sprint 12',product:'Vantage Pulse',module:'Survey',platform:'Web',description:'Survey submission fails silently',expected:'Success message shown',actual:'No feedback given',severity:'Medium',proof:'',status:'Fixed',assignedTo:'Gaurav',submittedAt:'2026-03-22T09:00:00'},
+    {bugId:'ANK-001',tester:'Ankur Duarah',sprint:'Sprint 11',product:'Vantage Perks',module:'Redemption',platform:'iOS',description:'Coupon code not copying to clipboard',expected:'Code copied',actual:'Nothing copied',severity:'Low',proof:'',status:'Verified',assignedTo:'Preetam',submittedAt:'2026-03-23T16:45:00'},
   ];
 }
 </script>
