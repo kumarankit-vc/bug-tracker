@@ -328,6 +328,28 @@ tbody td{padding:13px 14px;vertical-align:top;}
 .empty-row{text-align:center;padding:56px 20px;color:rgba(51,65,85,.8);font-size:13px;}
 .empty-row span{font-size:28px;display:block;margin-bottom:8px;opacity:.5;}
 
+/* ── Pagination ─────────────────────────────────────────────────────── */
+.pagination{
+  background:rgba(255,255,255,.02);
+  border:1px solid rgba(255,255,255,.07);
+  border-top:none;
+  border-radius:0 0 13px 13px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;margin-top:-1px;
+}
+.page-info{font-size:11px;color:rgba(71,85,105,.8);}
+.page-btns{display:flex;align-items:center;gap:6px;}
+.page-btn{
+  font-family:'Inter',sans-serif;font-size:12px;font-weight:500;
+  padding:5px 12px;border-radius:7px;cursor:pointer;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);
+  color:rgba(203,213,225,.8);transition:all .15s;
+}
+.page-btn:hover:not(:disabled){background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.25);color:rgba(147,197,253,.9);}
+.page-btn:disabled{opacity:.35;cursor:default;}
+.page-nums{font-size:12px;color:rgba(100,116,139,.8);padding:0 4px;min-width:90px;text-align:center;}
+
 /* ── Animations ─────────────────────────────────────────────────────── */
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
@@ -445,274 +467,342 @@ tbody td{padding:13px 14px;vertical-align:top;}
     <div class="empty-row" id="emptyRow" style="display:none"><span>🔍</span>No bugs found matching your filters.</div>
   </div>
 
+  <!-- Pagination -->
+  <div class="pagination" id="paginationBar" style="display:none">
+    <span class="page-info" id="pageInfo"></span>
+    <div class="page-btns">
+      <button class="page-btn" id="btnPrevPage" disabled>← Prev</button>
+      <span class="page-nums" id="pageNums"></span>
+      <button class="page-btn" id="btnNextPage" disabled>Next →</button>
+    </div>
+  </div>
+
 </div>
 
 <script>
 // ── CONFIG ─────────────────────────────────────────────────────────
-const SCRIPT_URL        = "https://script.google.com/macros/s/AKfycbwG9wrY-6DGt03TaqS6i0FKM5SdCfI0qg_qzu4b26CR6BAOuIb-VbNuLBW7Cu0wZHkt/exec";
+const SCRIPT_URL         = "https://script.google.com/macros/s/AKfycbwG9wrY-6DGt03TaqS6i0FKM5SdCfI0qg_qzu4b26CR6BAOuIb-VbNuLBW7Cu0wZHkt/exec";
 const DASHBOARD_PASSWORD = "Quality2026";
 // ──────────────────────────────────────────────────────────────────
 
-// Gate
-if(sessionStorage.getItem('unlocked')==='1') unlock();
+// ── Gate ─────────────────────────────────────────────────────────
+if (sessionStorage.getItem('unlocked') === '1') unlock();
 document.getElementById('gateBtn').addEventListener('click', checkPw);
-document.getElementById('gateInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkPw();});
+document.getElementById('gateInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkPw(); });
 
-function checkPw(){
-  const v=document.getElementById('gateInput').value;
-  if(v===DASHBOARD_PASSWORD){sessionStorage.setItem('unlocked','1');unlock();}
-  else{
-    const i=document.getElementById('gateInput');
+function checkPw() {
+  const v = document.getElementById('gateInput').value;
+  if (v === DASHBOARD_PASSWORD) { sessionStorage.setItem('unlocked', '1'); unlock(); }
+  else {
+    const i = document.getElementById('gateInput');
     i.classList.add('shake');
-    document.getElementById('gateErr').style.display='block';
-    setTimeout(()=>i.classList.remove('shake'),300);
+    document.getElementById('gateErr').style.display = 'block';
+    setTimeout(() => i.classList.remove('shake'), 300);
   }
 }
-function unlock(){
-  document.getElementById('gate').style.display='none';
-  document.getElementById('mainPage').style.display='block';
-  loadBugs();
+function unlock() {
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('mainPage').style.display = 'block';
+  loadPage(1);
 }
 
-// ── Cache ───────────────────────────────────────────────────────────
-const CACHE_KEY = 'bt_bugs_v1';
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+// ── Page cache (Map, max 50 entries, 5-min TTL) ──────────────────
+const PAGE_CACHE = new Map();
+const CACHE_MAX  = 50;
+const CACHE_TTL  = 5 * 60 * 1000;
 
-function getCached(){
-  try{
-    const c=JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
-    if(c && Array.isArray(c.data) && (Date.now()-c.ts)<CACHE_TTL) return c.data;
-  }catch{}
+function getCached(key) {
+  const e = PAGE_CACHE.get(key);
+  if (e && Date.now() - e.ts < CACHE_TTL) return e.data;
+  PAGE_CACHE.delete(key);
   return null;
 }
-function setCache(data){
-  try{ localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),data})); }catch{}
+function setPageCache(key, data) {
+  if (PAGE_CACHE.size >= CACHE_MAX) PAGE_CACHE.delete(PAGE_CACHE.keys().next().value);
+  PAGE_CACHE.set(key, { ts: Date.now(), data });
 }
 
-// ── Pre-fetch — fires immediately on page load, before password entry ──
-// By the time the user types their password (~2–4 s), the response is
-// already in-flight or complete, so unlock() renders with no extra wait.
-let prefetch = fetch(SCRIPT_URL+'?action=get').then(r=>r.json()).catch(()=>null);
+// ── State ─────────────────────────────────────────────────────────
+let currentPage = 1;
+let totalPages  = 1;
+let totalCount  = 0;
+let sortCol     = 'submittedAt';
+let sortAsc     = false;
+let searchTimer = null;
 
-// ── Data ───────────────────────────────────────────────────────────
-let allBugs=[],filteredBugs=[],sortCol='submittedAt',sortAsc=false;
+// Pre-fetch page 1 immediately (fires before password entry, arrives in parallel with typing)
+const DEFAULT_PARAMS = 'page=1&limit=50&sortBy=submittedAt&sortDir=desc';
+let prefetch = fetch(SCRIPT_URL + '?' + DEFAULT_PARAMS).then(r => r.json()).catch(() => null);
 
-// Normalise a bug object — handles both old toCamel keys and new explicit keys
-function normBug(b){
+// ── Param builder ─────────────────────────────────────────────────
+function buildParams(page, limitOverride) {
+  const p = new URLSearchParams();
+  p.set('page',    page);
+  p.set('limit',   limitOverride || 50);
+  const q     = document.getElementById('fSearch').value.trim();
+  const sp    = document.getElementById('fSprint').value;
+  const te    = document.getElementById('fTester').value;
+  const pr    = document.getElementById('fProduct').value;
+  const sv    = document.getElementById('fSev').value;
+  const st    = document.getElementById('fStatus').value;
+  const dfrom = document.getElementById('fDateFrom').value;
+  const dto   = document.getElementById('fDateTo').value;
+  if (q)     p.set('search',   q);
+  if (sp)    p.set('sprint',   sp);
+  if (te)    p.set('tester',   te);
+  if (pr)    p.set('product',  pr);
+  if (sv)    p.set('severity', sv);
+  if (st)    p.set('status',   st);
+  if (dfrom) p.set('dateFrom', dfrom);
+  if (dto)   p.set('dateTo',   dto);
+  p.set('sortBy',  sortCol);
+  p.set('sortDir', sortAsc ? 'asc' : 'desc');
+  return p.toString();
+}
+
+// ── Field normalisation (handles both FIELD_MAP and legacy toCamel keys) ──
+function normBug(b) {
   return {
-    bugId:       b.bugId       || b['bugId']            || '',
-    tester:      b.tester                               || '',
-    sprint:      b.sprint                               || '',
-    product:     b.product                              || '',
-    module:      b.module                               || '',
-    platform:    b.platform                             || '',
-    description: b.description || b.descriptionSummary  || '',
-    expected:    b.expected    || b.expectedResult       || '',
-    actual:      b.actual      || b.actualResult         || '',
-    severity:    b.severity                             || '',
-    proof:       b.proof       || b.proofLink            || '',
-    status:      b.status                               || 'Open',
-    assignedTo:  b.assignedTo                           || '',
-    submittedAt: b.submittedAt                          || '',
+    bugId:       b.bugId                              || '',
+    tester:      b.tester                             || '',
+    sprint:      b.sprint                             || '',
+    product:     b.product                            || '',
+    module:      b.module                             || '',
+    platform:    b.platform                           || '',
+    description: b.description || b.descriptionSummary || '',
+    expected:    b.expected    || b.expectedResult     || '',
+    actual:      b.actual      || b.actualResult       || '',
+    severity:    b.severity                           || '',
+    proof:       b.proof       || b.proofLink          || '',
+    status:      b.status                             || 'Open',
+    assignedTo:  b.assignedTo                         || '',
+    submittedAt: b.submittedAt                        || '',
   };
 }
 
-async function loadBugs(force=false){
-  const cached = !force && getCached();
+// ── Load a page from server ──────────────────────────────────────
+async function loadPage(page, force) {
+  currentPage  = page;
+  const params = buildParams(page);
+  const key    = params;
   const btn    = document.getElementById('btnRefresh');
 
-  if(cached){
-    // Render cached data instantly — 0 ms perceived wait
-    allBugs = cached;
-    render();
-    // Then silently revalidate in the background
-    btn.classList.add('updating');
-    btn.textContent = '↻ Updating…';
-  } else {
-    document.getElementById('loadingRow').style.display='block';
-    document.getElementById('bugTable').style.display='none';
-    document.getElementById('emptyRow').style.display='none';
-  }
-
-  try{
-    // Use the pre-fired promise on first load; create a fresh fetch on force-refresh
-    const j = await (force
-      ? fetch(SCRIPT_URL+'?action=get').then(r=>r.json())
-      : prefetch);
-    if(j && j.data){
-      allBugs = j.data.map(normBug);
-      setCache(allBugs);
-      render();
-    }
-  }catch{ if(!cached){ allBugs=[]; render(); } }
-  finally{
-    document.getElementById('loadingRow').style.display='none';
-    btn.classList.remove('updating');
-    btn.textContent = '↻ Refresh';
-    // Reset prefetch so the next manual refresh always gets fresh data
-    prefetch = fetch(SCRIPT_URL+'?action=get').then(r=>r.json()).catch(()=>null);
-  }
-}
-
-function render(){
-  updateStats();
-  populateFilters();
-  applyFilters();
-}
-
-function updateStats(){
-  document.getElementById('sv0').textContent=allBugs.length;
-  document.getElementById('sv1').textContent=allBugs.filter(b=>b.status==='Open'||b.status==='Reopened').length;
-  document.getElementById('sv2').textContent=allBugs.filter(b=>b.severity==='Critical'||b.severity==='High').length;
-  document.getElementById('sv3').textContent=allBugs.filter(b=>b.status==='Fixed'||b.status==='Verified'||b.status==='Closed').length;
-}
-
-function populateFilters(){
-  [['fSprint','sprint','All Sprints'],['fTester','tester','All Testers'],['fProduct','product','All Products']].forEach(([id,key,label])=>{
-    const el=document.getElementById(id);
-    const cur=el.value;
-    const vals=[...new Set(allBugs.map(b=>b[key]).filter(Boolean))].sort();
-    el.innerHTML=`<option value="">${label}</option>`+vals.map(v=>`<option${v===cur?' selected':''}>${v}</option>`).join('');
-  });
-}
-
-function parseDate(str){
-  if(!str)return null;
-  const d=new Date(str);
-  return isNaN(d.getTime())?null:d;
-}
-function fmtDate(str){
-  const d=parseDate(str);
-  if(!d)return '—';
-  return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'});
-}
-
-function applyFilters(){
-  const q    = document.getElementById('fSearch').value.toLowerCase().trim();
-  const sp   = document.getElementById('fSprint').value;
-  const te   = document.getElementById('fTester').value;
-  const pr   = document.getElementById('fProduct').value;
-  const sv   = document.getElementById('fSev').value;
-  const st   = document.getElementById('fStatus').value;
-  const dfrom= document.getElementById('fDateFrom').value;
-  const dto  = document.getElementById('fDateTo').value;
-  const fromDate = dfrom ? new Date(dfrom+'T00:00:00') : null;
-  const toDate   = dto   ? new Date(dto+'T23:59:59')   : null;
-
-  let bugs=allBugs.filter(b=>{
-    if(sp && b.sprint   !==sp) return false;
-    if(te && b.tester   !==te) return false;
-    if(pr && b.product  !==pr) return false;
-    if(sv && b.severity !==sv) return false;
-    if(st && b.status   !==st) return false;
-    if(q){
-      const hay=[b.bugId,b.tester,b.description,b.module,b.product,b.sprint,b.assignedTo,b.platform].join(' ').toLowerCase();
-      if(!hay.includes(q)) return false;
-    }
-    if(fromDate||toDate){
-      const sd=parseDate(b.submittedAt);
-      if(!sd) return false;
-      if(fromDate && sd<fromDate) return false;
-      if(toDate   && sd>toDate)   return false;
-    }
-    return true;
-  });
-
-  const infoEl=document.getElementById('dateRangeInfo');
-  if(dfrom||dto){
-    const parts=[];
-    if(dfrom)parts.push('From '+dfrom);
-    if(dto)parts.push('To '+dto);
-    infoEl.textContent=parts.join(' → ')+' — '+bugs.length+' bug'+(bugs.length===1?'':'s');
-  }else{infoEl.textContent='';}
-
-  // Sort
-  bugs.sort((a,b)=>{
-    const av=a[sortCol]||'', bv=b[sortCol]||'';
-    return sortAsc?(av<bv?-1:av>bv?1:0):(av>bv?-1:av<bv?1:0);
-  });
-
-  // Update sort indicators
-  document.querySelectorAll('thead th').forEach(th=>{
-    th.classList.remove('sort-asc','sort-desc');
-    if(th.dataset.col===sortCol) th.classList.add(sortAsc?'sort-asc':'sort-desc');
-  });
-
-  filteredBugs=bugs;
-  document.getElementById('loadingRow').style.display='none';
-
-  if(!bugs.length){
-    document.getElementById('bugTable').style.display='none';
-    document.getElementById('emptyRow').style.display='block';
+  const cached = !force && getCached(key);
+  if (cached) {
+    renderResponse(cached);
+    // Background revalidate
+    btn.classList.add('updating'); btn.textContent = '↻ Updating…';
+    fetch(SCRIPT_URL + '?' + params).then(r => r.json()).then(j => {
+      if (j && j.data) { setPageCache(key, j); renderResponse(j); }
+    }).catch(() => {}).finally(() => {
+      btn.classList.remove('updating'); btn.textContent = '↻ Refresh';
+    });
     return;
   }
-  document.getElementById('bugTable').style.display='table';
-  document.getElementById('emptyRow').style.display='none';
 
-  const e=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  // Show loader for uncached requests
+  document.getElementById('loadingRow').style.display   = 'block';
+  document.getElementById('bugTable').style.display     = 'none';
+  document.getElementById('emptyRow').style.display     = 'none';
+  document.getElementById('paginationBar').style.display = 'none';
 
-  document.getElementById('bugBody').innerHTML=bugs.map(b=>{
-    const sev  = b.severity||'';
-    const stat = (b.status||'Open').replace(/ /g,'-');
-    const chips = [b.sprint,b.product,b.module,b.platform].filter(Boolean)
-                    .map(v=>`<span class="meta-chip">${e(v)}</span>`).join('');
+  try {
+    const isDefault = params === DEFAULT_PARAMS;
+    const j = await ((!force && isDefault && prefetch)
+      ? prefetch
+      : fetch(SCRIPT_URL + '?' + params).then(r => r.json()));
+    if (j && j.data) { setPageCache(key, j); renderResponse(j); }
+    else renderTable([]);
+  } catch {
+    renderTable([]);
+  } finally {
+    document.getElementById('loadingRow').style.display = 'none';
+    btn.classList.remove('updating'); btn.textContent = '↻ Refresh';
+  }
+}
+
+// ── Render a full server response ─────────────────────────────────
+function renderResponse(j) {
+  // Stats from server (whole dataset, unaffected by filters)
+  if (j.stats) {
+    document.getElementById('sv0').textContent = j.stats.total        ?? '—';
+    document.getElementById('sv1').textContent = j.stats.open         ?? '—';
+    document.getElementById('sv2').textContent = j.stats.criticalHigh ?? '—';
+    document.getElementById('sv3').textContent = j.stats.resolved     ?? '—';
+  }
+
+  // Populate filter dropdowns from server-computed options
+  if (j.options) populateFilters(j.options);
+
+  // Pagination state
+  totalPages  = j.pages || 1;
+  totalCount  = j.total || 0;
+  currentPage = j.page  || 1;
+
+  renderTable(j.data || []);
+  updatePagination();
+  updateSortIndicators();
+
+  // Date range info
+  const dfrom  = document.getElementById('fDateFrom').value;
+  const dto    = document.getElementById('fDateTo').value;
+  const infoEl = document.getElementById('dateRangeInfo');
+  if (dfrom || dto) {
+    const parts = [];
+    if (dfrom) parts.push('From ' + dfrom);
+    if (dto)   parts.push('To '   + dto);
+    infoEl.textContent = parts.join(' → ') + ' — ' + totalCount + ' bug' + (totalCount === 1 ? '' : 's');
+  } else { infoEl.textContent = ''; }
+}
+
+function populateFilters(opts) {
+  [['fSprint', opts.sprints || [], 'All Sprints'],
+   ['fTester',  opts.testers  || [], 'All Testers'],
+   ['fProduct', opts.products || [], 'All Products']].forEach(([id, vals, label]) => {
+    const el  = document.getElementById(id);
+    const cur = el.value;
+    el.innerHTML = `<option value="">${label}</option>` +
+      vals.map(v => `<option${v === cur ? ' selected' : ''}>${v}</option>`).join('');
+  });
+}
+
+function parseDate(str) {
+  if (!str) return null;
+  const d = new Date(str);
+  return isNaN(d.getTime()) ? null : d;
+}
+function fmtDate(str) {
+  const d = parseDate(str);
+  if (!d) return '—';
+  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' });
+}
+
+const esc = s => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+function renderTable(bugs) {
+  document.getElementById('loadingRow').style.display = 'none';
+  if (!bugs.length) {
+    document.getElementById('bugTable').style.display   = 'none';
+    document.getElementById('emptyRow').style.display   = 'block';
+    document.getElementById('paginationBar').style.display = 'none';
+    return;
+  }
+  document.getElementById('bugTable').style.display   = 'table';
+  document.getElementById('emptyRow').style.display   = 'none';
+  document.getElementById('paginationBar').style.display = 'flex';
+
+  document.getElementById('bugBody').innerHTML = bugs.map(raw => {
+    const b    = normBug(raw);
+    const sev  = b.severity || '';
+    const stat = (b.status || 'Open').replace(/ /g, '-');
+    const chips = [b.sprint, b.product, b.module, b.platform].filter(Boolean)
+                   .map(v => `<span class="meta-chip">${esc(v)}</span>`).join('');
     const proofHtml = b.proof
-      ? `<a href="${e(b.proof)}" class="proof-btn" target="_blank" rel="noopener">🔗 View</a>`
+      ? `<a href="${esc(b.proof)}" class="proof-btn" target="_blank" rel="noopener">🔗 View</a>`
       : `<span class="no-proof">—</span>`;
     return `<tr>
-      <td class="col-id"><span class="bug-id">${e(b.bugId||'—')}</span></td>
-      <td class="col-tester"><span class="tester-badge">${e(b.tester||'—')}</span></td>
+      <td class="col-id"><span class="bug-id">${esc(b.bugId || '—')}</span></td>
+      <td class="col-tester"><span class="tester-badge">${esc(b.tester || '—')}</span></td>
       <td class="col-desc">
-        <div class="desc-text">${e(b.description||'—')}</div>
-        ${chips?`<div class="desc-meta">${chips}</div>`:''}
+        <div class="desc-text">${esc(b.description || '—')}</div>
+        ${chips ? `<div class="desc-meta">${chips}</div>` : ''}
       </td>
-      <td class="col-sev"><span class="sev-badge sb-${e(sev)}">${e(sev)||'—'}</span></td>
-      <td class="col-status"><span class="st-badge stb-${e(stat)}">${e(b.status||'Open')}</span></td>
-      <td class="col-assign">${e(b.assignedTo||'—')}</td>
+      <td class="col-sev"><span class="sev-badge sb-${esc(sev)}">${esc(sev) || '—'}</span></td>
+      <td class="col-status"><span class="st-badge stb-${esc(stat)}">${esc(b.status || 'Open')}</span></td>
+      <td class="col-assign">${esc(b.assignedTo || '—')}</td>
       <td class="col-date">${fmtDate(b.submittedAt)}</td>
       <td class="col-proof">${proofHtml}</td>
     </tr>`;
   }).join('');
 }
 
-// Sort on header click
-document.querySelectorAll('thead th[data-col]').forEach(th=>{
-  th.addEventListener('click',()=>{
-    const c=th.dataset.col;
-    if(sortCol===c) sortAsc=!sortAsc; else{sortCol=c;sortAsc=true;}
-    applyFilters();
+function updatePagination() {
+  const bar = document.getElementById('paginationBar');
+  if (!totalCount) { bar.style.display = 'none'; return; }
+  const start = ((currentPage - 1) * 50) + 1;
+  const end   = Math.min(currentPage * 50, totalCount);
+  document.getElementById('pageInfo').textContent = `Showing ${start}–${end} of ${totalCount} bugs`;
+  document.getElementById('btnPrevPage').disabled = currentPage <= 1;
+  document.getElementById('btnNextPage').disabled = currentPage >= totalPages;
+  document.getElementById('pageNums').textContent = totalPages > 1 ? `Page ${currentPage} of ${totalPages}` : '';
+  bar.style.display = 'flex';
+}
+
+function updateSortIndicators() {
+  document.querySelectorAll('thead th').forEach(th => {
+    th.classList.remove('sort-asc', 'sort-desc');
+    if (th.dataset.col === sortCol) th.classList.add(sortAsc ? 'sort-asc' : 'sort-desc');
+  });
+}
+
+// ── Sort on header click ──────────────────────────────────────────
+document.querySelectorAll('thead th[data-col]').forEach(th => {
+  th.addEventListener('click', () => {
+    const c = th.dataset.col;
+    if (sortCol === c) sortAsc = !sortAsc; else { sortCol = c; sortAsc = true; }
+    loadPage(1);
   });
 });
 
-// Filter listeners
-['fSearch','fSprint','fTester','fProduct','fSev','fStatus','fDateFrom','fDateTo']
-  .forEach(id=>document.getElementById(id).addEventListener('input',applyFilters));
+// ── Filter listeners ──────────────────────────────────────────────
+// Selects and date inputs trigger immediately; search is debounced 400 ms
+['fSprint', 'fTester', 'fProduct', 'fSev', 'fStatus', 'fDateFrom', 'fDateTo']
+  .forEach(id => document.getElementById(id).addEventListener('change', () => loadPage(1)));
 
-document.getElementById('btnClearDate').addEventListener('click',()=>{
-  document.getElementById('fDateFrom').value='';
-  document.getElementById('fDateTo').value='';
-  document.getElementById('dateRangeInfo').textContent='';
-  applyFilters();
+document.getElementById('fSearch').addEventListener('input', () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => loadPage(1), 400);
 });
 
-document.getElementById('btnRefresh').addEventListener('click',()=>loadBugs(true));
+document.getElementById('btnClearDate').addEventListener('click', () => {
+  document.getElementById('fDateFrom').value  = '';
+  document.getElementById('fDateTo').value    = '';
+  document.getElementById('dateRangeInfo').textContent = '';
+  loadPage(1);
+});
 
-// Export filtered set as CSV
-document.getElementById('btnExport').addEventListener('click',()=>{
-  if(!filteredBugs.length){alert('No bugs to export with current filters.');return;}
-  const h=['Bug ID','Tester','Sprint','Product','Module','Platform','Description','Expected','Actual','Severity','Proof','Status','Assigned To','Submitted At'];
-  const rows=filteredBugs.map(b=>[b.bugId,b.tester,b.sprint,b.product,b.module,b.platform,b.description,b.expected,b.actual,b.severity,b.proof,b.status,b.assignedTo,b.submittedAt]
-    .map(v=>`"${(v||'').replace(/"/g,'""')}"`));
-  const csv=[h.join(','),...rows.map(r=>r.join(','))].join('\n');
-  const dfrom=document.getElementById('fDateFrom').value;
-  const dto  =document.getElementById('fDateTo').value;
-  const te   =document.getElementById('fTester').value;
-  const datePart=(dfrom||dto)?`_${dfrom||'start'}_to_${dto||'end'}`:`_${new Date().toISOString().slice(0,10)}`;
-  const testerPart=te?`_${te.replace(/\s+/g,'_')}`:'';
-  const a=document.createElement('a');
-  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
-  a.download=`bugs${testerPart}${datePart}.csv`;
-  a.click();
+// Refresh: clear entire cache then reload current page
+document.getElementById('btnRefresh').addEventListener('click', () => {
+  PAGE_CACHE.clear();
+  loadPage(currentPage, true);
+});
+
+// Pagination buttons
+document.getElementById('btnPrevPage').addEventListener('click', () => {
+  if (currentPage > 1) loadPage(currentPage - 1);
+});
+document.getElementById('btnNextPage').addEventListener('click', () => {
+  if (currentPage < totalPages) loadPage(currentPage + 1);
+});
+
+// ── Export — fetches ALL filtered bugs (up to 10 000) then downloads CSV ─────
+document.getElementById('btnExport').addEventListener('click', async () => {
+  const btn = document.getElementById('btnExport');
+  btn.textContent = '↓ Fetching…'; btn.disabled = true;
+  try {
+    const params = buildParams(1, 10000);
+    const j = await fetch(SCRIPT_URL + '?' + params).then(r => r.json());
+    const bugs = (j.data || []).map(normBug);
+    if (!bugs.length) { alert('No bugs to export with current filters.'); return; }
+    const h = ['Bug ID','Tester','Sprint','Product','Module','Platform','Description','Expected','Actual','Severity','Proof','Status','Assigned To','Submitted At'];
+    const rows = bugs.map(b =>
+      [b.bugId,b.tester,b.sprint,b.product,b.module,b.platform,
+       b.description,b.expected,b.actual,b.severity,b.proof,
+       b.status,b.assignedTo,b.submittedAt]
+        .map(v => `"${(v || '').replace(/"/g, '""')}"`)
+    );
+    const csv = [h.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const dfrom      = document.getElementById('fDateFrom').value;
+    const dto        = document.getElementById('fDateTo').value;
+    const te         = document.getElementById('fTester').value;
+    const datePart   = (dfrom || dto) ? `_${dfrom || 'start'}_to_${dto || 'end'}` : `_${new Date().toISOString().slice(0,10)}`;
+    const testerPart = te ? `_${te.replace(/\s+/g, '_')}` : '';
+    const a = document.createElement('a');
+    a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+    a.download = `bugs${testerPart}${datePart}.csv`;
+    a.click();
+  } catch { alert('Export failed. Please try again.'); }
+  finally { btn.textContent = '↓ Export CSV'; btn.disabled = false; }
 });
 </script>
 </body>
