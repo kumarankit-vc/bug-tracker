@@ -197,6 +197,23 @@ body{
   background:rgba(255,255,255,.03);color:rgba(96,165,250,.9);
 }
 .btn-sm:hover{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.25);}
+
+/* ── Tester filter pills ─────────────────────────────────────────────── */
+.tester-pills{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.tester-pill{
+  font-family:'Inter',sans-serif;font-size:11px;font-weight:500;
+  padding:4px 12px;border-radius:20px;cursor:pointer;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.03);color:rgba(148,163,184,.8);
+  transition:all .15s;user-select:none;white-space:nowrap;
+}
+.tester-pill:hover{border-color:rgba(96,165,250,.3);color:rgba(203,213,225,.9);}
+.tester-pill.active{
+  background:rgba(37,99,235,.18);
+  border-color:rgba(96,165,250,.5);
+  color:#93c5fd;
+  box-shadow:0 0 0 1px rgba(96,165,250,.15);
+}
 .btn-refresh{
   font-family:'Inter',sans-serif;font-size:12px;font-weight:500;
   padding:6px 13px;border-radius:7px;cursor:pointer;
@@ -431,7 +448,6 @@ tbody td{padding:13px 14px;vertical-align:top;}
     <div class="tb-row">
       <input class="ctrl ctrl-search" type="text" id="fSearch" placeholder="Search by description, ID, tester…"/>
       <select class="ctrl ctrl-sel" id="fSprint"><option value="">All Sprints</option></select>
-      <select class="ctrl ctrl-sel" id="fTester"><option value="">All Testers</option></select>
       <select class="ctrl ctrl-sel" id="fProduct"><option value="">All Products</option></select>
       <select class="ctrl ctrl-sel" id="fSev">
         <option value="">All Severities</option>
@@ -443,6 +459,11 @@ tbody td{padding:13px 14px;vertical-align:top;}
       </select>
       <button class="btn-refresh" id="btnRefresh">↻ Refresh</button>
       <button class="btn-export" id="btnExport">↓ Export CSV</button>
+    </div>
+    <div class="tb-row">
+      <span class="tb-label">👤 Testers</span>
+      <div class="tester-pills" id="fTesterGroup"></div>
+      <button class="btn-sm" id="btnClearTesters" style="margin-left:auto">✕ Clear</button>
     </div>
     <div class="tb-row">
       <span class="tb-label">📅 Date Range</span>
@@ -691,9 +712,10 @@ function updateStats() {
   document.getElementById('sv3').textContent = allBugs.filter(b => ['Fixed','Verified','Closed'].includes(b.status)).length;
 }
 
-// ── Populate sprint / tester / product dropdowns ─────────────────
+// ── Populate sprint / product dropdowns + tester pills ───────────
 function populateFilters() {
-  [['fSprint','sprint','All Sprints'],['fTester','tester','All Testers'],['fProduct','product','All Products']]
+  // Sprint and Product remain dropdowns (single-select)
+  [['fSprint','sprint','All Sprints'],['fProduct','product','All Products']]
     .forEach(([id, key, label]) => {
       const el  = document.getElementById(id);
       const cur = el.value;
@@ -701,6 +723,20 @@ function populateFilters() {
       el.innerHTML = `<option value="">${label}</option>` +
         vals.map(v => `<option${v === cur ? ' selected' : ''}>${v}</option>`).join('');
     });
+
+  // Tester filter — pill buttons (multi-select)
+  const group = document.getElementById('fTesterGroup');
+  // Remember which testers were already selected before re-building
+  const active = new Set([...group.querySelectorAll('.tester-pill.active')].map(el => el.dataset.tester));
+  const testers = [...new Set(allBugs.map(b => b.tester).filter(Boolean))].sort();
+  group.innerHTML = '';
+  testers.forEach(name => {
+    const btn = document.createElement('button');
+    btn.className = 'tester-pill' + (active.has(name) ? ' active' : '');
+    btn.dataset.tester = name;
+    btn.textContent = name;
+    group.appendChild(btn);
+  });
 }
 
 // ── Apply all active filters + sort, then render page 1 ──────────
@@ -708,7 +744,7 @@ function applyFilters() {
   currentPage = 1;
   const q     = document.getElementById('fSearch').value.toLowerCase().trim();
   const sp    = document.getElementById('fSprint').value;
-  const te    = document.getElementById('fTester').value;
+  const selectedTesters = [...document.querySelectorAll('#fTesterGroup .tester-pill.active')].map(el => el.dataset.tester);
   const pr    = document.getElementById('fProduct').value;
   const sv    = document.getElementById('fSev').value;
   const st    = document.getElementById('fStatus').value;
@@ -719,7 +755,7 @@ function applyFilters() {
 
   let bugs = allBugs.filter(b => {
     if (sp && b.sprint   !== sp) return false;
-    if (te && b.tester   !== te) return false;
+    if (selectedTesters.length && !selectedTesters.includes(b.tester)) return false;
     if (pr && b.product  !== pr) return false;
     if (sv && b.severity !== sv) return false;
     if (st && b.status   !== st) return false;
@@ -843,8 +879,19 @@ document.querySelectorAll('thead th[data-col]').forEach(th => {
 
 // ── Filter/search listeners ───────────────────────────────────────
 // Selects fire immediately; free-text search is debounced 400 ms
-['fSprint','fTester','fProduct','fSev','fStatus','fDateFrom','fDateTo']
+['fSprint','fProduct','fSev','fStatus','fDateFrom','fDateTo']
   .forEach(id => document.getElementById(id).addEventListener('input', applyFilters));
+
+// Tester pills — toggle active state on click, then re-filter
+document.getElementById('fTesterGroup').addEventListener('click', e => {
+  const pill = e.target.closest('.tester-pill');
+  if (pill) { pill.classList.toggle('active'); applyFilters(); }
+});
+
+document.getElementById('btnClearTesters').addEventListener('click', () => {
+  document.querySelectorAll('#fTesterGroup .tester-pill.active').forEach(p => p.classList.remove('active'));
+  applyFilters();
+});
 
 document.getElementById('fSearch').addEventListener('input', () => {
   clearTimeout(searchTimer);
@@ -884,9 +931,10 @@ document.getElementById('btnExport').addEventListener('click', () => {
   const csv  = [h.join(','), ...rows.map(r => r.join(','))].join('\n');
   const dfrom      = document.getElementById('fDateFrom').value;
   const dto        = document.getElementById('fDateTo').value;
-  const te         = document.getElementById('fTester').value;
+  const activePills = [...document.querySelectorAll('#fTesterGroup .tester-pill.active')].map(el => el.dataset.tester);
   const datePart   = (dfrom || dto) ? `_${dfrom || 'start'}_to_${dto || 'end'}` : `_${new Date().toISOString().slice(0,10)}`;
-  const testerPart = te ? `_${te.replace(/\s+/g, '_')}` : '';
+  const testerPart = activePills.length === 1 ? `_${activePills[0].replace(/\s+/g,'_')}`
+                   : activePills.length  >  1 ? `_${activePills.length}testers` : '';
   const a = document.createElement('a');
   a.href     = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
   a.download = `bugs${testerPart}${datePart}.csv`;
