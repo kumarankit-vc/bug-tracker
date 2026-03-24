@@ -524,7 +524,7 @@ function unlock() {
 // ── Cache (localStorage, 30-min TTL) ────────────────────────────────────────
 // 30 minutes so repeat visits are always instant.
 // The background revalidation keeps data fresh without the user waiting.
-const CACHE_KEY = 'bt_bugs_v3';
+const CACHE_KEY = 'bt_bugs_v4';   // bumped to clear any corrupted older cache
 const CACHE_TTL = 30 * 60 * 1000;
 
 function getCached() {
@@ -590,64 +590,73 @@ function normBug(b) {
 }
 
 // ── Fetch all bugs from GAS ──────────────────────────────────────────────────
+// Rules:
+//   1. NEVER blank out the table if we already have data on screen.
+//   2. Only show the spinner when there is truly zero data to display.
+//   3. If a refresh fails but data exists, keep showing the old data.
+//   4. Always show "Updating…" on the button while a fetch is in flight.
 async function loadBugs(force = false) {
-  const btn = document.getElementById('btnRefresh');
+  const btn        = document.getElementById('btnRefresh');
+  const hasData    = allBugs.length > 0;           // do we have anything on screen right now?
+  const cached     = !force && getCached();         // valid localStorage entry (≤30 min old)
 
-  // ── Fast path: valid cache exists ──────────────────────────────────────────
-  // Show saved data instantly (0 ms wait), then quietly fetch fresh data in
-  // the background and re-render if anything changed.
-  const cached = !force && getCached();
+  // ── Render from cache immediately so the user never waits ──────────────────
   if (cached) {
     allBugs = cached;
     render();
-    btn.classList.add('updating'); btn.textContent = '↻ Updating…';
-    prefetch.then(j => {                          // reuse the already-in-flight request
-      if (j && Array.isArray(j.data)) {
-        allBugs = j.data.map(normBug);
-        setCache(allBugs);
-        render();
-      }
-    }).catch(() => {}).finally(() => {
-      btn.classList.remove('updating'); btn.textContent = '↻ Refresh';
-      prefetch = fetchGAS();                      // queue next background refresh
-    });
-    return;
   }
 
-  // ── Slow path: no cache — show loader ──────────────────────────────────────
-  let fetchFailed = false;
-  document.getElementById('loadingRow').style.display    = 'block';
-  document.getElementById('bugTable').style.display      = 'none';
-  document.getElementById('emptyRow').style.display      = 'none';
-  document.getElementById('errorRow').style.display      = 'none';
-  document.getElementById('paginationBar').style.display = 'none';
+  // ── Show spinner only on a true cold load (nothing to display yet) ──────────
+  // On force-refresh we keep the existing table visible — the user can see
+  // their data while the new request is in flight.
+  if (!hasData && !cached) {
+    document.getElementById('loadingRow').style.display    = 'block';
+    document.getElementById('bugTable').style.display      = 'none';
+    document.getElementById('emptyRow').style.display      = 'none';
+    document.getElementById('errorRow').style.display      = 'none';
+    document.getElementById('paginationBar').style.display = 'none';
+  }
+
+  // Show "Updating…" on the button for every fetch (fast or slow)
+  btn.classList.add('updating'); btn.textContent = '↻ Updating…';
+  document.getElementById('errorRow').style.display = 'none';
 
   try {
-    // On force-refresh always fire a fresh request; otherwise reuse the
-    // pre-fetch that was already started at page load.
-    const j = await (force ? fetchGAS() : prefetch);
+    // Decide which request to await:
+    //   • Cold first load (no cache, no force) → reuse the pre-fetch fired at
+    //     page load so the response is already arriving while the user typed
+    //     their password.
+    //   • Everything else (force refresh, or cache existed) → fire a new request
+    //     so we always get the very latest data.
+    const j = await ((force || cached) ? fetchGAS() : prefetch);
+
     if (j && Array.isArray(j.data)) {
+      // ✅ Success — update the dataset and re-render
       allBugs = j.data.map(normBug);
       setCache(allBugs);
+      render();
+    } else if (j && j.status === 'error') {
+      // GAS returned an error object — log it, keep existing data if any
+      console.error('GAS error:', j.message);
+      if (!hasData && !cached) showErrorRow();
     } else {
-      allBugs    = [];
-      fetchFailed = true;   // got a response but it wasn't valid data
+      // Null / unexpected shape — keep existing data if any
+      if (!hasData && !cached) showErrorRow();
     }
-  } catch {
-    allBugs    = [];
-    fetchFailed = true;     // network error or 25-second timeout
+  } catch (err) {
+    // Network failure or 25-second timeout
+    console.error('Dashboard fetch failed:', err);
+    if (!hasData && !cached) showErrorRow();
   } finally {
     document.getElementById('loadingRow').style.display = 'none';
     btn.classList.remove('updating'); btn.textContent = '↻ Refresh';
-    prefetch = fetchGAS();  // queue up the next refresh
-
-    if (fetchFailed) {
-      // Show a clear error + retry button instead of a blank page
-      document.getElementById('errorRow').style.display = 'block';
-    } else {
-      render();             // render() is inside finally so it ALWAYS runs
-    }
+    // Pre-fire the next request so it's ready for the next refresh
+    prefetch = fetchGAS();
   }
+}
+
+function showErrorRow() {
+  document.getElementById('errorRow').style.display = 'block';
 }
 
 // ── Full render cycle ────────────────────────────────────────────
