@@ -9,7 +9,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',sans-serif;background:#000;color:#E4E8F0;min-height:100vh;font-size:14px;}
 
-/* Gate */
+/* ── Gate ─────────────────────────────────────────────────────────── */
 .gate{position:fixed;inset:0;background:#000;z-index:99;display:flex;align-items:center;justify-content:center;}
 .gate-box{background:#0d1117;border:1px solid #1e3a5f;border-radius:12px;padding:40px 36px;width:100%;max-width:380px;text-align:center;box-shadow:0 0 40px rgba(37,99,235,.1);}
 .gate-box .gi{font-size:36px;margin-bottom:14px;}
@@ -22,123 +22,140 @@ body{font-family:'Inter',sans-serif;background:#000;color:#E4E8F0;min-height:100
 .gate-btn:hover{background:#1D4ED8;}
 .gate-err{font-size:12px;color:#F87171;margin-top:8px;display:none;}
 
-/* Page */
-.page{max-width:1280px;margin:0 auto;padding:28px 20px 60px;}
-.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid #1e3a5f;}
+/* ── Page ─────────────────────────────────────────────────────────── */
+.page{max-width:1400px;margin:0 auto;padding:24px 20px 60px;}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid #1e3a5f;}
 .header-left{display:flex;align-items:center;gap:12px;}
 .header-left h1{font-size:18px;font-weight:700;color:#fff;}
 .header-left p{font-size:12px;color:#555;margin-top:1px;}
+.hdr-actions{display:flex;align-items:center;gap:8px;}
 .report-link{font-size:13px;font-weight:500;color:#60A5FA;text-decoration:none;border:1px solid #1e3a5f;padding:6px 14px;border-radius:6px;transition:all .15s;}
 .report-link:hover{background:#2563EB;color:#fff;border-color:#2563EB;}
+.logout-btn{background:transparent;border:1px solid #1e3a5f;color:#60A5FA;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;padding:6px 14px;border-radius:6px;cursor:pointer;transition:all .15s;}
+.logout-btn:hover{background:#0f1e3a;border-color:#2563EB;}
 
-/* Stats */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
-.stat{background:#0d1117;border:1px solid #1e3a5f;border-radius:10px;padding:18px 20px;}
-.stat .lbl{font-size:11px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
-.stat .val{font-size:26px;font-weight:700;line-height:1;}
-.stat .sub{font-size:11px;color:#333;margin-top:4px;}
+/* ── Stats ────────────────────────────────────────────────────────── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.stat{background:#0d1117;border:1px solid #1e3a5f;border-radius:10px;padding:16px 20px;}
+.stat .lbl{font-size:11px;font-weight:600;color:#475569;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+.stat .val{font-size:28px;font-weight:700;line-height:1;}
+.stat .sub{font-size:11px;color:#1e3a5f;margin-top:4px;}
 .stat.s1 .val{color:#60A5FA;}
 .stat.s2 .val{color:#F87171;}
 .stat.s3 .val{color:#FCD34D;}
 .stat.s4 .val{color:#4ADE80;}
 
-/* Date range */
-.date-range{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px;padding:11px 14px;background:#0d1117;border:1px solid #1e3a5f;border-radius:8px;}
-.date-range-label{font-size:11px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;}
-.date-input{font-family:'Inter',sans-serif;font-size:12px;color:#CBD5E1;background:#060c16;border:1px solid #1e3a5f;border-radius:6px;padding:6px 10px;outline:none;transition:border-color .15s;color-scheme:dark;}
-.date-input:focus{border-color:#2563EB;}
-.date-sep{font-size:12px;color:#333;}
-.btn-clear-date{background:transparent;border:1px solid #1e3a5f;color:#60A5FA;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;padding:5px 10px;border-radius:6px;cursor:pointer;transition:all .15s;white-space:nowrap;}
-.btn-clear-date:hover{background:#0f1e3a;border-color:#2563EB;}
-.date-range-info{font-size:11px;color:#444;margin-left:auto;}
-
-/* Controls */
-.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
-.ctrl{font-family:'Inter',sans-serif;font-size:12px;color:#CBD5E1;background:#0d1117;border:1px solid #1e3a5f;border-radius:6px;padding:7px 12px;outline:none;-webkit-appearance:none;transition:border-color .15s;}
+/* ── Toolbar (date + filters in one band) ─────────────────────────── */
+.toolbar{background:#0d1117;border:1px solid #1e3a5f;border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;flex-direction:column;gap:10px;}
+.tb-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.tb-label{font-size:11px;font-weight:600;color:#475569;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;min-width:76px;}
+.ctrl{font-family:'Inter',sans-serif;font-size:12px;color:#CBD5E1;background:#060c16;border:1px solid #1e3a5f;border-radius:6px;padding:6px 11px;outline:none;-webkit-appearance:none;transition:border-color .15s;}
 .ctrl:focus{border-color:#2563EB;}
 .ctrl-sel{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23334155'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 9px center;padding-right:26px;cursor:pointer;
+  background-repeat:no-repeat;background-position:right 8px center;padding-right:24px;cursor:pointer;
 }
 .ctrl-sel option{background:#0d1117;}
-.ctrl-search{width:200px;}
-.btn-refresh{background:#0d1117;border:1px solid #1e3a5f;color:#555;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;padding:7px 14px;border-radius:6px;cursor:pointer;transition:all .15s;}
+.ctrl-search{width:220px;}
+.date-input{font-family:'Inter',sans-serif;font-size:12px;color:#CBD5E1;background:#060c16;border:1px solid #1e3a5f;border-radius:6px;padding:6px 10px;outline:none;transition:border-color .15s;color-scheme:dark;}
+.date-input:focus{border-color:#2563EB;}
+.date-sep{font-size:12px;color:#334155;}
+.date-info{font-size:11px;color:#475569;margin-left:4px;}
+.btn-sm{font-family:'Inter',sans-serif;font-size:11px;font-weight:500;padding:5px 10px;border-radius:6px;cursor:pointer;transition:all .15s;white-space:nowrap;border:1px solid #1e3a5f;background:transparent;color:#60A5FA;}
+.btn-sm:hover{background:#0f1e3a;border-color:#2563EB;}
+.btn-refresh{font-family:'Inter',sans-serif;font-size:12px;font-weight:500;padding:6px 12px;border-radius:6px;cursor:pointer;background:#0d1117;border:1px solid #1e3a5f;color:#475569;transition:all .15s;}
 .btn-refresh:hover{border-color:#2563EB;color:#60A5FA;}
-.btn-export{margin-left:auto;background:#0d1117;border:1px solid #166534;color:#4ADE80;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:7px 14px;border-radius:6px;cursor:pointer;transition:all .15s;}
+.btn-export{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:6px 14px;border-radius:6px;cursor:pointer;background:#0d1117;border:1px solid #166534;color:#4ADE80;transition:all .15s;margin-left:auto;}
 .btn-export:hover{background:#16A34A;color:#fff;border-color:#16A34A;}
 
-/* Table */
+/* ── Table ────────────────────────────────────────────────────────── */
 .tbl-wrap{background:#0d1117;border:1px solid #1e3a5f;border-radius:10px;overflow:hidden;}
-.tbl-wrap table{width:100%;border-collapse:collapse;}
-.tbl-wrap thead th{background:#0f1e3a;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#BFDBFE;padding:11px 14px;text-align:left;border-bottom:1px solid #1e40af;white-space:nowrap;cursor:pointer;user-select:none;}
-.tbl-wrap thead th:hover{color:#93C5FD;}
-.tbl-wrap tbody tr{border-bottom:1px solid #0f1a2e;transition:background .1s;}
-.tbl-wrap tbody tr:last-child{border-bottom:none;}
-.tbl-wrap tbody tr:hover{background:#0a1628;}
-.tbl-wrap tbody td{padding:10px 14px;font-size:13px;vertical-align:top;color:#CBD5E1;}
+.tbl-scroll{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;min-width:900px;}
+thead th{
+  background:#0a1628;font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.6px;color:#475569;padding:10px 14px;text-align:left;
+  border-bottom:1px solid #1e3a5f;white-space:nowrap;cursor:pointer;user-select:none;
+}
+thead th:hover{color:#93C5FD;}
+thead th.sort-asc::after{content:' ▲';font-size:9px;color:#2563EB;}
+thead th.sort-desc::after{content:' ▼';font-size:9px;color:#2563EB;}
 
-.td-id{font-size:11px;font-weight:700;color:#60A5FA;white-space:nowrap;}
-.td-tester{display:inline-block;background:#0f1e3a;border:1px solid #1e40af;color:#93C5FD;font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;white-space:nowrap;}
-.td-desc{max-width:280px;font-size:13px;white-space:normal;word-break:break-word;line-height:1.4;}
-.td-mono{font-size:12px;color:#475569;}
-.td-date{font-size:11px;color:#334155;white-space:nowrap;}
-.proof-a{color:#60A5FA;font-size:12px;text-decoration:none;}
-.proof-a:hover{text-decoration:underline;}
+tbody tr{border-bottom:1px solid #0a1628;transition:background .1s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:#0a1628;}
+tbody td{padding:12px 14px;vertical-align:top;}
 
-.sev-badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;white-space:nowrap;}
-.sb-Critical{background:rgba(239,68,68,.15);color:#F87171;}
-.sb-High    {background:rgba(234,88,12,.15);color:#FB923C;}
-.sb-Medium  {background:rgba(217,119,6,.15);color:#FCD34D;}
-.sb-Low     {background:rgba(22,163,74,.15);color:#4ADE80;}
-.sb-Trivial {background:rgba(75,85,99,.2);color:#9CA3AF;}
+/* col: Bug ID */
+.col-id .bug-id{font-size:11px;font-weight:700;color:#60A5FA;white-space:nowrap;font-family:'JetBrains Mono','Courier New',monospace;}
 
-.st-badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;white-space:nowrap;}
-.stb-Open       {background:rgba(239,68,68,.15);color:#F87171;}
-.stb-In-Progress{background:rgba(37,99,235,.15);color:#60A5FA;}
-.stb-Fixed      {background:rgba(22,163,74,.15);color:#4ADE80;}
-.stb-Verified   {background:rgba(16,185,129,.15);color:#34D399;}
-.stb-Closed     {background:rgba(75,85,99,.15);color:#9CA3AF;}
-.stb-Reopened   {background:rgba(124,58,237,.15);color:#A78BFA;}
+/* col: Tester */
+.col-tester .tester-badge{display:inline-block;background:#0f1e3a;border:1px solid #1e40af;color:#93C5FD;font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px;white-space:nowrap;}
 
-.loading-row{text-align:center;padding:48px 20px;color:#555;font-size:13px;}
-.loader{width:22px;height:22px;border:2px solid #1e3a5f;border-top-color:#2563EB;border-radius:50%;animation:spin .6s linear infinite;margin:0 auto 10px;}
-.empty-row{text-align:center;padding:48px 20px;color:#555;font-size:13px;}
+/* col: Description (main info column) */
+.col-desc{min-width:320px;max-width:480px;}
+.desc-text{font-size:13px;color:#E2E8F0;line-height:1.45;margin-bottom:5px;word-break:break-word;}
+.desc-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.meta-chip{font-size:10px;font-weight:500;color:#475569;background:#060c16;border:1px solid #1e3a5f;padding:2px 7px;border-radius:4px;white-space:nowrap;}
+
+/* col: Severity / Status */
+.col-sev,.col-status{white-space:nowrap;}
+.sev-badge{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.sb-Critical{background:rgba(239,68,68,.15);color:#F87171;border:1px solid rgba(239,68,68,.2);}
+.sb-High    {background:rgba(234,88,12,.15);color:#FB923C;border:1px solid rgba(234,88,12,.2);}
+.sb-Medium  {background:rgba(217,119,6,.15);color:#FCD34D;border:1px solid rgba(217,119,6,.2);}
+.sb-Low     {background:rgba(22,163,74,.15);color:#4ADE80;border:1px solid rgba(22,163,74,.2);}
+.sb-Trivial {background:rgba(75,85,99,.2);color:#9CA3AF;border:1px solid rgba(75,85,99,.3);}
+.sb-        {background:rgba(75,85,99,.1);color:#475569;}
+
+.st-badge{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.stb-Open       {background:rgba(239,68,68,.15);color:#F87171;border:1px solid rgba(239,68,68,.2);}
+.stb-In-Progress{background:rgba(37,99,235,.15);color:#60A5FA;border:1px solid rgba(37,99,235,.2);}
+.stb-Fixed      {background:rgba(22,163,74,.15);color:#4ADE80;border:1px solid rgba(22,163,74,.2);}
+.stb-Verified   {background:rgba(16,185,129,.15);color:#34D399;border:1px solid rgba(16,185,129,.2);}
+.stb-Closed     {background:rgba(75,85,99,.15);color:#9CA3AF;border:1px solid rgba(75,85,99,.3);}
+.stb-Reopened   {background:rgba(124,58,237,.15);color:#A78BFA;border:1px solid rgba(124,58,237,.2);}
+
+/* col: Assigned To */
+.col-assign{font-size:12px;color:#94A3B8;white-space:nowrap;}
+
+/* col: Submitted */
+.col-date{font-size:11px;color:#334155;white-space:nowrap;}
+
+/* col: Proof */
+.col-proof{white-space:nowrap;}
+.proof-btn{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500;color:#60A5FA;background:#0f1e3a;border:1px solid #1e40af;padding:4px 10px;border-radius:5px;text-decoration:none;transition:all .15s;}
+.proof-btn:hover{background:#1e3a5f;border-color:#2563EB;color:#93C5FD;}
+.no-proof{font-size:11px;color:#1e3a5f;}
+
+/* state rows */
+.loading-row{text-align:center;padding:52px 20px;color:#475569;font-size:13px;}
+.loader{width:24px;height:24px;border:2px solid #1e3a5f;border-top-color:#2563EB;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px;}
+.empty-row{text-align:center;padding:52px 20px;color:#334155;font-size:13px;}
+.empty-row span{font-size:28px;display:block;margin-bottom:8px;}
 
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
-@media(max-width:900px){
-  .stats{grid-template-columns:1fr 1fr;}
-  .tbl-wrap{overflow-x:auto;}
-  .btn-export{margin-left:0;}
-  .controls{flex-wrap:wrap;}
-}
-@media(max-width:640px){
-  .date-range{gap:8px;padding:10px 12px;}
-  .date-range-info{margin-left:0;width:100%;}
-  .page{padding:20px 16px 50px;}
-  .header{flex-wrap:wrap;gap:10px;padding-bottom:16px;}
-  .header-left h1{font-size:16px;}
-  .report-link{font-size:12px;padding:5px 12px;}
+
+@media(max-width:1024px){.stats{grid-template-columns:1fr 1fr;}}
+@media(max-width:768px){
+  .page{padding:16px 14px 50px;}
+  .header{flex-wrap:wrap;gap:8px;}
   .stats{grid-template-columns:1fr 1fr;gap:10px;}
-  .stat{padding:14px 16px;}
   .stat .val{font-size:22px;}
-  .controls{gap:6px;}
-  .ctrl-search{width:100%;order:1;}
-  .ctrl,.btn-refresh,.btn-export{font-size:11px;padding:6px 10px;}
-  .tbl-wrap thead th,.tbl-wrap tbody td{padding:9px 10px;font-size:11px;}
-  .td-desc{max-width:160px;}
-  .gate-box{padding:32px 24px;max-width:340px;}
+  .ctrl-search{width:100%;}
+  .btn-export{margin-left:0;}
 }
 @media(max-width:480px){
   .stats{grid-template-columns:1fr;}
-  .stat .val{font-size:20px;}
-  .sev-badge,.st-badge{font-size:10px;padding:2px 6px;}
+  .hdr-actions{flex-wrap:wrap;}
+  .gate-box{padding:32px 24px;}
 }
 </style>
 </head>
 <body>
 
-<!-- Password gate -->
+<!-- Password Gate -->
 <div class="gate" id="gate">
   <div class="gate-box">
     <div class="gi">🔒</div>
@@ -152,6 +169,7 @@ body{font-family:'Inter',sans-serif;background:#000;color:#E4E8F0;min-height:100
 
 <div class="page" id="mainPage" style="display:none">
 
+  <!-- Header -->
   <div class="header">
     <div class="header-left">
       <div style="font-size:26px;line-height:1">🐛</div>
@@ -160,9 +178,9 @@ body{font-family:'Inter',sans-serif;background:#000;color:#E4E8F0;min-height:100
         <p>Master view · Team Lead · Vantage Circle</p>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;">
+    <div class="hdr-actions">
       <a href="index.html" class="report-link">+ Report Bug</a>
-      <button id="logoutBtn" onclick="sessionStorage.removeItem('unlocked');location.href='index.html';" style="background:transparent;border:1px solid #1e3a5f;color:#60A5FA;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;padding:6px 14px;border-radius:6px;cursor:pointer;transition:all .15s;" onmouseover="this.style.background='#0f1e3a'" onmouseout="this.style.background='transparent'">Logout</button>
+      <button class="logout-btn" onclick="sessionStorage.removeItem('unlocked');location.href='index.html';">Logout</button>
     </div>
   </div>
 
@@ -174,64 +192,67 @@ body{font-family:'Inter',sans-serif;background:#000;color:#E4E8F0;min-height:100
     <div class="stat s4"><div class="lbl">Resolved</div><div class="val" id="sv3">—</div><div class="sub">fixed + verified</div></div>
   </div>
 
-  <!-- Date Range Filter -->
-  <div class="date-range">
-    <span class="date-range-label">📅 Date Range</span>
-    <input class="date-input" type="date" id="fDateFrom" title="From date"/>
-    <span class="date-sep">→</span>
-    <input class="date-input" type="date" id="fDateTo" title="To date"/>
-    <button class="btn-clear-date" id="btnClearDate">✕ Clear</button>
-    <span class="date-range-info" id="dateRangeInfo"></span>
-  </div>
+  <!-- Toolbar -->
+  <div class="toolbar">
 
-  <!-- Controls -->
-  <div class="controls">
-    <input class="ctrl ctrl-search" type="text" id="fSearch" placeholder="Search bugs…"/>
-    <select class="ctrl ctrl-sel" id="fSprint"><option value="">All Sprints</option></select>
-    <select class="ctrl ctrl-sel" id="fTester"><option value="">All Testers</option></select>
-    <select class="ctrl ctrl-sel" id="fProduct"><option value="">All Products</option></select>
-    <select class="ctrl ctrl-sel" id="fSev">
-      <option value="">All Severities</option>
-      <option>Critical</option><option>High</option><option>Medium</option><option>Low</option><option>Trivial</option>
-    </select>
-    <select class="ctrl ctrl-sel" id="fStatus">
-      <option value="">All Statuses</option>
-      <option>Open</option><option>In Progress</option><option>Fixed</option><option>Verified</option><option>Closed</option><option>Reopened</option>
-    </select>
-    <button class="btn-refresh" id="btnRefresh">↻ Refresh</button>
-    <button class="btn-export" id="btnExport">↓ Export CSV</button>
+    <!-- Row 1: search + dropdowns + actions -->
+    <div class="tb-row">
+      <input class="ctrl ctrl-search" type="text" id="fSearch" placeholder="Search by description, ID, tester…"/>
+      <select class="ctrl ctrl-sel" id="fSprint"><option value="">All Sprints</option></select>
+      <select class="ctrl ctrl-sel" id="fTester"><option value="">All Testers</option></select>
+      <select class="ctrl ctrl-sel" id="fProduct"><option value="">All Products</option></select>
+      <select class="ctrl ctrl-sel" id="fSev">
+        <option value="">All Severities</option>
+        <option>Critical</option><option>High</option><option>Medium</option><option>Low</option><option>Trivial</option>
+      </select>
+      <select class="ctrl ctrl-sel" id="fStatus">
+        <option value="">All Statuses</option>
+        <option>Open</option><option>In Progress</option><option>Fixed</option><option>Verified</option><option>Closed</option><option>Reopened</option>
+      </select>
+      <button class="btn-refresh" id="btnRefresh">↻ Refresh</button>
+      <button class="btn-export" id="btnExport">↓ Export CSV</button>
+    </div>
+
+    <!-- Row 2: date range -->
+    <div class="tb-row">
+      <span class="tb-label">📅 Date Range</span>
+      <input class="date-input" type="date" id="fDateFrom"/>
+      <span class="date-sep">→</span>
+      <input class="date-input" type="date" id="fDateTo"/>
+      <button class="btn-sm" id="btnClearDate">✕ Clear dates</button>
+      <span class="date-info" id="dateRangeInfo"></span>
+    </div>
+
   </div>
 
   <!-- Table -->
   <div class="tbl-wrap">
     <div class="loading-row" id="loadingRow"><div class="loader"></div>Loading bugs…</div>
-    <table id="bugTable" style="display:none">
-      <thead>
-        <tr>
-          <th data-col="bugId">Bug ID</th>
-          <th data-col="tester">Tester</th>
-          <th data-col="sprint">Sprint</th>
-          <th data-col="product">Product</th>
-          <th data-col="module">Module</th>
-          <th data-col="platform">Platform</th>
-          <th data-col="description">Description</th>
-          <th data-col="severity">Severity</th>
-          <th data-col="status">Status</th>
-          <th data-col="assignedTo">Assigned To</th>
-          <th data-col="submittedAt">Submitted</th>
-          <th data-col="proof">Proof</th>
-        </tr>
-      </thead>
-      <tbody id="bugBody"></tbody>
-    </table>
-    <div class="empty-row" id="emptyRow" style="display:none">No bugs found matching your filters.</div>
+    <div class="tbl-scroll">
+      <table id="bugTable" style="display:none">
+        <thead>
+          <tr>
+            <th data-col="bugId">Bug ID</th>
+            <th data-col="tester">Tester</th>
+            <th data-col="description">Description &amp; Details</th>
+            <th data-col="severity">Severity</th>
+            <th data-col="status">Status</th>
+            <th data-col="assignedTo">Assigned To</th>
+            <th data-col="submittedAt">Submitted</th>
+            <th data-col="proof">Proof</th>
+          </tr>
+        </thead>
+        <tbody id="bugBody"></tbody>
+      </table>
+    </div>
+    <div class="empty-row" id="emptyRow" style="display:none"><span>🔍</span>No bugs found matching your filters.</div>
   </div>
 
 </div>
 
 <script>
-// ── CONFIGURATION ──────────────────────────────────────────────────
-const SCRIPT_URL       = "https://script.google.com/macros/s/AKfycbwG9wrY-6DGt03TaqS6i0FKM5SdCfI0qg_qzu4b26CR6BAOuIb-VbNuLBW7Cu0wZHkt/exec";
+// ── CONFIG ─────────────────────────────────────────────────────────
+const SCRIPT_URL        = "https://script.google.com/macros/s/AKfycbwG9wrY-6DGt03TaqS6i0FKM5SdCfI0qg_qzu4b26CR6BAOuIb-VbNuLBW7Cu0wZHkt/exec";
 const DASHBOARD_PASSWORD = "Quality2026";
 // ──────────────────────────────────────────────────────────────────
 
@@ -256,8 +277,28 @@ function unlock(){
   loadBugs();
 }
 
-// Data
+// ── Data ───────────────────────────────────────────────────────────
 let allBugs=[],filteredBugs=[],sortCol='submittedAt',sortAsc=false;
+
+// Normalise a bug object — handles both old toCamel keys and new explicit keys
+function normBug(b){
+  return {
+    bugId:       b.bugId       || b['bugId']            || '',
+    tester:      b.tester                               || '',
+    sprint:      b.sprint                               || '',
+    product:     b.product                              || '',
+    module:      b.module                               || '',
+    platform:    b.platform                             || '',
+    description: b.description || b.descriptionSummary  || '',
+    expected:    b.expected    || b.expectedResult       || '',
+    actual:      b.actual      || b.actualResult         || '',
+    severity:    b.severity                             || '',
+    proof:       b.proof       || b.proofLink            || '',
+    status:      b.status                               || 'Open',
+    assignedTo:  b.assignedTo                           || '',
+    submittedAt: b.submittedAt                          || '',
+  };
+}
 
 async function loadBugs(){
   document.getElementById('loadingRow').style.display='block';
@@ -266,7 +307,7 @@ async function loadBugs(){
   try{
     const r=await fetch(SCRIPT_URL+'?action=get');
     const j=await r.json();
-    allBugs=j.data||[];
+    allBugs=(j.data||[]).map(normBug);
   }catch{allBugs=[];}
   render();
 }
@@ -278,11 +319,10 @@ function render(){
 }
 
 function updateStats(){
-  const sv=id=>document.getElementById(id);
-  sv('sv0').textContent=allBugs.length;
-  sv('sv1').textContent=allBugs.filter(b=>b.status==='Open'||b.status==='Reopened').length;
-  sv('sv2').textContent=allBugs.filter(b=>b.severity==='Critical'||b.severity==='High').length;
-  sv('sv3').textContent=allBugs.filter(b=>b.status==='Fixed'||b.status==='Verified'||b.status==='Closed').length;
+  document.getElementById('sv0').textContent=allBugs.length;
+  document.getElementById('sv1').textContent=allBugs.filter(b=>b.status==='Open'||b.status==='Reopened').length;
+  document.getElementById('sv2').textContent=allBugs.filter(b=>b.severity==='Critical'||b.severity==='High').length;
+  document.getElementById('sv3').textContent=allBugs.filter(b=>b.status==='Fixed'||b.status==='Verified'||b.status==='Closed').length;
 }
 
 function populateFilters(){
@@ -299,7 +339,6 @@ function parseDate(str){
   const d=new Date(str);
   return isNaN(d.getTime())?null:d;
 }
-
 function fmtDate(str){
   const d=parseDate(str);
   if(!d)return '—';
@@ -307,29 +346,33 @@ function fmtDate(str){
 }
 
 function applyFilters(){
-  const q=document.getElementById('fSearch').value.toLowerCase();
-  const sp=document.getElementById('fSprint').value;
-  const te=document.getElementById('fTester').value;
-  const pr=document.getElementById('fProduct').value;
-  const sv=document.getElementById('fSev').value;
-  const st=document.getElementById('fStatus').value;
-  const dfrom=document.getElementById('fDateFrom').value;
-  const dto=document.getElementById('fDateTo').value;
-  const fromDate=dfrom?new Date(dfrom+'T00:00:00'):null;
-  const toDate=dto?new Date(dto+'T23:59:59'):null;
+  const q    = document.getElementById('fSearch').value.toLowerCase().trim();
+  const sp   = document.getElementById('fSprint').value;
+  const te   = document.getElementById('fTester').value;
+  const pr   = document.getElementById('fProduct').value;
+  const sv   = document.getElementById('fSev').value;
+  const st   = document.getElementById('fStatus').value;
+  const dfrom= document.getElementById('fDateFrom').value;
+  const dto  = document.getElementById('fDateTo').value;
+  const fromDate = dfrom ? new Date(dfrom+'T00:00:00') : null;
+  const toDate   = dto   ? new Date(dto+'T23:59:59')   : null;
 
   let bugs=allBugs.filter(b=>{
-    if(sp&&b.sprint!==sp)return false;
-    if(te&&b.tester!==te)return false;
-    if(pr&&b.product!==pr)return false;
-    if(sv&&b.severity!==sv)return false;
-    if(st&&b.status!==st)return false;
-    if(q&&!Object.values(b).join(' ').toLowerCase().includes(q))return false;
+    if(sp && b.sprint   !==sp) return false;
+    if(te && b.tester   !==te) return false;
+    if(pr && b.product  !==pr) return false;
+    if(sv && b.severity !==sv) return false;
+    if(st && b.status   !==st) return false;
+    if(q){
+      // Search across id, tester, description, module, product, sprint, assignedTo
+      const hay=[b.bugId,b.tester,b.description,b.module,b.product,b.sprint,b.assignedTo,b.platform].join(' ').toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
     if(fromDate||toDate){
       const sd=parseDate(b.submittedAt);
-      if(!sd)return false;
-      if(fromDate&&sd<fromDate)return false;
-      if(toDate&&sd>toDate)return false;
+      if(!sd) return false;
+      if(fromDate && sd<fromDate) return false;
+      if(toDate   && sd>toDate)   return false;
     }
     return true;
   });
@@ -339,16 +382,24 @@ function applyFilters(){
     const parts=[];
     if(dfrom)parts.push('From '+dfrom);
     if(dto)parts.push('To '+dto);
-    infoEl.textContent=parts.join(' · ')+' — '+bugs.length+' bug'+(bugs.length===1?'':'s');
+    infoEl.textContent=parts.join(' → ')+' — '+bugs.length+' bug'+(bugs.length===1?'':'s');
   }else{infoEl.textContent='';}
 
+  // Sort
   bugs.sort((a,b)=>{
-    const av=a[sortCol]||'',bv=b[sortCol]||'';
+    const av=a[sortCol]||'', bv=b[sortCol]||'';
     return sortAsc?(av<bv?-1:av>bv?1:0):(av>bv?-1:av<bv?1:0);
+  });
+
+  // Update sort indicators
+  document.querySelectorAll('thead th').forEach(th=>{
+    th.classList.remove('sort-asc','sort-desc');
+    if(th.dataset.col===sortCol) th.classList.add(sortAsc?'sort-asc':'sort-desc');
   });
 
   filteredBugs=bugs;
   document.getElementById('loadingRow').style.display='none';
+
   if(!bugs.length){
     document.getElementById('bugTable').style.display='none';
     document.getElementById('emptyRow').style.display='block';
@@ -358,36 +409,43 @@ function applyFilters(){
   document.getElementById('emptyRow').style.display='none';
 
   const e=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  const sevC=s=>e(s)||'—';
-  document.getElementById('bugBody').innerHTML=bugs.map(b=>`
-    <tr>
-      <td><span class="td-id">${e(b.bugId||'—')}</span></td>
-      <td><span class="td-tester">${e(b.tester||'—')}</span></td>
-      <td><span class="td-mono">${e(b.sprint||'—')}</span></td>
-      <td>${e(b.product||'—')}</td>
-      <td>${e(b.module||'—')}</td>
-      <td><span class="td-mono">${e(b.platform||'—')}</span></td>
-      <td><div class="td-desc" title="${e(b.description||'')}">${e(b.description||'—')}</div></td>
-      <td><span class="sev-badge sb-${sevC(b.severity)}">${e(b.severity||'—')}</span></td>
-      <td><span class="st-badge stb-${e((b.status||'Open').replace(/ /g,'-'))}">${e(b.status||'Open')}</span></td>
-      <td>${e(b.assignedTo||'—')}</td>
-      <td><span class="td-date">${fmtDate(b.submittedAt)}</span></td>
-      <td>${b.proof?`<a href="${e(b.proof)}" class="proof-a" target="_blank" rel="noopener">View ↗</a>`:'<span class="td-mono">—</span>'}</td>
-    </tr>`).join('');
+
+  document.getElementById('bugBody').innerHTML=bugs.map(b=>{
+    const sev  = b.severity||'';
+    const stat = (b.status||'Open').replace(/ /g,'-');
+    const chips = [b.sprint,b.product,b.module,b.platform].filter(Boolean)
+                    .map(v=>`<span class="meta-chip">${e(v)}</span>`).join('');
+    const proofHtml = b.proof
+      ? `<a href="${e(b.proof)}" class="proof-btn" target="_blank" rel="noopener">🔗 View</a>`
+      : `<span class="no-proof">—</span>`;
+    return `<tr>
+      <td class="col-id"><span class="bug-id">${e(b.bugId||'—')}</span></td>
+      <td class="col-tester"><span class="tester-badge">${e(b.tester||'—')}</span></td>
+      <td class="col-desc">
+        <div class="desc-text">${e(b.description||'—')}</div>
+        ${chips?`<div class="desc-meta">${chips}</div>`:''}
+      </td>
+      <td class="col-sev"><span class="sev-badge sb-${e(sev)}">${e(sev)||'—'}</span></td>
+      <td class="col-status"><span class="st-badge stb-${e(stat)}">${e(b.status||'Open')}</span></td>
+      <td class="col-assign">${e(b.assignedTo||'—')}</td>
+      <td class="col-date">${fmtDate(b.submittedAt)}</td>
+      <td class="col-proof">${proofHtml}</td>
+    </tr>`;
+  }).join('');
 }
 
 // Sort on header click
-document.querySelectorAll('th[data-col]').forEach(th=>{
+document.querySelectorAll('thead th[data-col]').forEach(th=>{
   th.addEventListener('click',()=>{
     const c=th.dataset.col;
-    if(sortCol===c)sortAsc=!sortAsc;else{sortCol=c;sortAsc=true;}
+    if(sortCol===c) sortAsc=!sortAsc; else{sortCol=c;sortAsc=true;}
     applyFilters();
   });
 });
 
 // Filter listeners
-['fSearch','fSprint','fTester','fProduct','fSev','fStatus','fDateFrom','fDateTo'].forEach(id=>
-  document.getElementById(id).addEventListener('input',applyFilters));
+['fSearch','fSprint','fTester','fProduct','fSev','fStatus','fDateFrom','fDateTo']
+  .forEach(id=>document.getElementById(id).addEventListener('input',applyFilters));
 
 document.getElementById('btnClearDate').addEventListener('click',()=>{
   document.getElementById('fDateFrom').value='';
@@ -398,15 +456,16 @@ document.getElementById('btnClearDate').addEventListener('click',()=>{
 
 document.getElementById('btnRefresh').addEventListener('click',loadBugs);
 
-// Export — always uses currently filtered set
+// Export filtered set as CSV
 document.getElementById('btnExport').addEventListener('click',()=>{
   if(!filteredBugs.length){alert('No bugs to export with current filters.');return;}
   const h=['Bug ID','Tester','Sprint','Product','Module','Platform','Description','Expected','Actual','Severity','Proof','Status','Assigned To','Submitted At'];
-  const rows=filteredBugs.map(b=>[b.bugId,b.tester,b.sprint,b.product,b.module,b.platform,b.description,b.expected,b.actual,b.severity,b.proof,b.status,b.assignedTo,b.submittedAt].map(v=>`"${(v||'').replace(/"/g,'""')}"`));
+  const rows=filteredBugs.map(b=>[b.bugId,b.tester,b.sprint,b.product,b.module,b.platform,b.description,b.expected,b.actual,b.severity,b.proof,b.status,b.assignedTo,b.submittedAt]
+    .map(v=>`"${(v||'').replace(/"/g,'""')}"`));
   const csv=[h.join(','),...rows.map(r=>r.join(','))].join('\n');
   const dfrom=document.getElementById('fDateFrom').value;
-  const dto=document.getElementById('fDateTo').value;
-  const te=document.getElementById('fTester').value;
+  const dto  =document.getElementById('fDateTo').value;
+  const te   =document.getElementById('fTester').value;
   const datePart=(dfrom||dto)?`_${dfrom||'start'}_to_${dto||'end'}`:`_${new Date().toISOString().slice(0,10)}`;
   const testerPart=te?`_${te.replace(/\s+/g,'_')}`:'';
   const a=document.createElement('a');
