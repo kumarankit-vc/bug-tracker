@@ -2,10 +2,23 @@
 //  BUG TRACKER — Google Apps Script  (optimised batch submission)
 //  Paste into: script.google.com → New Project
 //  Deploy → New Deployment → Web App → Anyone → Deploy
+//
+//  STATUS UPDATE WORKFLOW
+//  ─────────────────────
+//  Testers open their named sheet in Google Sheets and change the value
+//  in the "Status" column (column 11) using the dropdown.  The
+//  onEditTrigger() function automatically mirrors that change into the
+//  Master Bug Sheet so the dashboard reflects it on the next refresh.
+//
+//  ONE-TIME ADMIN SETUP (run these from the Apps Script editor):
+//    1. Run  setupTrigger()    — installs the installable onEdit trigger
+//    2. Run  setupValidation() — adds the Status dropdown to every
+//                                existing tester sheet
 // ═══════════════════════════════════════════════════════════════════════════
 
-const SHEET_ID   = "1SZNcbevA00xKFU5usbAtSCwlyowqRpxm8tiwCVM1BEY";
-const MASTER_TAB = "Master Bug Sheet";
+const SHEET_ID      = "1SZNcbevA00xKFU5usbAtSCwlyowqRpxm8tiwCVM1BEY";
+const MASTER_TAB    = "Master Bug Sheet";
+const VALID_STATUSES = ["Open", "In Progress", "Fixed", "Verified", "Closed", "Reopened"];
 
 // ── POST: receive bug(s) from form ───────────────────────────────────────────
 function doPost(e) {
@@ -63,6 +76,87 @@ function appendBug(ss, data) {
   formatRow(tSheet, tSheet.getLastRow(), data.severity, 13);
 
   return bugId;
+}
+
+// ── onEdit installable trigger: tester sheet Status → Master ─────────────────
+// Fires whenever any cell is edited in the spreadsheet.
+// Watches column 11 (Status) in every tester sheet and mirrors the new value
+// into the matching row of the Master Bug Sheet.
+function onEditTrigger(e) {
+  const range     = e.range;
+  const sheet     = range.getSheet();
+  const sheetName = sheet.getName();
+
+  // Ignore edits made directly in the master sheet
+  if (sheetName === MASTER_TAB) return;
+
+  const row = range.getRow();
+  const col = range.getColumn();
+
+  // Only react to the Status column (col 11); skip header row
+  if (row < 2 || col !== 11) return;
+
+  const bugId = sheet.getRange(row, 1).getValue();
+  if (!bugId) return;
+
+  const newStatus = String(range.getValue()).trim();
+  if (!VALID_STATUSES.includes(newStatus)) return;
+
+  // Mirror into Master Bug Sheet
+  const ss     = e.source;
+  const master = ss.getSheetByName(MASTER_TAB);
+  if (!master) return;
+
+  const data      = master.getDataRange().getValues();
+  const headers   = data[0];
+  const bugIdCol  = headers.indexOf("Bug ID");  // 0-indexed
+  const statusCol = headers.indexOf("Status");  // 0-indexed
+  if (bugIdCol < 0 || statusCol < 0) return;
+
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][bugIdCol]) === String(bugId)) {
+      master.getRange(i + 1, statusCol + 1).setValue(newStatus);
+      Logger.log("Updated " + bugId + " → " + newStatus);
+      break;
+    }
+  }
+}
+
+// ── Install the installable onEdit trigger (run once from Script Editor) ──────
+// Simple onEdit triggers cannot use SpreadsheetApp.openById(), so an
+// installable trigger is required.  Run this function once as the admin.
+function setupTrigger() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  // Remove duplicates before creating
+  ScriptApp.getProjectTriggers()
+    .filter(t => t.getHandlerFunction() === "onEditTrigger")
+    .forEach(t => ScriptApp.deleteTrigger(t));
+  ScriptApp.newTrigger("onEditTrigger")
+    .forSpreadsheet(ss)
+    .onEdit()
+    .create();
+  Logger.log("✅ onEditTrigger installed.");
+}
+
+// ── Add Status dropdown validation to a single sheet ─────────────────────────
+function addStatusValidation(sheet) {
+  const lastRow = Math.max(sheet.getLastRow(), 1);
+  const rule = SpreadsheetApp.newDataValidation()
+    .requireValueInList(VALID_STATUSES, true)
+    .setAllowInvalid(false)
+    .setHelpText("Choose a status: " + VALID_STATUSES.join(", "))
+    .build();
+  // Apply to col 11, rows 2 → lastRow (+ 500 buffer for future rows)
+  sheet.getRange(2, 11, lastRow + 498, 1).setDataValidation(rule);
+}
+
+// ── Apply Status dropdown to ALL existing tester sheets (run once by admin) ───
+function setupValidation() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  ss.getSheets().forEach(sheet => {
+    if (sheet.getName() !== MASTER_TAB) addStatusValidation(sheet);
+  });
+  Logger.log("✅ Status validation applied to all tester sheets.");
 }
 
 // ── Read all bugs from master sheet ──────────────────────────────────────────
@@ -141,6 +235,9 @@ function ensureHeaders(sheet, isMaster) {
   if (isMaster) {
     [100,100,160,140,100,300,240,240,100,220,120,180,160,180]
       .forEach((w, i) => sheet.setColumnWidth(i + 1, w));
+  } else {
+    // New tester sheet: pre-apply Status dropdown to rows 2–1000
+    addStatusValidation(sheet);
   }
 }
 
