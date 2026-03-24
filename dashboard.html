@@ -327,6 +327,16 @@ tbody td{padding:13px 14px;vertical-align:top;}
 }
 .empty-row{text-align:center;padding:56px 20px;color:rgba(51,65,85,.8);font-size:13px;}
 .empty-row span{font-size:28px;display:block;margin-bottom:8px;opacity:.5;}
+.error-row{text-align:center;padding:56px 20px;color:rgba(248,113,113,.85);font-size:13px;line-height:1.6;}
+.error-row span{font-size:28px;display:block;margin-bottom:10px;}
+.btn-retry{
+  margin-top:14px;display:inline-block;
+  font-family:'Inter',sans-serif;font-size:13px;font-weight:600;
+  padding:9px 24px;border-radius:8px;cursor:pointer;
+  background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);
+  color:#f87171;transition:all .2s;
+}
+.btn-retry:hover{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.45);color:#fff;}
 
 /* ── Pagination ─────────────────────────────────────────────────────── */
 .pagination{
@@ -465,6 +475,11 @@ tbody td{padding:13px 14px;vertical-align:top;}
       </table>
     </div>
     <div class="empty-row" id="emptyRow" style="display:none"><span>🔍</span>No bugs found matching your filters.</div>
+    <div class="error-row" id="errorRow" style="display:none">
+      <span>⚠️</span>
+      Could not load data. The server took too long to respond.
+      <div><button class="btn-retry" onclick="loadBugs(true)">↺ Try Again</button></div>
+    </div>
   </div>
 
   <!-- Pagination -->
@@ -506,9 +521,11 @@ function unlock() {
   loadBugs();
 }
 
-// ── Response cache (localStorage, 5-min TTL, stale-while-revalidate) ────────
+// ── Cache (localStorage, 30-min TTL) ────────────────────────────────────────
+// 30 minutes so repeat visits are always instant.
+// The background revalidation keeps data fresh without the user waiting.
 const CACHE_KEY = 'bt_bugs_v3';
-const CACHE_TTL = 5 * 60 * 1000;
+const CACHE_TTL = 30 * 60 * 1000;
 
 function getCached() {
   try {
@@ -521,10 +538,22 @@ function setCache(data) {
   try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch {}
 }
 
+// ── Fetch helper with 25-second timeout ──────────────────────────────────────
+// fetch() waits forever by default. AbortController lets us cancel it after
+// 25 seconds so the user sees an error + retry button instead of a stuck spinner.
+function fetchGAS() {
+  const ctrl  = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 25000);
+  return fetch(SCRIPT_URL, { signal: ctrl.signal })
+    .then(r => r.json())
+    .finally(() => clearTimeout(timer))
+    .catch(() => null);
+}
+
 // ── Pre-fetch fires immediately at page load — before user types password ────
 // The response arrives while the user authenticates (~2–4 s), so unlock()
 // renders data with zero additional wait on the first visit.
-let prefetch = fetch(SCRIPT_URL).then(r => r.json()).catch(() => null);
+let prefetch = fetchGAS();
 
 // Auto-unlock must come AFTER prefetch is defined — loadBugs() references
 // prefetch synchronously and let has a temporal dead zone before this line.
@@ -560,54 +589,65 @@ function normBug(b) {
   };
 }
 
-// ── Fetch all bugs from GAS ──────────────────────────────────────
+// ── Fetch all bugs from GAS ──────────────────────────────────────────────────
 async function loadBugs(force = false) {
-  const cached = !force && getCached();
-  const btn    = document.getElementById('btnRefresh');
+  const btn = document.getElementById('btnRefresh');
 
+  // ── Fast path: valid cache exists ──────────────────────────────────────────
+  // Show saved data instantly (0 ms wait), then quietly fetch fresh data in
+  // the background and re-render if anything changed.
+  const cached = !force && getCached();
   if (cached) {
-    // Instant render from cache
     allBugs = cached;
     render();
-    // Background revalidate — silently update if fresh data differs
     btn.classList.add('updating'); btn.textContent = '↻ Updating…';
-    fetch(SCRIPT_URL).then(r => r.json()).then(j => {
+    prefetch.then(j => {                          // reuse the already-in-flight request
       if (j && Array.isArray(j.data)) {
-        const fresh = j.data.map(normBug);
-        setCache(fresh);
-        allBugs = fresh;
+        allBugs = j.data.map(normBug);
+        setCache(allBugs);
         render();
       }
     }).catch(() => {}).finally(() => {
       btn.classList.remove('updating'); btn.textContent = '↻ Refresh';
+      prefetch = fetchGAS();                      // queue next background refresh
     });
     return;
   }
 
-  // No cache — show loader
+  // ── Slow path: no cache — show loader ──────────────────────────────────────
+  let fetchFailed = false;
   document.getElementById('loadingRow').style.display    = 'block';
   document.getElementById('bugTable').style.display      = 'none';
   document.getElementById('emptyRow').style.display      = 'none';
+  document.getElementById('errorRow').style.display      = 'none';
   document.getElementById('paginationBar').style.display = 'none';
 
   try {
-    const j = await (force
-      ? fetch(SCRIPT_URL).then(r => r.json())
-      : prefetch);
+    // On force-refresh always fire a fresh request; otherwise reuse the
+    // pre-fetch that was already started at page load.
+    const j = await (force ? fetchGAS() : prefetch);
     if (j && Array.isArray(j.data)) {
       allBugs = j.data.map(normBug);
       setCache(allBugs);
     } else {
-      allBugs = [];
+      allBugs    = [];
+      fetchFailed = true;   // got a response but it wasn't valid data
     }
-  } catch { allBugs = []; }
-  finally {
+  } catch {
+    allBugs    = [];
+    fetchFailed = true;     // network error or 25-second timeout
+  } finally {
     document.getElementById('loadingRow').style.display = 'none';
     btn.classList.remove('updating'); btn.textContent = '↻ Refresh';
-    // Replace pre-fetch so the next manual refresh always gets a fresh request
-    prefetch = fetch(SCRIPT_URL).then(r => r.json()).catch(() => null);
+    prefetch = fetchGAS();  // queue up the next refresh
+
+    if (fetchFailed) {
+      // Show a clear error + retry button instead of a blank page
+      document.getElementById('errorRow').style.display = 'block';
+    } else {
+      render();             // render() is inside finally so it ALWAYS runs
+    }
   }
-  render();
 }
 
 // ── Full render cycle ────────────────────────────────────────────
