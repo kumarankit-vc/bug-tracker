@@ -521,16 +521,24 @@ function unlock() {
   loadBugs();
 }
 
-// ── Cache (localStorage, 30-min TTL) ────────────────────────────────────────
-// 30 minutes so repeat visits are always instant.
-// The background revalidation keeps data fresh without the user waiting.
-const CACHE_KEY = 'bt_bugs_v4';   // bumped to clear any corrupted older cache
-const CACHE_TTL = 30 * 60 * 1000;
+// ── Cache ────────────────────────────────────────────────────────────────────
+// Strategy: show ANY saved data immediately (even if old) so the user never
+// sees a blank screen on reload. Fetch fresh data in the background silently.
+// Only show the spinner when there is literally nothing saved at all.
+//
+// FRESH  = saved within the last 30 min  → render + skip waiting for network
+// STALE  = older than 30 min             → render immediately, then fetch & update
+// NONE   = nothing saved at all          → show spinner, wait for GAS response
+const CACHE_KEY = 'bt_bugs_v4';
+const CACHE_TTL = 30 * 60 * 1000;  // 30 min = "fresh" threshold
 
-function getCached() {
+// Returns { data, fresh } if anything is saved, null if nothing exists at all.
+function getAnyCache() {
   try {
     const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
-    if (c && Array.isArray(c.data) && (Date.now() - c.ts) < CACHE_TTL) return c.data;
+    if (c && Array.isArray(c.data) && c.data.length) {
+      return { data: c.data, fresh: (Date.now() - c.ts) < CACHE_TTL };
+    }
   } catch {}
   return null;
 }
@@ -596,20 +604,29 @@ function normBug(b) {
 //   3. If a refresh fails but data exists, keep showing the old data.
 //   4. Always show "Updating…" on the button while a fetch is in flight.
 async function loadBugs(force = false) {
-  const btn        = document.getElementById('btnRefresh');
-  const hasData    = allBugs.length > 0;           // do we have anything on screen right now?
-  const cached     = !force && getCached();         // valid localStorage entry (≤30 min old)
+  const btn   = document.getElementById('btnRefresh');
+  // getAnyCache() returns { data, fresh } if ANYTHING is saved, or null if nothing at all.
+  // On force-refresh we skip the cache entirely (entry = null).
+  const entry = !force ? getAnyCache() : null;
 
-  // ── Render from cache immediately so the user never waits ──────────────────
-  if (cached) {
-    allBugs = cached;
+  // ── Step 1: Render saved data immediately (even if stale) ──────────────────
+  // If we have ANYTHING in localStorage, show it right now so the user never
+  // sees a blank screen or spinner on a reload.
+  if (entry) {
+    allBugs = entry.data;
     render();
   }
 
-  // ── Show spinner only on a true cold load (nothing to display yet) ──────────
-  // On force-refresh we keep the existing table visible — the user can see
-  // their data while the new request is in flight.
-  if (!hasData && !cached) {
+  // ── Step 2: Decide whether to fetch fresh data from GAS ────────────────────
+  // • Fresh cache + not force: data was saved < 30 min ago, no user demand
+  //   → do a silent background update; don't show the button spinner
+  // • Stale cache: show old data but quietly fetch to update it
+  // • No cache at all: show the spinner (user has nothing to look at)
+  // • Force: always fetch (user pressed Refresh)
+  const silentUpdate = entry && entry.fresh && !force;
+
+  if (!entry && allBugs.length === 0) {
+    // True cold load — nothing to show, display the loading spinner
     document.getElementById('loadingRow').style.display    = 'block';
     document.getElementById('bugTable').style.display      = 'none';
     document.getElementById('emptyRow').style.display      = 'none';
@@ -617,40 +634,40 @@ async function loadBugs(force = false) {
     document.getElementById('paginationBar').style.display = 'none';
   }
 
-  // Show "Updating…" on the button for every fetch (fast or slow)
-  btn.classList.add('updating'); btn.textContent = '↻ Updating…';
+  if (!silentUpdate) {
+    // Show "Updating…" on the button so the user knows a fetch is in flight
+    btn.classList.add('updating'); btn.textContent = '↻ Updating…';
+  }
   document.getElementById('errorRow').style.display = 'none';
 
   try {
-    // Decide which request to await:
-    //   • Cold first load (no cache, no force) → reuse the pre-fetch fired at
-    //     page load so the response is already arriving while the user typed
-    //     their password.
-    //   • Everything else (force refresh, or cache existed) → fire a new request
-    //     so we always get the very latest data.
-    const j = await ((force || cached) ? fetchGAS() : prefetch);
+    // Decide WHICH request to use:
+    //   • True cold load (no cache, not force) → reuse the pre-fetch that was
+    //     fired at page-load; the response is already arriving while the user
+    //     typed their password — zero extra wait.
+    //   • Everything else → fire a fresh request to get the latest data.
+    const request = (!entry && !force) ? prefetch : fetchGAS();
+    const j = await request;
 
     if (j && Array.isArray(j.data)) {
-      // ✅ Success — update the dataset and re-render
       allBugs = j.data.map(normBug);
       setCache(allBugs);
       render();
     } else if (j && j.status === 'error') {
-      // GAS returned an error object — log it, keep existing data if any
       console.error('GAS error:', j.message);
-      if (!hasData && !cached) showErrorRow();
+      if (!entry && allBugs.length === 0) showErrorRow();
     } else {
-      // Null / unexpected shape — keep existing data if any
-      if (!hasData && !cached) showErrorRow();
+      if (!entry && allBugs.length === 0) showErrorRow();
     }
   } catch (err) {
-    // Network failure or 25-second timeout
     console.error('Dashboard fetch failed:', err);
-    if (!hasData && !cached) showErrorRow();
+    if (!entry && allBugs.length === 0) showErrorRow();
   } finally {
     document.getElementById('loadingRow').style.display = 'none';
-    btn.classList.remove('updating'); btn.textContent = '↻ Refresh';
-    // Pre-fire the next request so it's ready for the next refresh
+    if (!silentUpdate) {
+      btn.classList.remove('updating'); btn.textContent = '↻ Refresh';
+    }
+    // Pre-fire the next request so it's warm for the next manual refresh
     prefetch = fetchGAS();
   }
 }
