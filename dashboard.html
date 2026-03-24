@@ -18,30 +18,22 @@ body{
   overflow-x:hidden;
 }
 
-/* ── Animated water-depth background ───────────────────────────────── */
+/* ── Static water-depth background (2 orbs, GPU-only transform) ─────── */
 .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
-.orb{position:absolute;border-radius:50%;filter:blur(100px);opacity:1;}
-.o1{width:900px;height:900px;
-    background:radial-gradient(circle,rgba(29,78,216,.22) 0%,transparent 60%);
-    top:-350px;left:-250px;
-    animation:drift1 32s ease-in-out infinite;}
-.o2{width:650px;height:650px;
-    background:radial-gradient(circle,rgba(6,182,212,.16) 0%,transparent 60%);
-    bottom:-220px;right:-150px;
-    animation:drift2 38s ease-in-out infinite;}
-.o3{width:420px;height:420px;
-    background:radial-gradient(circle,rgba(109,40,217,.18) 0%,transparent 60%);
-    top:35%;left:50%;
-    animation:drift3 24s ease-in-out infinite;}
-.o4{width:300px;height:300px;
-    background:radial-gradient(circle,rgba(6,182,212,.1) 0%,transparent 60%);
-    top:15%;right:20%;
-    animation:drift4 20s ease-in-out infinite;}
+.orb{position:absolute;border-radius:50%;filter:blur(60px);}
+.o1{width:800px;height:800px;
+    background:radial-gradient(circle,rgba(29,78,216,.2) 0%,transparent 60%);
+    top:-300px;left:-220px;
+    will-change:transform;
+    animation:drift1 55s ease-in-out infinite;}
+.o2{width:580px;height:580px;
+    background:radial-gradient(circle,rgba(6,182,212,.13) 0%,transparent 60%);
+    bottom:-200px;right:-140px;
+    will-change:transform;
+    animation:drift2 65s ease-in-out infinite;}
 
-@keyframes drift1{0%,100%{transform:translate(0,0)}33%{transform:translate(60px,-40px)}66%{transform:translate(-30px,60px)}}
-@keyframes drift2{0%,100%{transform:translate(0,0)}33%{transform:translate(-80px,40px)}66%{transform:translate(50px,-30px)}}
-@keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,50px)}}
-@keyframes drift4{0%,100%{transform:translate(0,0)}50%{transform:translate(35px,-45px)}}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(45px,-30px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,28px)}}
 
 /* ── Password Gate ──────────────────────────────────────────────────── */
 .gate{
@@ -88,7 +80,7 @@ body{
   transition:all .2s;
   box-shadow:0 4px 16px rgba(37,99,235,.35);
 }
-.gate-btn:hover{box-shadow:0 6px 22px rgba(37,99,235,.5);transform:translateY(-1px);}
+.gate-btn:hover{box-shadow:0 6px 22px rgba(37,99,235,.5);}
 .gate-err{font-size:12px;color:#f87171;margin-top:10px;display:none;}
 
 /* ── Page ───────────────────────────────────────────────────────────── */
@@ -126,8 +118,7 @@ body{
 /* ── Stats cards ────────────────────────────────────────────────────── */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
 .stat{
-  background:rgba(255,255,255,.035);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  background:rgba(255,255,255,.04);
   border:1px solid rgba(255,255,255,.07);
   border-radius:14px;padding:18px 22px;
   transition:border-color .25s,box-shadow .25s;
@@ -159,7 +150,6 @@ body{
 /* ── Toolbar ────────────────────────────────────────────────────────── */
 .toolbar{
   background:rgba(255,255,255,.03);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border:1px solid rgba(255,255,255,.07);
   border-radius:13px;padding:12px 16px;margin-bottom:14px;
   display:flex;flex-direction:column;gap:10px;
@@ -228,7 +218,6 @@ body{
 /* ── Table ──────────────────────────────────────────────────────────── */
 .tbl-wrap{
   background:rgba(255,255,255,.03);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border:1px solid rgba(255,255,255,.07);
   border-radius:13px;overflow:hidden;
 }
@@ -365,8 +354,6 @@ tbody td{padding:13px 14px;vertical-align:top;}
 <div class="bg" aria-hidden="true">
   <div class="orb o1"></div>
   <div class="orb o2"></div>
-  <div class="orb o3"></div>
-  <div class="orb o4"></div>
 </div>
 
 <!-- Password Gate -->

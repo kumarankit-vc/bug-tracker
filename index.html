@@ -19,30 +19,22 @@ body{
   overflow-x:hidden;
 }
 
-/* ── Animated water-depth background ───────────────────────────────── */
+/* ── Static water-depth background (2 orbs, GPU-only transform) ─────── */
 .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
-.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:1;}
-.o1{width:720px;height:720px;
-    background:radial-gradient(circle,rgba(29,78,216,.28) 0%,transparent 65%);
-    top:-280px;left:-180px;
-    animation:drift1 28s ease-in-out infinite;}
-.o2{width:560px;height:560px;
-    background:radial-gradient(circle,rgba(6,182,212,.18) 0%,transparent 65%);
-    bottom:-180px;right:-120px;
-    animation:drift2 34s ease-in-out infinite;}
-.o3{width:380px;height:380px;
-    background:radial-gradient(circle,rgba(109,40,217,.2) 0%,transparent 65%);
-    top:42%;left:54%;
-    animation:drift3 22s ease-in-out infinite;}
-.o4{width:260px;height:260px;
-    background:radial-gradient(circle,rgba(6,182,212,.12) 0%,transparent 65%);
-    top:20%;right:15%;
-    animation:drift4 18s ease-in-out infinite;}
+.orb{position:absolute;border-radius:50%;filter:blur(60px);}
+.o1{width:640px;height:640px;
+    background:radial-gradient(circle,rgba(29,78,216,.22) 0%,transparent 60%);
+    top:-240px;left:-160px;
+    will-change:transform;
+    animation:drift1 50s ease-in-out infinite;}
+.o2{width:500px;height:500px;
+    background:radial-gradient(circle,rgba(6,182,212,.14) 0%,transparent 60%);
+    bottom:-160px;right:-120px;
+    will-change:transform;
+    animation:drift2 60s ease-in-out infinite;}
 
-@keyframes drift1{0%,100%{transform:translate(0,0)}33%{transform:translate(50px,-35px)}66%{transform:translate(-25px,55px)}}
-@keyframes drift2{0%,100%{transform:translate(0,0)}33%{transform:translate(-70px,35px)}66%{transform:translate(45px,-25px)}}
-@keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(-55px,45px)}}
-@keyframes drift4{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-40px)}}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-30px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-35px,25px)}}
 
 /* ── Page shell ─────────────────────────────────────────────────────── */
 .page{
@@ -72,8 +64,7 @@ body{
 
 /* ── Glass card ─────────────────────────────────────────────────────── */
 .card{
-  background:rgba(255,255,255,.035);
-  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  background:rgba(255,255,255,.04);
   border:1px solid rgba(255,255,255,.07);
   border-radius:14px;padding:22px;margin-bottom:14px;
   transition:border-color .25s;
@@ -156,10 +147,9 @@ select option{background:#0d1525;}
 /* ── Bug cards ──────────────────────────────────────────────────────── */
 .bug-card{
   background:rgba(255,255,255,.03);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
   border:1px solid rgba(255,255,255,.07);
   border-radius:12px;margin-bottom:8px;overflow:hidden;
-  transition:border-color .22s,box-shadow .22s,transform .15s;
+  transition:border-color .22s;
 }
 .bug-card:hover{
   border-color:rgba(96,165,250,.18);
@@ -217,7 +207,7 @@ select option{background:#0d1525;}
   transition:all .2s;
   box-shadow:0 2px 14px rgba(37,99,235,.3);
 }
-.btn-add:hover{box-shadow:0 4px 20px rgba(37,99,235,.45);transform:translateY(-1px);}
+.btn-add:hover{box-shadow:0 4px 20px rgba(37,99,235,.45);}
 
 /* ── Empty state ────────────────────────────────────────────────────── */
 .empty{
@@ -246,7 +236,7 @@ select option{background:#0d1525;}
   display:flex;align-items:center;gap:8px;transition:all .2s;white-space:nowrap;
   box-shadow:0 4px 16px rgba(22,163,74,.32);
 }
-.btn-submit:hover{box-shadow:0 6px 22px rgba(22,163,74,.5);transform:translateY(-1px);}
+.btn-submit:hover{box-shadow:0 6px 22px rgba(22,163,74,.5);}
 .btn-submit:disabled{
   background:rgba(255,255,255,.04);color:rgba(71,85,105,.7);
   cursor:not-allowed;border:1px solid rgba(255,255,255,.07);
@@ -275,12 +265,9 @@ select option{background:#0d1525;}
 .prog-wrap{background:rgba(255,255,255,.05);border-radius:99px;height:4px;overflow:hidden;}
 .prog-fill{
   height:100%;
-  background:linear-gradient(90deg,#3b82f6,#8b5cf6,#06b6d4);
-  background-size:200% 100%;
-  border-radius:99px;transition:width .4s ease;width:0;
-  animation:shimmer 2s linear infinite;
+  background:linear-gradient(90deg,#3b82f6,#6d28d9);
+  border-radius:99px;transition:width .5s ease;width:0;
 }
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .prog-txt{font-size:11px;color:rgba(71,85,105,.8);margin-top:8px;}
 
 /* ── Success screen ─────────────────────────────────────────────────── */
@@ -290,8 +277,8 @@ select option{background:#0d1525;}
   display:none;align-items:center;justify-content:center;
   flex-direction:column;text-align:center;padding:40px;
 }
-.success.show{display:flex;animation:fadeInScale .4s ease;}
-@keyframes fadeInScale{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+.success.show{display:flex;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .success .si{font-size:52px;margin-bottom:14px;filter:drop-shadow(0 0 20px rgba(74,222,128,.4));}
 .success h2{font-size:22px;font-weight:700;color:#fff;margin-bottom:8px;letter-spacing:-.3px;}
 .success p{font-size:14px;color:rgba(96,165,250,.9);max-width:360px;line-height:1.6;margin-bottom:22px;}
@@ -310,7 +297,7 @@ select option{background:#0d1525;}
   transition:all .2s;
   box-shadow:0 4px 18px rgba(37,99,235,.35);
 }
-.btn-again:hover{box-shadow:0 6px 24px rgba(37,99,235,.5);transform:translateY(-1px);}
+.btn-again:hover{box-shadow:0 6px 24px rgba(37,99,235,.5);}
 
 /* ── Toast ──────────────────────────────────────────────────────────── */
 .toast{
@@ -367,8 +354,6 @@ select option{background:#0d1525;}
 <div class="bg" aria-hidden="true">
   <div class="orb o1"></div>
   <div class="orb o2"></div>
-  <div class="orb o3"></div>
-  <div class="orb o4"></div>
 </div>
 
 <div class="overlay" id="overlay">
