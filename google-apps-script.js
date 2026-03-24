@@ -20,90 +20,13 @@ function doPost(e) {
   }
 }
 
-// ── GET: paginated, filtered, sorted bugs for dashboard ──────────────────────
+// ── GET: fetch all bugs for dashboard ────────────────────────────────────────
 function doGet(e) {
   try {
-    const p = e.parameter || {};
-
-    // Pagination
-    const page  = Math.max(1, parseInt(p.page  || "1"));
-    const limit = Math.min(500, Math.max(1, parseInt(p.limit || "50")));
-
-    // Filters
-    const filters = {
-      sprint:   p.sprint   || "",
-      tester:   p.tester   || "",
-      product:  p.product  || "",
-      severity: p.severity || "",
-      status:   p.status   || "",
-      search:   (p.search  || "").toLowerCase().trim(),
-      dateFrom: p.dateFrom || "",
-      dateTo:   p.dateTo   || "",
-    };
-
-    // Sort (whitelist columns to prevent injection)
-    const VALID_COLS = ["bugId","sprint","tester","product","severity","status","submittedAt"];
-    const sortBy  = VALID_COLS.includes(p.sortBy) ? p.sortBy : "submittedAt";
-    const sortDir = p.sortDir === "asc" ? "asc" : "desc";
-
-    const all      = getAllBugs();
-    const filtered = filterBugs(all, filters);
-
-    filtered.sort((a, b) => {
-      const av = a[sortBy] || "", bv = b[sortBy] || "";
-      const cmp = av < bv ? -1 : av > bv ? 1 : 0;
-      return sortDir === "asc" ? cmp : -cmp;
-    });
-
-    // Aggregate stats (always from full unfiltered set)
-    const stats = {
-      total:        all.length,
-      open:         all.filter(b => b.status === "Open" || b.status === "Reopened").length,
-      criticalHigh: all.filter(b => b.severity === "Critical" || b.severity === "High").length,
-      resolved:     all.filter(b => ["Fixed","Verified","Closed"].includes(b.status)).length,
-    };
-
-    // Dropdown options (from full unfiltered set)
-    const uniq = arr => [...new Set(arr.filter(Boolean))].sort();
-    const options = {
-      sprints:  uniq(all.map(b => b.sprint)),
-      testers:  uniq(all.map(b => b.tester)),
-      products: uniq(all.map(b => b.product)),
-    };
-
-    // Paginate
-    const total  = filtered.length;
-    const pages  = Math.max(1, Math.ceil(total / limit));
-    const safeP  = Math.min(page, pages);
-    const data   = filtered.slice((safeP - 1) * limit, safeP * limit);
-
-    return json({ status: "ok", data, total, page: safeP, pages, limit, stats, options });
+    return json({ status: "ok", data: getAllBugs() });
   } catch(err) {
     return json({ status: "error", message: err.message });
   }
-}
-
-// ── Filter bugs by all supported criteria ────────────────────────────────────
-function filterBugs(all, f) {
-  return all.filter(b => {
-    if (f.sprint   && b.sprint   !== f.sprint)   return false;
-    if (f.tester   && b.tester   !== f.tester)   return false;
-    if (f.product  && b.product  !== f.product)  return false;
-    if (f.severity && b.severity !== f.severity) return false;
-    if (f.status   && b.status   !== f.status)   return false;
-    if (f.search) {
-      const hay = [b.bugId,b.tester,b.description,b.module,b.product,
-                   b.sprint,b.assignedTo,b.platform].join(" ").toLowerCase();
-      if (!hay.includes(f.search)) return false;
-    }
-    if (f.dateFrom || f.dateTo) {
-      const sd = new Date(b.submittedAt);
-      if (isNaN(sd.getTime())) return false;
-      if (f.dateFrom && sd < new Date(f.dateFrom + "T00:00:00")) return false;
-      if (f.dateTo   && sd > new Date(f.dateTo   + "T23:59:59")) return false;
-    }
-    return true;
-  });
 }
 
 // ── Append a single bug to master + tester sheet ─────────────────────────────
