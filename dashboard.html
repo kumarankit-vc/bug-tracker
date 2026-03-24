@@ -328,6 +328,36 @@ tbody td{padding:13px 14px;vertical-align:top;}
 .empty-row{text-align:center;padding:56px 20px;color:rgba(51,65,85,.8);font-size:13px;}
 .empty-row span{font-size:28px;display:block;margin-bottom:8px;opacity:.5;}
 
+/* ── Stat progress bar ──────────────────────────────────────────────── */
+.stat-bar{margin-top:10px;height:2px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;}
+.stat-bar-fill{height:100%;border-radius:2px;transition:width .7s cubic-bezier(.4,0,.2,1);}
+
+/* ── Status distribution bar ─────────────────────────────────────────── */
+.dist-wrap{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:13px;padding:14px 18px;margin-bottom:14px;
+}
+.dist-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:rgba(71,85,105,.8);margin-bottom:10px;}
+.dist-bar{display:flex;height:6px;border-radius:3px;overflow:hidden;gap:2px;}
+.dist-seg{height:100%;border-radius:2px;transition:width .6s ease;}
+.dist-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;}
+.dist-item{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(148,163,184,.75);}
+.dist-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0;}
+.dist-item strong{color:rgba(226,232,240,.85);font-weight:600;}
+
+/* ── Insights strip ──────────────────────────────────────────────────── */
+.insights{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+.insight{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:11px;padding:12px 16px;
+}
+.insight .i-icon{font-size:14px;margin-bottom:5px;opacity:.7;}
+.insight .i-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:rgba(71,85,105,.8);}
+.insight .i-val{font-size:13px;font-weight:600;color:rgba(226,232,240,.9);margin-top:3px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
 /* ── Pagination ─────────────────────────────────────────────────────── */
 .pagination{
   background:rgba(255,255,255,.02);
@@ -355,7 +385,7 @@ tbody td{padding:13px 14px;vertical-align:top;}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 
 /* ── Responsive ─────────────────────────────────────────────────────── */
-@media(max-width:1024px){.stats{grid-template-columns:1fr 1fr;}}
+@media(max-width:1024px){.stats{grid-template-columns:1fr 1fr;}.insights{grid-template-columns:1fr 1fr;}}
 @media(max-width:768px){
   .page{padding:16px 14px 50px;}
   .header{flex-wrap:wrap;gap:8px;}
@@ -403,6 +433,7 @@ tbody td{padding:13px 14px;vertical-align:top;}
       </div>
     </div>
     <div class="hdr-actions">
+      <span id="lastRefreshed" style="font-size:11px;color:rgba(71,85,105,.7);margin-right:4px;"></span>
       <a href="index.html" class="report-link">+ Report Bug</a>
       <button class="logout-btn" onclick="sessionStorage.removeItem('unlocked');location.href='index.html';">Logout</button>
     </div>
@@ -410,10 +441,61 @@ tbody td{padding:13px 14px;vertical-align:top;}
 
   <!-- Stats -->
   <div class="stats">
-    <div class="stat s1"><div class="lbl">Total Bugs</div><div class="val" id="sv0">—</div><div class="sub">all time</div></div>
-    <div class="stat s2"><div class="lbl">Open</div><div class="val" id="sv1">—</div><div class="sub">need attention</div></div>
-    <div class="stat s3"><div class="lbl">Critical / High</div><div class="val" id="sv2">—</div><div class="sub">priority</div></div>
-    <div class="stat s4"><div class="lbl">Resolved</div><div class="val" id="sv3">—</div><div class="sub">fixed + verified</div></div>
+    <div class="stat s1">
+      <div class="lbl">Total Bugs</div>
+      <div class="val" id="sv0">—</div>
+      <div class="sub" id="ss0">all time</div>
+      <div class="stat-bar"><div class="stat-bar-fill" id="sb0" style="width:100%;background:#60a5fa;"></div></div>
+    </div>
+    <div class="stat s2">
+      <div class="lbl">Open / Reopened</div>
+      <div class="val" id="sv1">—</div>
+      <div class="sub" id="ss1">need attention</div>
+      <div class="stat-bar"><div class="stat-bar-fill" id="sb1" style="width:0;background:#f87171;"></div></div>
+    </div>
+    <div class="stat s3">
+      <div class="lbl">Critical / High</div>
+      <div class="val" id="sv2">—</div>
+      <div class="sub" id="ss2">priority</div>
+      <div class="stat-bar"><div class="stat-bar-fill" id="sb2" style="width:0;background:#fcd34d;"></div></div>
+    </div>
+    <div class="stat s4">
+      <div class="lbl">Resolved</div>
+      <div class="val" id="sv3">—</div>
+      <div class="sub" id="ss3">fixed + verified</div>
+      <div class="stat-bar"><div class="stat-bar-fill" id="sb3" style="width:0;background:#4ade80;"></div></div>
+    </div>
+  </div>
+
+  <!-- Insights strip -->
+  <div class="insights">
+    <div class="insight">
+      <div class="i-icon">📈</div>
+      <div class="i-label">Resolve Rate</div>
+      <div class="i-val" id="ins0">—</div>
+    </div>
+    <div class="insight">
+      <div class="i-icon">📦</div>
+      <div class="i-label">Top Product</div>
+      <div class="i-val" id="ins1">—</div>
+    </div>
+    <div class="insight">
+      <div class="i-icon">👤</div>
+      <div class="i-label">Most Active Tester</div>
+      <div class="i-val" id="ins2">—</div>
+    </div>
+    <div class="insight">
+      <div class="i-icon">⚡</div>
+      <div class="i-label">In Progress</div>
+      <div class="i-val" id="ins3">—</div>
+    </div>
+  </div>
+
+  <!-- Status Distribution -->
+  <div class="dist-wrap">
+    <div class="dist-title">Status Distribution</div>
+    <div class="dist-bar" id="distBar"></div>
+    <div class="dist-legend" id="distLegend"></div>
   </div>
 
   <!-- Toolbar -->
@@ -616,10 +698,66 @@ function render() {
 
 // ── Stats — always computed from the full unfiltered dataset ─────
 function updateStats() {
-  document.getElementById('sv0').textContent = allBugs.length;
-  document.getElementById('sv1').textContent = allBugs.filter(b => b.status === 'Open' || b.status === 'Reopened').length;
-  document.getElementById('sv2').textContent = allBugs.filter(b => b.severity === 'Critical' || b.severity === 'High').length;
-  document.getElementById('sv3').textContent = allBugs.filter(b => ['Fixed','Verified','Closed'].includes(b.status)).length;
+  const total    = allBugs.length;
+  const open     = allBugs.filter(b => b.status === 'Open' || b.status === 'Reopened').length;
+  const critHigh = allBugs.filter(b => b.severity === 'Critical' || b.severity === 'High').length;
+  const resolved = allBugs.filter(b => ['Fixed','Verified','Closed'].includes(b.status)).length;
+  const pct      = n => total ? Math.round(n / total * 100) : 0;
+
+  // Metric cards
+  document.getElementById('sv0').textContent = total;
+  document.getElementById('sv1').textContent = open;
+  document.getElementById('sv2').textContent = critHigh;
+  document.getElementById('sv3').textContent = resolved;
+
+  // Sub-text
+  const active = allBugs.filter(b => ['Open','In Progress','Reopened'].includes(b.status)).length;
+  document.getElementById('ss0').textContent = total ? `${active} active` : 'no bugs yet';
+  document.getElementById('ss1').textContent = total ? `${pct(open)}% open rate` : '—';
+  document.getElementById('ss2').textContent = total ? `${pct(critHigh)}% of total` : '—';
+  document.getElementById('ss3').textContent = total ? `${pct(resolved)}% resolve rate` : '—';
+
+  // Progress bars
+  document.getElementById('sb1').style.width = pct(open)     + '%';
+  document.getElementById('sb2').style.width = pct(critHigh) + '%';
+  document.getElementById('sb3').style.width = pct(resolved) + '%';
+
+  // Status distribution bar
+  const STAT_COLORS = {
+    'Open':'#f87171', 'In Progress':'#60a5fa', 'Fixed':'#4ade80',
+    'Verified':'#34d399', 'Closed':'#6b7280', 'Reopened':'#a78bfa'
+  };
+  const counts = {};
+  allBugs.forEach(b => { if (b.status) counts[b.status] = (counts[b.status] || 0) + 1; });
+  if (total) {
+    document.getElementById('distBar').innerHTML = Object.entries(STAT_COLORS)
+      .filter(([k]) => counts[k])
+      .map(([k,c]) => `<div class="dist-seg" style="width:${(counts[k]/total*100).toFixed(1)}%;background:${c}"></div>`)
+      .join('');
+    document.getElementById('distLegend').innerHTML = Object.entries(STAT_COLORS)
+      .filter(([k]) => counts[k])
+      .map(([k,c]) => `<span class="dist-item"><span class="dist-dot" style="background:${c}"></span>${k}&nbsp;<strong>${counts[k]}</strong></span>`)
+      .join('');
+  }
+
+  // Insights
+  const tCounts = {}, pCounts = {};
+  allBugs.forEach(b => {
+    if (b.tester)  tCounts[b.tester]  = (tCounts[b.tester]  || 0) + 1;
+    if (b.product) pCounts[b.product] = (pCounts[b.product] || 0) + 1;
+  });
+  const topT   = Object.entries(tCounts).sort((a,b) => b[1]-a[1])[0];
+  const topP   = Object.entries(pCounts).sort((a,b) => b[1]-a[1])[0];
+  const inProg = allBugs.filter(b => b.status === 'In Progress').length;
+
+  document.getElementById('ins0').textContent = total ? pct(resolved) + '%' : '—';
+  document.getElementById('ins1').textContent = topP ? `${topP[0]}  ·  ${topP[1]} bugs` : '—';
+  document.getElementById('ins2').textContent = topT ? `${topT[0]}  ·  ${topT[1]} bugs` : '—';
+  document.getElementById('ins3').textContent = total ? `${inProg} bug${inProg === 1 ? '' : 's'}` : '—';
+
+  // Last refreshed timestamp
+  document.getElementById('lastRefreshed').textContent =
+    'Refreshed ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 }
 
 // ── Populate sprint / tester / product dropdowns ─────────────────
