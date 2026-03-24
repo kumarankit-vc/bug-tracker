@@ -79,7 +79,7 @@ body{font-family:'Inter',sans-serif;background:#000;color:#E4E8F0;min-height:100
 
 .td-id{font-size:11px;font-weight:700;color:#60A5FA;white-space:nowrap;}
 .td-tester{display:inline-block;background:#0f1e3a;border:1px solid #1e40af;color:#93C5FD;font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;white-space:nowrap;}
-.td-desc{max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;}
+.td-desc{max-width:280px;font-size:13px;white-space:normal;word-break:break-word;line-height:1.4;}
 .td-mono{font-size:12px;color:#475569;}
 .td-date{font-size:11px;color:#334155;white-space:nowrap;}
 .proof-a{color:#60A5FA;font-size:12px;text-decoration:none;}
@@ -126,7 +126,7 @@ body{font-family:'Inter',sans-serif;background:#000;color:#E4E8F0;min-height:100
   .ctrl-search{width:100%;order:1;}
   .ctrl,.btn-refresh,.btn-export{font-size:11px;padding:6px 10px;}
   .tbl-wrap thead th,.tbl-wrap tbody td{padding:9px 10px;font-size:11px;}
-  .td-desc{max-width:120px;}
+  .td-desc{max-width:160px;}
   .gate-box{padding:32px 24px;max-width:340px;}
 }
 @media(max-width:480px){
@@ -372,7 +372,7 @@ function applyFilters(){
       <td><span class="st-badge stb-${e((b.status||'Open').replace(/ /g,'-'))}">${e(b.status||'Open')}</span></td>
       <td>${e(b.assignedTo||'—')}</td>
       <td><span class="td-date">${fmtDate(b.submittedAt)}</span></td>
-      <td>${b.proof?`<a href="${e(b.proof)}" class="proof-a" target="_blank" rel="noopener">↗</a>`:'—'}</td>
+      <td>${b.proof?`<a href="${e(b.proof)}" class="proof-a" target="_blank" rel="noopener">View ↗</a>`:'<span class="td-mono">—</span>'}</td>
     </tr>`).join('');
 }
 

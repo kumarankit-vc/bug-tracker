@@ -66,6 +66,25 @@ function appendBug(ss, data) {
 }
 
 // ── Read all bugs from master sheet ──────────────────────────────────────────
+// Explicit header → field key mapping so dashboard always gets consistent names
+// regardless of how headers were written (avoids toCamel ambiguity with "/" and spaces)
+const FIELD_MAP = {
+  "Bug ID":                 "bugId",
+  "Sprint":                 "sprint",
+  "Module":                 "module",
+  "Product":                "product",
+  "Platform":               "platform",
+  "Description / Summary":  "description",
+  "Expected Result":        "expected",
+  "Actual Result":          "actual",
+  "Severity":               "severity",
+  "Proof Link":             "proof",
+  "Status":                 "status",
+  "Assigned To":            "assignedTo",
+  "Tester":                 "tester",
+  "Submitted At":           "submittedAt"
+};
+
 function getAllBugs() {
   const ss     = SpreadsheetApp.openById(SHEET_ID);
   const master = ss.getSheetByName(MASTER_TAB);
@@ -76,7 +95,10 @@ function getAllBugs() {
   return rows.slice(1)
     .map(row => {
       const obj = {};
-      headers.forEach((h, i) => obj[toCamel(String(h))] = String(row[i] || ""));
+      headers.forEach((h, i) => {
+        const key = FIELD_MAP[String(h)] || toCamel(String(h));
+        obj[key] = String(row[i] || "");
+      });
       return obj;
     })
     .filter(b => b.bugId);
