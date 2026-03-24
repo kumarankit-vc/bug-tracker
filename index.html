@@ -473,12 +473,7 @@ const pSel = document.getElementById('productSel');
 
 TESTERS.forEach(t=>{const o=document.createElement('option');o.value=o.textContent=t;tSel.appendChild(o);});
 
-// Restore session
-const sv=JSON.parse(localStorage.getItem('qt')||'null');
-if(sv){if(sv.t)tSel.value=sv.t;if(sv.s)sIn.value=sv.s;if(sv.p)pSel.value=sv.p;}
-
-const saveS=()=>localStorage.setItem('qt',JSON.stringify({t:tSel.value,s:sIn.value,p:pSel.value}));
-[tSel,sIn,pSel].forEach(el=>el.addEventListener('input',()=>{saveS();bar();}));
+[tSel,sIn,pSel].forEach(el=>el.addEventListener('input',()=>{bar();}));
 
 tSel.addEventListener('change',()=>document.getElementById('sf0').classList.remove('err'));
 pSel.addEventListener('change',()=>document.getElementById('sf2').classList.remove('err'));
