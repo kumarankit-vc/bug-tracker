@@ -487,7 +487,6 @@ const PAGE_SIZE          = 50;
 // ──────────────────────────────────────────────────────────────────
 
 // ── Gate ─────────────────────────────────────────────────────────
-if (sessionStorage.getItem('unlocked') === '1') unlock();
 document.getElementById('gateBtn').addEventListener('click', checkPw);
 document.getElementById('gateInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkPw(); });
 
@@ -526,6 +525,10 @@ function setCache(data) {
 // The response arrives while the user authenticates (~2–4 s), so unlock()
 // renders data with zero additional wait on the first visit.
 let prefetch = fetch(SCRIPT_URL).then(r => r.json()).catch(() => null);
+
+// Auto-unlock must come AFTER prefetch is defined — loadBugs() references
+// prefetch synchronously and let has a temporal dead zone before this line.
+if (sessionStorage.getItem('unlocked') === '1') unlock();
 
 // ── State ─────────────────────────────────────────────────────────
 let allBugs      = [];   // full normalised dataset
