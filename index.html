@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover"/>
 <title>Bugify — Bug Report</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ── Reset ──────────────────────────────────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
 
 /* ── Base ───────────────────────────────────────────────────────────── */
 body{
@@ -496,11 +496,11 @@ select option{background:#fff;color:#172B4D;}
     <h1>Bug Report</h1>
     <p>Submit and track bugs found during QA testing · Vantage Circle</p>
     <div class="hero-steps">
-      <div class="hero-step active"><span class="hero-step-num">1</span>Session Info</div>
+      <div class="hero-step active"><span class="hero-step-num">1</span><span>Session Info</span></div>
       <span class="hero-step-sep">›</span>
-      <div class="hero-step"><span class="hero-step-num">2</span>Add Bugs</div>
+      <div class="hero-step"><span class="hero-step-num">2</span><span>Add Bugs</span></div>
       <span class="hero-step-sep">›</span>
-      <div class="hero-step"><span class="hero-step-num">3</span>Submit</div>
+      <div class="hero-step"><span class="hero-step-num">3</span><span>Submit</span></div>
     </div>
   </div>
 
@@ -508,7 +508,7 @@ select option{background:#fff;color:#172B4D;}
   <div class="card">
     <div class="card-title">
       <span class="step-badge">1</span>
-      Session Details
+      <span>Session Details</span>
       <span class="card-title-sub">Applies to every bug in this session</span>
     </div>
     <div class="row c3">
@@ -536,7 +536,7 @@ select option{background:#fff;color:#172B4D;}
     </div>
     <div class="session-tip">
       <span class="session-tip-icon">💡</span>
-      Fill these once — they automatically apply to <strong>every bug</strong> you add below. You can report multiple bugs in a single session.
+      <span>Fill these once — they automatically apply to <strong>every bug</strong> you add below. You can report multiple bugs in a single session.</span>
     </div>
   </div>
 
@@ -630,7 +630,7 @@ function addBug(){
     <div class="bug-body">
 
       <div class="field-group">
-        <div class="fgroup-title"><span class="fgroup-icon">📍</span> Bug Context</div>
+        <div class="fgroup-title"><span class="fgroup-icon">📍</span><span>Bug Context</span></div>
         <div class="row c3">
           <div class="field" id="fm${id}">
             <label>Module <span class="req">*</span></label>
@@ -650,7 +650,7 @@ function addBug(){
       </div>
 
       <div class="field-group">
-        <div class="fgroup-title"><span class="fgroup-icon">📝</span> Description</div>
+        <div class="fgroup-title"><span class="fgroup-icon">📝</span><span>Description</span></div>
         <div class="field" id="fd${id}">
           <label>Bug Summary <span class="req">*</span></label>
           <textarea name="description" placeholder="Describe what went wrong — be specific and concise" rows="3"></textarea>
@@ -659,7 +659,7 @@ function addBug(){
       </div>
 
       <div class="field-group">
-        <div class="fgroup-title"><span class="fgroup-icon">🔄</span> Behavior</div>
+        <div class="fgroup-title"><span class="fgroup-icon">🔄</span><span>Behavior</span></div>
         <div class="row c2">
           <div class="field expected-field" id="fe${id}">
             <label class="label-expected">✔ Expected Result <span class="req">*</span></label>
@@ -675,7 +675,7 @@ function addBug(){
       </div>
 
       <div class="field-group">
-        <div class="fgroup-title"><span class="fgroup-icon">🏷</span> Classification</div>
+        <div class="fgroup-title"><span class="fgroup-icon">🏷</span><span>Classification</span></div>
         <div class="row cv">
           <div class="field">
             <label>Severity <span class="req">*</span></label>
@@ -690,7 +690,7 @@ function addBug(){
       </div>
 
       <div class="field-group last">
-        <div class="fgroup-title"><span class="fgroup-icon">🔗</span> Evidence</div>
+        <div class="fgroup-title"><span class="fgroup-icon">🔗</span><span>Evidence</span></div>
         <div class="field">
           <label>Proof Link</label>
           <input type="url" name="proof" placeholder="Paste a screenshot or video URL (optional)"/>
