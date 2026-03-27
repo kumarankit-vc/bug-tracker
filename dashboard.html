@@ -23,7 +23,8 @@ body{
 }
 .gate-box{
   background:#fff;border:1px solid #BDD9F5;
-  border-radius:10px;padding:44px 40px;width:100%;max-width:400px;
+  border-radius:10px;padding:44px 40px;
+  width:min(400px,calc(100vw - 32px));
   text-align:center;box-shadow:0 4px 24px rgba(10,37,96,.12);
 }
 .gate-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:28px;}
@@ -123,6 +124,7 @@ body{
   border:1.5px solid #BDD9F5;
   border-radius:4px;padding:6px 10px;outline:none;
   -webkit-appearance:none;transition:border-color .15s,box-shadow .15s;
+  min-width:0;
 }
 .ctrl:focus{border-color:#4C9AFF;box-shadow:0 0 0 3px rgba(76,154,255,.15);}
 .ctrl-sel{
@@ -306,6 +308,7 @@ tbody td{padding:13px 14px;vertical-align:top;}
 
 /* ── Responsive ─────────────────────────────────────────────────────── */
 @media(max-width:1024px){.stats{grid-template-columns:1fr 1fr;}}
+
 @media(max-width:768px){
   .page{padding:0 14px 50px;}
   .header{margin:0 -14px 20px;padding-left:14px;padding-right:14px;height:52px;}
@@ -317,18 +320,38 @@ tbody td{padding:13px 14px;vertical-align:top;}
   .header-title{display:none;}
   .header-divider{display:none;}
 }
+
 @media(max-width:480px){
   .stats{grid-template-columns:1fr 1fr;}
-  .hdr-actions{flex-wrap:wrap;gap:6px;}
+  .hdr-actions{gap:6px;}
   .gate-box{padding:32px 20px;margin:0 12px;}
   .gate-brand{font-size:20px;}
   .report-link,.logout-btn{font-size:12px;padding:5px 10px;}
-  .tb-row{flex-wrap:wrap;}
-  .ctrl-search{width:100%;}
+  .tb-row{flex-wrap:wrap;gap:6px;}
+  .ctrl,.ctrl-sel{flex:1;min-width:130px;}
+  .ctrl-search{flex-basis:100%;}
+  .tester-pill{font-size:11px;padding:3px 10px;}
+  .btn-refresh,.btn-sm{font-size:12px;}
+  .tb-label{min-width:60px;font-size:10px;}
 }
-@media(max-width:360px){
-  .stats{grid-template-columns:1fr;}
-  .header-brand{font-size:15px;}
+
+@media(max-width:390px){
+  .page{padding:0 10px 50px;}
+  .header{margin:0 -10px 16px;padding-left:10px;padding-right:10px;height:48px;}
+  .header-brand{font-size:14px;}
+  .stats{grid-template-columns:1fr 1fr;gap:8px;}
+  .stat{padding:12px 14px;}
+  .stat .val{font-size:22px;}
+  .stat .lbl{font-size:10px;}
+  .report-link{display:none;}
+  .logout-btn{font-size:11px;padding:4px 8px;}
+  .gate-box{padding:28px 16px;margin:0 8px;}
+  .gate-brand{font-size:18px;}
+  .gate-input{font-size:14px;padding:9px 12px;}
+  .gate-btn{font-size:13px;padding:9px;}
+  .ctrl,.ctrl-sel{font-size:12px;padding:5px 8px;}
+  .ctrl-search{font-size:12px;}
+  .tester-pills{gap:4px;}
 }
 </style>
 </head>
