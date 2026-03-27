@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Squash — Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Bugify — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ── Reset ──────────────────────────────────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0}
@@ -12,40 +12,40 @@
 /* ── Base ───────────────────────────────────────────────────────────── */
 body{
   font-family:'Inter',sans-serif;
-  background:#F4F5F7;color:#172B4D;
+  background:#E0F2FF;color:#172B4D;
   min-height:100vh;font-size:14px;overflow-x:hidden;
 }
 
 /* ── Password Gate ──────────────────────────────────────────────────── */
 .gate{
-  position:fixed;inset:0;background:#F4F5F7;
+  position:fixed;inset:0;background:#E0F2FF;
   z-index:99;display:flex;align-items:center;justify-content:center;
 }
 .gate-box{
-  background:#fff;border:1px solid #DFE1E6;
-  border-radius:6px;padding:44px 40px;width:100%;max-width:400px;
-  text-align:center;box-shadow:0 4px 24px rgba(9,30,66,.12);
+  background:#fff;border:1px solid #BDD9F5;
+  border-radius:10px;padding:44px 40px;width:100%;max-width:400px;
+  text-align:center;box-shadow:0 4px 24px rgba(10,37,96,.12);
 }
 .gate-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:28px;}
-.gate-brand{font-size:22px;font-weight:800;color:#0052CC;letter-spacing:-.4px;}
+.gate-brand{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:#0A2560;letter-spacing:-.3px;}
 .gate-box h2{font-size:19px;font-weight:700;color:#172B4D;margin-bottom:6px;}
 .gate-box p{font-size:13px;color:#6B778C;margin-bottom:26px;}
 .gate-input{
   width:100%;font-family:'Inter',sans-serif;
   font-size:15px;text-align:center;letter-spacing:4px;
-  background:#FAFBFC;color:#172B4D;
-  border:1.5px solid #DFE1E6;
-  border-radius:3px;padding:11px 14px;outline:none;
+  background:#F0F9FF;color:#172B4D;
+  border:1.5px solid #BDD9F5;
+  border-radius:4px;padding:11px 14px;outline:none;
   margin-bottom:12px;transition:border-color .15s,box-shadow .15s;
 }
-.gate-input:focus{border-color:#4C9AFF;box-shadow:0 0 0 2px rgba(76,154,255,.2);}
+.gate-input:focus{border-color:#4C9AFF;box-shadow:0 0 0 3px rgba(76,154,255,.18);}
 .gate-input.shake{animation:shake .3s;}
 .gate-btn{
-  width:100%;background:#0052CC;color:#fff;border:none;
+  width:100%;background:#0A2560;color:#fff;border:none;
   font-family:'Inter',sans-serif;font-size:14px;font-weight:600;
-  padding:11px;border-radius:3px;cursor:pointer;transition:background .15s;
+  padding:11px;border-radius:4px;cursor:pointer;transition:background .15s;
 }
-.gate-btn:hover{background:#0065FF;}
+.gate-btn:hover{background:#0052CC;}
 .gate-err{font-size:12px;color:#DE350B;margin-top:10px;display:none;font-weight:500;}
 
 /* ── Page ───────────────────────────────────────────────────────────── */
@@ -53,39 +53,42 @@ body{
 
 /* ── Header / Top bar ───────────────────────────────────────────────── */
 .header{
-  background:#fff;border-bottom:2px solid #DFE1E6;
+  background:linear-gradient(135deg,#0A2560 0%,#0D3080 100%);
+  border-bottom:2px solid #0A2560;
+  box-shadow:0 2px 12px rgba(10,37,96,.25);
   display:flex;align-items:center;justify-content:space-between;
   padding:0 0 0 0;margin:0 -20px 24px;
   padding-left:20px;padding-right:20px;
-  height:56px;position:sticky;top:0;z-index:20;
+  height:58px;position:sticky;top:0;z-index:20;
 }
 .header-left{display:flex;align-items:center;gap:10px;}
 .header-logo{display:flex;align-items:center;gap:10px;}
-.header-brand{font-size:18px;font-weight:800;color:#0052CC;letter-spacing:-.4px;}
-.header-divider{color:#DFE1E6;font-size:18px;font-weight:300;margin:0 4px;}
-.header-title{font-size:14px;font-weight:600;color:#344563;}
+.header-brand{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:#FFFFFF;letter-spacing:-.3px;}
+.header-divider{color:rgba(255,255,255,.25);font-size:18px;font-weight:300;margin:0 4px;}
+.header-title{font-size:13px;font-weight:600;color:rgba(255,255,255,.65);}
 .hdr-actions{display:flex;align-items:center;gap:8px;}
 .report-link{
-  font-size:13px;font-weight:600;color:#0052CC;text-decoration:none;
-  padding:7px 14px;border-radius:4px;background:#fff;
-  border:1.5px solid #0052CC;transition:background .15s,color .15s;
+  font-size:13px;font-weight:600;color:#FFFFFF;text-decoration:none;
+  padding:7px 14px;border-radius:4px;
+  background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.3);
+  transition:background .15s,border-color .15s;
 }
-.report-link:hover{background:#0052CC;color:#fff;}
+.report-link:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.55);}
 .logout-btn{
-  background:#fff;border:1.5px solid #DFE1E6;color:#344563;
+  background:transparent;border:1.5px solid rgba(255,255,255,.25);color:rgba(255,255,255,.75);
   font-family:'Inter',sans-serif;font-size:13px;font-weight:500;
   padding:7px 14px;border-radius:4px;cursor:pointer;transition:all .15s;
 }
-.logout-btn:hover{border-color:#B3BAC5;background:#F4F5F7;}
+.logout-btn:hover{border-color:rgba(255,255,255,.5);color:#FFFFFF;background:rgba(255,255,255,.1);}
 
 /* ── Stats cards ────────────────────────────────────────────────────── */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
 .stat{
-  background:#fff;border:1px solid #DFE1E6;border-top:3px solid #DFE1E6;
-  border-radius:4px;padding:18px 20px;
+  background:#fff;border:1px solid #BDD9F5;border-top:3px solid #BDD9F5;
+  border-radius:6px;padding:18px 20px;
   transition:box-shadow .18s,border-color .18s;
 }
-.stat:hover{box-shadow:0 3px 10px rgba(9,30,66,.1);border-color:#B3BAC5;}
+.stat:hover{box-shadow:0 4px 14px rgba(10,37,96,.12);border-color:#7DB3E8;}
 .stat.s1{border-top-color:#0052CC;}
 .stat.s2{border-top-color:#DE350B;}
 .stat.s3{border-top-color:#FF8B00;}
@@ -103,10 +106,10 @@ body{
 
 /* ── Toolbar ────────────────────────────────────────────────────────── */
 .toolbar{
-  background:#fff;border:1px solid #DFE1E6;
-  border-radius:4px;padding:12px 16px;margin-bottom:14px;
+  background:#fff;border:1px solid #BDD9F5;
+  border-radius:6px;padding:12px 16px;margin-bottom:14px;
   display:flex;flex-direction:column;gap:10px;
-  box-shadow:0 1px 2px rgba(9,30,66,.06);
+  box-shadow:0 1px 4px rgba(10,37,96,.08);
 }
 .tb-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
 .tb-label{
@@ -116,22 +119,22 @@ body{
 }
 .ctrl{
   font-family:'Inter',sans-serif;font-size:13px;
-  color:#172B4D;background:#FAFBFC;
-  border:1.5px solid #DFE1E6;
-  border-radius:3px;padding:6px 10px;outline:none;
+  color:#172B4D;background:#F0F9FF;
+  border:1.5px solid #BDD9F5;
+  border-radius:4px;padding:6px 10px;outline:none;
   -webkit-appearance:none;transition:border-color .15s,box-shadow .15s;
 }
-.ctrl:focus{border-color:#4C9AFF;box-shadow:0 0 0 2px rgba(76,154,255,.15);}
+.ctrl:focus{border-color:#4C9AFF;box-shadow:0 0 0 3px rgba(76,154,255,.15);}
 .ctrl-sel{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236B778C'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 8px center;padding-right:24px;cursor:pointer;background-color:#FAFBFC;
+  background-repeat:no-repeat;background-position:right 8px center;padding-right:24px;cursor:pointer;background-color:#F0F9FF;
 }
 .ctrl-sel option{background:#fff;color:#172B4D;}
 .ctrl-search{width:220px;}
 .date-input{
   font-family:'Inter',sans-serif;font-size:13px;color:#172B4D;
-  background:#FAFBFC;border:1.5px solid #DFE1E6;
-  border-radius:3px;padding:6px 10px;outline:none;
+  background:#F0F9FF;border:1.5px solid #BDD9F5;
+  border-radius:4px;padding:6px 10px;outline:none;
   transition:border-color .15s;
 }
 .date-input:focus{border-color:#4C9AFF;}
@@ -140,29 +143,29 @@ body{
 
 .btn-sm{
   font-family:'Inter',sans-serif;font-size:12px;font-weight:500;
-  padding:5px 10px;border-radius:3px;cursor:pointer;
-  border:1.5px solid #DFE1E6;background:#fff;color:#344563;
+  padding:5px 10px;border-radius:4px;cursor:pointer;
+  border:1.5px solid #BDD9F5;background:#fff;color:#344563;
   transition:border-color .15s,background .15s;white-space:nowrap;
 }
-.btn-sm:hover{border-color:#B3BAC5;background:#F4F5F7;}
+.btn-sm:hover{border-color:#7DB3E8;background:#EBF4FF;}
 
 /* ── Tester filter pills ─────────────────────────────────────────────── */
 .tester-pills{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
 .tester-pill{
   font-family:'Inter',sans-serif;font-size:12px;font-weight:500;
-  padding:4px 12px;border-radius:3px;cursor:pointer;
-  border:1.5px solid #DFE1E6;background:#fff;color:#344563;
+  padding:4px 12px;border-radius:4px;cursor:pointer;
+  border:1.5px solid #BDD9F5;background:#fff;color:#344563;
   transition:all .15s;user-select:none;white-space:nowrap;
 }
 .tester-pill:hover{border-color:#4C9AFF;background:#DEEBFF;color:#0052CC;}
 .tester-pill.active{background:#DEEBFF;border-color:#4C9AFF;color:#0052CC;font-weight:600;}
 .btn-refresh{
   font-family:'Inter',sans-serif;font-size:13px;font-weight:500;
-  padding:6px 13px;border-radius:3px;cursor:pointer;
-  background:#fff;border:1.5px solid #DFE1E6;color:#344563;
+  padding:6px 13px;border-radius:4px;cursor:pointer;
+  background:#fff;border:1.5px solid #BDD9F5;color:#344563;
   transition:all .15s;
 }
-.btn-refresh:hover{border-color:#B3BAC5;background:#F4F5F7;}
+.btn-refresh:hover{border-color:#7DB3E8;background:#EBF4FF;}
 .btn-refresh.updating{color:#0052CC;border-color:#4C9AFF;}
 .btn-export{
   font-family:'Inter',sans-serif;font-size:13px;font-weight:600;
@@ -174,19 +177,19 @@ body{
 
 /* ── Table ──────────────────────────────────────────────────────────── */
 .tbl-wrap{
-  background:#fff;border:1px solid #DFE1E6;
-  border-radius:4px;overflow:hidden;
-  box-shadow:0 1px 2px rgba(9,30,66,.06);
+  background:#fff;border:1px solid #BDD9F5;
+  border-radius:6px;overflow:hidden;
+  box-shadow:0 1px 4px rgba(10,37,96,.08);
 }
 .tbl-scroll{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;min-width:900px;}
 
 thead th{
-  background:#F4F5F7;
+  background:#EBF4FF;
   font-size:11px;font-weight:700;text-transform:uppercase;
   letter-spacing:.7px;color:#5E6C84;
   padding:11px 14px;text-align:left;
-  border-bottom:2px solid #DFE1E6;
+  border-bottom:2px solid #BDD9F5;
   white-space:nowrap;cursor:pointer;user-select:none;
   transition:color .15s;
 }
@@ -194,9 +197,9 @@ thead th:hover{color:#0052CC;}
 thead th.sort-asc::after{content:' ▲';font-size:9px;color:#0052CC;}
 thead th.sort-desc::after{content:' ▼';font-size:9px;color:#0052CC;}
 
-tbody tr{border-bottom:1px solid #F4F5F7;transition:background .1s;}
+tbody tr{border-bottom:1px solid #EBF4FF;transition:background .1s;}
 tbody tr:last-child{border-bottom:none;}
-tbody tr:hover{background:#F4F5F7;}
+tbody tr:hover{background:#EBF4FF;}
 tbody td{padding:13px 14px;vertical-align:top;}
 
 /* col: Bug ID */
@@ -219,7 +222,7 @@ tbody td{padding:13px 14px;vertical-align:top;}
 .desc-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
 .meta-chip{
   font-size:10px;font-weight:600;color:#5E6C84;
-  background:#F4F5F7;border:1px solid #DFE1E6;
+  background:#EBF4FF;border:1px solid #BDD9F5;
   padding:2px 7px;border-radius:3px;white-space:nowrap;
 }
 
@@ -263,7 +266,7 @@ tbody td{padding:13px 14px;vertical-align:top;}
 /* state rows */
 .loading-row{text-align:center;padding:56px 20px;color:#6B778C;font-size:13px;}
 .loader{
-  width:26px;height:26px;border:3px solid #DFE1E6;
+  width:26px;height:26px;border:3px solid #BDD9F5;
   border-top-color:#0052CC;border-radius:50%;
   animation:spin .7s linear infinite;margin:0 auto 14px;
 }
@@ -281,8 +284,8 @@ tbody td{padding:13px 14px;vertical-align:top;}
 
 /* ── Pagination ─────────────────────────────────────────────────────── */
 .pagination{
-  background:#F4F5F7;border:1px solid #DFE1E6;border-top:none;
-  border-radius:0 0 4px 4px;
+  background:#EBF4FF;border:1px solid #BDD9F5;border-top:none;
+  border-radius:0 0 6px 6px;
   display:flex;align-items:center;justify-content:space-between;
   padding:10px 16px;margin-top:-1px;
 }
@@ -290,8 +293,8 @@ tbody td{padding:13px 14px;vertical-align:top;}
 .page-btns{display:flex;align-items:center;gap:6px;}
 .page-btn{
   font-family:'Inter',sans-serif;font-size:12px;font-weight:500;
-  padding:5px 12px;border-radius:3px;cursor:pointer;
-  background:#fff;border:1.5px solid #DFE1E6;color:#344563;transition:all .15s;
+  padding:5px 12px;border-radius:4px;cursor:pointer;
+  background:#fff;border:1.5px solid #BDD9F5;color:#344563;transition:all .15s;
 }
 .page-btn:hover:not(:disabled){border-color:#4C9AFF;color:#0052CC;background:#DEEBFF;}
 .page-btn:disabled{opacity:.4;cursor:default;}
@@ -305,16 +308,27 @@ tbody td{padding:13px 14px;vertical-align:top;}
 @media(max-width:1024px){.stats{grid-template-columns:1fr 1fr;}}
 @media(max-width:768px){
   .page{padding:0 14px 50px;}
-  .header{margin:0 -14px 20px;padding-left:14px;padding-right:14px;}
+  .header{margin:0 -14px 20px;padding-left:14px;padding-right:14px;height:52px;}
   .stats{grid-template-columns:1fr 1fr;gap:10px;}
   .stat .val{font-size:26px;}
   .ctrl-search{width:100%;}
   .btn-export{margin-left:0;}
+  .header-brand{font-size:17px;}
+  .header-title{display:none;}
+  .header-divider{display:none;}
 }
 @media(max-width:480px){
+  .stats{grid-template-columns:1fr 1fr;}
+  .hdr-actions{flex-wrap:wrap;gap:6px;}
+  .gate-box{padding:32px 20px;margin:0 12px;}
+  .gate-brand{font-size:20px;}
+  .report-link,.logout-btn{font-size:12px;padding:5px 10px;}
+  .tb-row{flex-wrap:wrap;}
+  .ctrl-search{width:100%;}
+}
+@media(max-width:360px){
   .stats{grid-template-columns:1fr;}
-  .hdr-actions{flex-wrap:wrap;}
-  .gate-box{padding:32px 24px;}
+  .header-brand{font-size:15px;}
 }
 </style>
 </head>
@@ -324,13 +338,19 @@ tbody td{padding:13px 14px;vertical-align:top;}
 <div class="gate" id="gate">
   <div class="gate-box">
     <div class="gate-logo">
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="32" height="32" rx="7" fill="#0052CC"/>
-        <path d="M9 17.5L13.5 22L23 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M12.5 9.5C12.5 9.5 11 7.5 9 8.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M19.5 9.5C19.5 9.5 21 7.5 23 8.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      <svg width="36" height="36" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="34" height="34" rx="9" fill="#0052CC"/>
+        <ellipse cx="17" cy="21" rx="7.5" ry="8.5" fill="white"/>
+        <circle cx="17" cy="11.5" r="3.5" fill="white"/>
+        <path d="M15 9.5 C13.5 7.5 11 6 9 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+        <path d="M19 9.5 C20.5 7.5 23 6 25 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+        <line x1="17" y1="13" x2="17" y2="29" stroke="#0052CC" stroke-width="1.2" stroke-linecap="round"/>
+        <circle cx="13.5" cy="19" r="1.5" fill="#0052CC" opacity="0.45"/>
+        <circle cx="13.5" cy="24" r="1.5" fill="#0052CC" opacity="0.45"/>
+        <circle cx="20.5" cy="19" r="1.5" fill="#0052CC" opacity="0.45"/>
+        <circle cx="20.5" cy="24" r="1.5" fill="#0052CC" opacity="0.45"/>
       </svg>
-      <span class="gate-brand">Squash</span>
+      <span class="gate-brand">Bugify</span>
     </div>
     <h2>Admin Access</h2>
     <p>Enter the dashboard password to continue</p>
@@ -346,13 +366,19 @@ tbody td{padding:13px 14px;vertical-align:top;}
   <div class="header">
     <div class="header-left">
       <div class="header-logo">
-        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="32" height="32" rx="7" fill="#0052CC"/>
-          <path d="M9 17.5L13.5 22L23 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M12.5 9.5C12.5 9.5 11 7.5 9 8.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-          <path d="M19.5 9.5C19.5 9.5 21 7.5 23 8.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <svg width="30" height="30" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="34" height="34" rx="9" fill="#0052CC"/>
+          <ellipse cx="17" cy="21" rx="7.5" ry="8.5" fill="white"/>
+          <circle cx="17" cy="11.5" r="3.5" fill="white"/>
+          <path d="M15 9.5 C13.5 7.5 11 6 9 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+          <path d="M19 9.5 C20.5 7.5 23 6 25 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+          <line x1="17" y1="13" x2="17" y2="29" stroke="#0052CC" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="13.5" cy="19" r="1.5" fill="#0052CC" opacity="0.45"/>
+          <circle cx="13.5" cy="24" r="1.5" fill="#0052CC" opacity="0.45"/>
+          <circle cx="20.5" cy="19" r="1.5" fill="#0052CC" opacity="0.45"/>
+          <circle cx="20.5" cy="24" r="1.5" fill="#0052CC" opacity="0.45"/>
         </svg>
-        <span class="header-brand">Squash</span>
+        <span class="header-brand">Bugify</span>
         <span class="header-divider">/</span>
         <span class="header-title">Bug Dashboard</span>
       </div>

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Squash — Bug Report</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Bugify — Bug Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ── Reset ──────────────────────────────────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0}
@@ -13,7 +13,7 @@ html{scroll-behavior:smooth}
 /* ── Base ───────────────────────────────────────────────────────────── */
 body{
   font-family:'Inter',sans-serif;
-  background:#F4F5F7;
+  background:#E0F2FF;
   color:#172B4D;
   min-height:100vh;font-size:14px;line-height:1.5;
   overflow-x:hidden;
@@ -21,31 +21,33 @@ body{
 
 /* ── Top navigation bar ─────────────────────────────────────────────── */
 .topbar{
-  background:#fff;border-bottom:2px solid #DFE1E6;
+  background:linear-gradient(135deg,#0A2560 0%,#0D3080 100%);
+  border-bottom:2px solid #0A2560;
   position:sticky;top:0;z-index:20;
+  box-shadow:0 2px 12px rgba(10,37,96,.25);
 }
 .topbar-inner{
   max-width:900px;margin:0 auto;padding:0 20px;
-  display:flex;align-items:center;justify-content:space-between;height:56px;
+  display:flex;align-items:center;justify-content:space-between;height:58px;
 }
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
 .logo-icon{flex-shrink:0;}
-.brand-name{font-size:18px;font-weight:800;color:#0052CC;letter-spacing:-.4px;}
-.brand-sub{font-size:11px;font-weight:600;color:#6B778C;letter-spacing:.3px;padding:2px 8px;background:#F4F5F7;border-radius:3px;border:1px solid #DFE1E6;}
+.brand-name{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:#FFFFFF;letter-spacing:-.3px;}
+.brand-sub{font-size:10px;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:.8px;padding:2px 8px;background:rgba(255,255,255,.1);border-radius:3px;border:1px solid rgba(255,255,255,.15);}
 
 .dash-link{
-  font-size:13px;font-weight:600;color:#0052CC;text-decoration:none;
+  font-size:13px;font-weight:600;color:#FFFFFF;text-decoration:none;
   padding:7px 16px;border-radius:4px;
-  background:#fff;border:1.5px solid #0052CC;
-  transition:background .15s,color .15s;
+  background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.3);
+  transition:background .15s,border-color .15s;
 }
-.dash-link:hover{background:#0052CC;color:#fff;}
+.dash-link:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.55);}
 
 /* ── Page shell ─────────────────────────────────────────────────────── */
 .page{max-width:900px;margin:0 auto;padding:28px 20px 80px;}
 
 /* ── Page header ────────────────────────────────────────────────────── */
-.page-header{margin-bottom:28px;padding-bottom:20px;border-bottom:2px solid #DFE1E6;}
+.page-header{margin-bottom:28px;padding-bottom:20px;border-bottom:2px solid #BDD9F5;}
 .page-header h1{font-size:22px;font-weight:700;color:#172B4D;letter-spacing:-.3px;margin-bottom:4px;}
 .page-header p{font-size:13px;color:#6B778C;}
 
@@ -66,17 +68,17 @@ body{
 
 /* ── Cards ──────────────────────────────────────────────────────────── */
 .card{
-  background:#fff;border:1px solid #DFE1E6;border-radius:4px;
+  background:#fff;border:1px solid #BDD9F5;border-radius:6px;
   padding:20px;margin-bottom:16px;
-  box-shadow:0 1px 2px rgba(9,30,66,.06);
+  box-shadow:0 1px 4px rgba(10,37,96,.08);
   transition:box-shadow .18s,border-color .18s;
 }
-.card:hover{box-shadow:0 3px 10px rgba(9,30,66,.1);border-color:#B3BAC5;}
+.card:hover{box-shadow:0 4px 14px rgba(10,37,96,.12);border-color:#7DB3E8;}
 .card-title{
   font-size:11px;font-weight:700;color:#5E6C84;
   text-transform:uppercase;letter-spacing:1px;
   margin-bottom:16px;padding-bottom:12px;
-  border-bottom:1px solid #F4F5F7;
+  border-bottom:1px solid #EBF4FF;
   display:flex;align-items:center;gap:7px;
 }
 .card-title::before{
@@ -100,22 +102,22 @@ label .req{color:#DE350B;}
 /* ── Inputs ─────────────────────────────────────────────────────────── */
 input[type="text"],input[type="url"],select,textarea{
   font-family:'Inter',sans-serif;font-size:14px;
-  color:#172B4D;background:#FAFBFC;
-  border:1.5px solid #DFE1E6;
-  border-radius:3px;padding:8px 11px;outline:none;width:100%;
+  color:#172B4D;background:#F0F9FF;
+  border:1.5px solid #BDD9F5;
+  border-radius:4px;padding:8px 11px;outline:none;width:100%;
   transition:border-color .15s,background .15s,box-shadow .15s;
   -webkit-appearance:none;
 }
 input:focus,select:focus,textarea:focus{
   border-color:#4C9AFF;background:#fff;
-  box-shadow:0 0 0 2px rgba(76,154,255,.2);
+  box-shadow:0 0 0 3px rgba(76,154,255,.18);
 }
 input::placeholder,textarea::placeholder{color:#A5ADBA;}
 textarea{resize:vertical;min-height:72px;line-height:1.5;}
 select{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236B778C'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 11px center;
-  padding-right:30px;cursor:pointer;background-color:#FAFBFC;
+  padding-right:30px;cursor:pointer;background-color:#F0F9FF;
 }
 select option{background:#fff;color:#172B4D;}
 
@@ -132,8 +134,8 @@ select option{background:#fff;color:#172B4D;}
 .sev-opt input[type="radio"]{position:absolute;opacity:0;width:0;height:0;}
 .sev-opt label{
   display:inline-flex;align-items:center;gap:5px;
-  padding:5px 14px;border-radius:3px;
-  border:1.5px solid #DFE1E6;background:#FAFBFC;
+  padding:5px 14px;border-radius:4px;
+  border:1.5px solid #BDD9F5;background:#F0F9FF;
   font-size:12px;font-weight:500;color:#344563;
   cursor:pointer;transition:border-color .15s,background .15s;white-space:nowrap;
 }
@@ -148,21 +150,21 @@ select option{background:#fff;color:#172B4D;}
 
 /* ── Bug cards ──────────────────────────────────────────────────────── */
 .bug-card{
-  background:#fff;border:1px solid #DFE1E6;border-left:3px solid #DFE1E6;
-  border-radius:4px;margin-bottom:8px;overflow:hidden;
+  background:#fff;border:1px solid #BDD9F5;border-left:3px solid #BDD9F5;
+  border-radius:6px;margin-bottom:8px;overflow:hidden;
   transition:border-color .15s,box-shadow .15s,border-left-color .15s;
 }
-.bug-card:hover{border-color:#B3BAC5;border-left-color:#0052CC;box-shadow:0 2px 8px rgba(9,30,66,.1);}
+.bug-card:hover{border-color:#7DB3E8;border-left-color:#0052CC;box-shadow:0 2px 10px rgba(10,37,96,.1);}
 .bug-card.collapsed .bug-body{display:none;}
 .bug-head{
   display:flex;align-items:center;gap:10px;padding:11px 14px;
-  cursor:pointer;user-select:none;background:#FAFBFC;
-  border-bottom:1px solid #DFE1E6;transition:background .12s;
+  cursor:pointer;user-select:none;background:#EBF4FF;
+  border-bottom:1px solid #BDD9F5;transition:background .12s;
 }
-.bug-head:hover{background:#F4F5F7;}
+.bug-head:hover{background:#DFF0FF;}
 .bug-card.collapsed .bug-head{border-bottom:none;}
 .bug-num{
-  width:26px;height:26px;border-radius:3px;
+  width:26px;height:26px;border-radius:4px;
   background:#DEEBFF;color:#0052CC;
   font-size:11px;font-weight:700;
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
@@ -187,15 +189,15 @@ select option{background:#fff;color:#172B4D;}
 /* ── Empty state ────────────────────────────────────────────────────── */
 .empty{
   text-align:center;padding:52px 20px;color:#A5ADBA;font-size:13px;
-  background:#fff;border:1.5px dashed #DFE1E6;
-  border-radius:4px;margin-bottom:12px;
+  background:#fff;border:1.5px dashed #BDD9F5;
+  border-radius:6px;margin-bottom:12px;
 }
 .empty .ei{font-size:30px;display:block;margin-bottom:10px;opacity:.7;}
 
 /* ── Sticky submit bar ──────────────────────────────────────────────── */
 .submit-bar{
   position:sticky;bottom:0;
-  background:linear-gradient(to top,#F4F5F7 70%,transparent);
+  background:linear-gradient(to top,#E0F2FF 70%,transparent);
   padding:16px 0 10px;display:flex;align-items:center;gap:14px;
 }
 .submit-info{font-size:12px;color:#6B778C;line-height:1.7;}
@@ -215,25 +217,25 @@ select option{background:#fff;color:#172B4D;}
 /* ── Submission overlay ─────────────────────────────────────────────── */
 .overlay{
   position:fixed;inset:0;z-index:50;
-  background:rgba(9,30,66,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  background:rgba(10,37,96,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
   display:none;align-items:center;justify-content:center;
 }
 .overlay.show{display:flex;}
 .ov-box{
-  background:#fff;border:1px solid #DFE1E6;
-  border-radius:6px;padding:36px 44px;text-align:center;min-width:300px;
-  box-shadow:0 8px 32px rgba(9,30,66,.18);
+  background:#fff;border:1px solid #BDD9F5;
+  border-radius:8px;padding:36px 44px;text-align:center;min-width:300px;
+  box-shadow:0 8px 32px rgba(10,37,96,.18);
 }
 .ov-box h3{font-size:17px;font-weight:700;color:#172B4D;margin-bottom:6px;}
 .ov-box p{font-size:13px;color:#6B778C;margin-bottom:22px;}
-.prog-wrap{background:#F4F5F7;border-radius:3px;height:6px;overflow:hidden;}
+.prog-wrap{background:#EBF4FF;border-radius:3px;height:6px;overflow:hidden;}
 .prog-fill{height:100%;background:linear-gradient(90deg,#0052CC,#4C9AFF);border-radius:3px;transition:width .5s ease;width:0;}
 .prog-txt{font-size:11px;color:#A5ADBA;margin-top:8px;}
 
 /* ── Success screen ─────────────────────────────────────────────────── */
 .success{
   position:fixed;inset:0;z-index:60;
-  background:rgba(244,245,247,.97);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  background:rgba(224,242,255,.97);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   display:none;align-items:center;justify-content:center;
   flex-direction:column;text-align:center;padding:40px;
 }
@@ -258,9 +260,9 @@ select option{background:#fff;color:#172B4D;}
 .toast{
   position:fixed;bottom:24px;left:50%;
   transform:translateX(-50%) translateY(60px);
-  background:#fff;border:1px solid #DFE1E6;color:#172B4D;
-  padding:10px 20px;border-radius:4px;font-size:13px;font-weight:500;
-  box-shadow:0 4px 16px rgba(9,30,66,.15);
+  background:#fff;border:1px solid #BDD9F5;color:#172B4D;
+  padding:10px 20px;border-radius:6px;font-size:13px;font-weight:500;
+  box-shadow:0 4px 16px rgba(10,37,96,.15);
   transition:transform .3s cubic-bezier(.34,1.56,.64,1);z-index:99;
   white-space:nowrap;display:flex;align-items:center;gap:8px;
 }
@@ -274,7 +276,7 @@ select option{background:#fff;color:#172B4D;}
 /* ── Responsive ─────────────────────────────────────────────────────── */
 @media(max-width:640px){
   .page{padding:20px 14px 60px;}
-  .topbar-inner{padding:0 14px;}
+  .topbar-inner{padding:0 14px;height:52px;}
   .card{padding:14px;}
   .row.c2,.row.c3{grid-template-columns:1fr;}
   .sev-group{flex-wrap:wrap;}
@@ -283,16 +285,20 @@ select option{background:#fff;color:#172B4D;}
   .btn-submit{width:100%;justify-content:center;}
   .bug-head{padding:10px 12px;}
   .bug-body{padding:14px;}
+  .brand-name{font-size:17px;}
+  .brand-sub{display:none;}
 }
 @media(max-width:480px){
   .page{padding:16px 12px 50px;}
   .brand-name{font-size:16px;}
+  .logo-icon{width:28px;height:28px;}
   label{font-size:11px;}
   input,select,textarea{font-size:13px;padding:7px 9px;}
   .btn-add{font-size:12px;padding:6px 12px;}
   .ov-box{padding:28px 24px;min-width:260px;}
   .success h2{font-size:18px;}
   .s-meta{padding:12px 16px;font-size:12px;}
+  .dash-link{font-size:12px;padding:6px 12px;}
 }
 </style>
 </head>
@@ -302,13 +308,26 @@ select option{background:#fff;color:#172B4D;}
 <nav class="topbar">
   <div class="topbar-inner">
     <div class="brand">
-      <svg class="logo-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="32" height="32" rx="7" fill="#0052CC"/>
-        <path d="M9 17.5L13.5 22L23 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M12.5 9.5C12.5 9.5 11 7.5 9 8.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M19.5 9.5C19.5 9.5 21 7.5 23 8.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      <svg class="logo-icon" width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="34" height="34" rx="9" fill="#0052CC"/>
+        <!-- Bug body -->
+        <ellipse cx="17" cy="21" rx="7.5" ry="8.5" fill="white"/>
+        <!-- Bug head -->
+        <circle cx="17" cy="11.5" r="3.5" fill="white"/>
+        <!-- Antennae left -->
+        <path d="M15 9.5 C13.5 7.5 11 6 9 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+        <!-- Antennae right -->
+        <path d="M19 9.5 C20.5 7.5 23 6 25 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+        <!-- Center line -->
+        <line x1="17" y1="13" x2="17" y2="29" stroke="#0052CC" stroke-width="1.2" stroke-linecap="round"/>
+        <!-- Spots left -->
+        <circle cx="13.5" cy="19" r="1.5" fill="#0052CC" opacity="0.45"/>
+        <circle cx="13.5" cy="24" r="1.5" fill="#0052CC" opacity="0.45"/>
+        <!-- Spots right -->
+        <circle cx="20.5" cy="19" r="1.5" fill="#0052CC" opacity="0.45"/>
+        <circle cx="20.5" cy="24" r="1.5" fill="#0052CC" opacity="0.45"/>
       </svg>
-      <span class="brand-name">Squash</span>
+      <span class="brand-name">Bugify</span>
       <span class="brand-sub">BUG TRACKER</span>
     </div>
     <a href="dashboard.html" class="dash-link">View Dashboard</a>
