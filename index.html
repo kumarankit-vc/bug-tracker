@@ -44,16 +44,16 @@ body{
 .dash-link:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.55);}
 
 /* ── Page shell ─────────────────────────────────────────────────────── */
-.page{max-width:900px;margin:0 auto;padding:28px 20px 80px;}
+.page{max-width:900px;margin:0 auto;padding:16px 20px 60px;}
 
 /* ── Page hero ──────────────────────────────────────────────────────── */
 .page-hero{
   background:#fff;border:1px solid #BDD9F5;border-radius:10px;
-  padding:20px 24px 18px;margin-bottom:20px;
+  padding:14px 20px 12px;margin-bottom:14px;
   box-shadow:0 1px 4px rgba(10,37,96,.07);
 }
-.page-hero h1{font-size:21px;font-weight:700;color:#172B4D;letter-spacing:-.3px;margin-bottom:3px;}
-.page-hero p{font-size:13px;color:#6B778C;margin-bottom:14px;}
+.page-hero h1{font-size:20px;font-weight:700;color:#172B4D;letter-spacing:-.3px;margin-bottom:2px;}
+.page-hero p{font-size:13px;color:#6B778C;margin-bottom:10px;}
 .hero-steps{display:flex;align-items:center;gap:0;flex-wrap:wrap;gap:4px;}
 .hero-step{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8993A4;}
 .hero-step.active{color:#0052CC;font-weight:600;}
@@ -71,9 +71,9 @@ body{
 /* ── Section bar ────────────────────────────────────────────────────── */
 .section-bar{
   display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:14px;
+  margin-bottom:10px;
   background:#fff;border:1px solid #BDD9F5;border-radius:8px;
-  padding:12px 16px;
+  padding:10px 14px;
   box-shadow:0 1px 3px rgba(10,37,96,.06);
 }
 .section-bar-left{display:flex;align-items:center;gap:10px;}
@@ -101,7 +101,7 @@ body{
 /* ── Cards ──────────────────────────────────────────────────────────── */
 .card{
   background:#fff;border:1px solid #BDD9F5;border-radius:8px;
-  padding:20px;margin-bottom:16px;
+  padding:16px;margin-bottom:12px;
   box-shadow:0 1px 4px rgba(10,37,96,.08);
   transition:box-shadow .18s,border-color .18s;
 }
@@ -109,7 +109,7 @@ body{
 .card-title{
   font-size:11px;font-weight:700;color:#5E6C84;
   text-transform:uppercase;letter-spacing:1px;
-  margin-bottom:16px;padding-bottom:12px;
+  margin-bottom:12px;padding-bottom:10px;
   border-bottom:1px solid #EBF4FF;
   display:flex;align-items:center;gap:8px;
 }
@@ -117,7 +117,7 @@ body{
 
 /* ── Session tip ──────────────────────────────────────────────────── */
 .session-tip{
-  margin-top:16px;padding:10px 14px;
+  margin-top:10px;padding:9px 12px;
   background:#F0F9FF;border:1px solid #BDD9F5;border-radius:6px;
   font-size:12px;color:#5E6C84;display:flex;align-items:flex-start;gap:8px;line-height:1.5;
 }
@@ -233,8 +233,8 @@ select option{background:#fff;color:#172B4D;}
 .btn-del:hover{background:#FFEBE6;color:#DE350B;}
 
 /* ── Bug body & field groups ─────────────────────────────────────── */
-.bug-body{padding:20px 20px 16px;background:#fff;}
-.field-group{margin-bottom:18px;}
+.bug-body{padding:16px 16px 12px;background:#fff;}
+.field-group{margin-bottom:14px;}
 .field-group.last{margin-bottom:0;}
 .fgroup-title{
   display:flex;align-items:center;gap:6px;
@@ -263,13 +263,13 @@ select option{background:#fff;color:#172B4D;}
 
 /* ── Empty state ────────────────────────────────────────────────────── */
 .empty{
-  text-align:center;padding:56px 20px;color:#8993A4;font-size:13px;
+  text-align:center;padding:36px 20px;color:#8993A4;font-size:13px;
   background:#fff;border:2px dashed #BDD9F5;
   border-radius:10px;margin-bottom:12px;
   transition:border-color .2s;
 }
 .empty:hover{border-color:#7DB3E8;}
-.empty .ei{font-size:36px;display:block;margin-bottom:12px;}
+.empty .ei{font-size:30px;display:block;margin-bottom:10px;}
 .empty strong{color:#344563;}
 
 /* ── Sticky submit bar ──────────────────────────────────────────────── */
@@ -355,6 +355,11 @@ select option{background:#fff;color:#172B4D;}
 .toast.show{transform:translateX(-50%) translateY(0);}
 .toast.w{border-color:#FFD740;background:#FFFAE6;color:#974F0C;}
 .toast.e{border-color:#FF5630;background:#FFEBE6;color:#BF2600;}
+
+/* ── Char counter ───────────────────────────────────────────────────── */
+.char-counter{font-size:11px;color:#A5ADBA;text-align:right;margin-top:2px;display:block;}
+.char-counter.near{color:#FF8B00;}
+.char-counter.at{color:#DE350B;font-weight:600;}
 
 /* ── Spinner only ───────────────────────────────────────────────────── */
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -482,7 +487,7 @@ select option{background:#fff;color:#172B4D;}
 
 <div class="success" id="successScreen">
   <div class="si">✅</div>
-  <h2>All Bugs Submitted!</h2>
+  <h2 id="successHeading">Bug Submitted!</h2>
   <p>Your bugs have been saved. The team lead can review them on the dashboard.</p>
   <div class="s-meta" id="sMeta"></div>
   <button class="btn-again" id="btnAgain">Start New Session</button>
@@ -611,6 +616,13 @@ sIn.addEventListener('input',()=>document.getElementById('sf1').classList.remove
 let ctr=0;
 
 function addBug(){
+  if(!tSel.value||!sIn.value.trim()||!pSel.value){
+    if(!tSel.value)document.getElementById('sf0').classList.add('err');
+    if(!sIn.value.trim())document.getElementById('sf1').classList.add('err');
+    if(!pSel.value)document.getElementById('sf2').classList.add('err');
+    toast('w','⚠','Fill in Session Details before adding a bug');
+    return;
+  }
   ctr++;
   const id=ctr;
   const dOpts='<option value="">— Unassigned —</option>'+DEVS.map(d=>`<option>${d}</option>`).join('');
@@ -653,8 +665,9 @@ function addBug(){
         <div class="fgroup-title"><span class="fgroup-icon">📝</span><span>Description</span></div>
         <div class="field" id="fd${id}">
           <label>Bug Summary <span class="req">*</span></label>
-          <textarea name="description" placeholder="Describe what went wrong — be specific and concise" rows="3"></textarea>
+          <textarea name="description" placeholder="Describe what went wrong — be specific and concise" rows="3" maxlength="500"></textarea>
           <span class="ferr">Description is required</span>
+          <span class="char-counter" id="cc_desc${id}">0 / 500</span>
         </div>
       </div>
 
@@ -663,13 +676,15 @@ function addBug(){
         <div class="row c2">
           <div class="field expected-field" id="fe${id}">
             <label class="label-expected">✔ Expected Result <span class="req">*</span></label>
-            <textarea name="expected" placeholder="What should have happened…" rows="3"></textarea>
+            <textarea name="expected" placeholder="What should have happened…" rows="3" maxlength="500"></textarea>
             <span class="ferr">Expected result is required</span>
+            <span class="char-counter" id="cc_exp${id}">0 / 500</span>
           </div>
           <div class="field actual-field" id="fa${id}">
             <label class="label-actual">✖ Actual Result <span class="req">*</span></label>
-            <textarea name="actual" placeholder="What actually happened instead…" rows="3"></textarea>
+            <textarea name="actual" placeholder="What actually happened instead…" rows="3" maxlength="500"></textarea>
             <span class="ferr">Actual result is required</span>
+            <span class="char-counter" id="cc_act${id}">0 / 500</span>
           </div>
         </div>
       </div>
@@ -691,10 +706,10 @@ function addBug(){
 
       <div class="field-group last">
         <div class="fgroup-title"><span class="fgroup-icon">🔗</span><span>Evidence</span></div>
-        <div class="field">
-          <label>Proof Link</label>
-          <input type="url" name="proof" placeholder="Paste a screenshot or video URL (optional)"/>
-          <span class="field-hint">Loom, Google Drive, Jira attachment, or any shareable URL</span>
+        <div class="field" id="fpr${id}">
+          <label>Proof Link <span class="req">*</span></label>
+          <input type="url" name="proof" placeholder="Paste Jira ticket link, screenshot, or video URL"/>
+          <span class="ferr">Proof link is required</span>
         </div>
       </div>
 
@@ -712,11 +727,23 @@ function addBug(){
     c.style.cssText='opacity:0;transform:scale(.98);transition:all .18s';
     setTimeout(()=>{c.remove();cnt();bar();if(!document.querySelector('.bug-card'))document.getElementById('emptyState').style.display='block';},180);
   });
-  c.querySelector('[name="description"]').addEventListener('input',function(){
+  function updateCounter(ta,ccId){
+    const len=ta.value.length,el=document.getElementById(ccId);
+    if(!el)return;
+    el.textContent=len+' / 500';
+    el.className='char-counter'+(len>=500?' at':len>=400?' near':'');
+  }
+  const descTA=c.querySelector('[name="description"]');
+  const expTA=c.querySelector('[name="expected"]');
+  const actTA=c.querySelector('[name="actual"]');
+  descTA.addEventListener('input',function(){
     const el=document.getElementById('sm'+id);
     el.textContent=this.value.trim()||'Click to expand and fill details…';
     el.classList.toggle('has-text',!!this.value.trim());
+    updateCounter(this,'cc_desc'+id);
   });
+  expTA.addEventListener('input',function(){updateCounter(this,'cc_exp'+id);});
+  actTA.addEventListener('input',function(){updateCounter(this,'cc_act'+id);});
   c.querySelectorAll(`[name="sev_${id}"]`).forEach(r=>r.addEventListener('change',()=>{
     const t=document.getElementById('st'+id);
     t.textContent=r.value;t.className='sev-tag tag-'+r.value;t.style.display='';
@@ -749,6 +776,8 @@ function valCard(c){
     const el=c.querySelector(`[name="${n}"]`),fg=document.getElementById(p+id);
     if(!el||!el.value.trim()){if(fg)fg.classList.add('err');ok=false;}
   });
+  const proofEl=c.querySelector('[name="proof"]'),proofFg=document.getElementById('fpr'+id);
+  if(!proofEl||!proofEl.value.trim()){if(proofFg)proofFg.classList.add('err');ok=false;}
   if(!c.querySelector(`[name="sev_${id}"]:checked`)){document.getElementById('se'+id).style.display='block';ok=false;}
   if(!ok)c.classList.remove('collapsed');
   return ok;
@@ -791,6 +820,7 @@ document.getElementById('btnSubmit').addEventListener('click',async()=>{
     document.getElementById('pTxt').textContent=`${payload.length} / ${payload.length}`;
     setTimeout(()=>{
       document.getElementById('overlay').classList.remove('show');
+      document.getElementById('successHeading').textContent=payload.length===1?'Bug Submitted!':payload.length+' Bugs Submitted!';
       document.getElementById('sMeta').innerHTML=
         `Tester: <strong>${tester}</strong><br>Sprint: <strong>${sprint}</strong><br>Product: <strong>${product}</strong><br>Bugs submitted: <strong style="color:#4ADE80">${payload.length}</strong>`;
       document.getElementById('successScreen').classList.add('show');
@@ -806,7 +836,7 @@ document.getElementById('btnAgain').addEventListener('click',()=>{
   document.getElementById('successScreen').classList.remove('show');
   document.getElementById('bugsList').innerHTML='';ctr=0;
   cnt();bar();document.getElementById('emptyState').style.display='block';
-  sIn.value='';pSel.value='';saveS();window.scrollTo({top:0,behavior:'smooth'});
+  sIn.value='';pSel.value='';window.scrollTo({top:0,behavior:'smooth'});
 });
 
 let tt;
@@ -819,7 +849,6 @@ function toast(type,icon,msg){
   clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),3500);
 }
 
-addBug();
 </script>
 </body>
 </html>
