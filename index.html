@@ -46,29 +46,61 @@ body{
 /* ── Page shell ─────────────────────────────────────────────────────── */
 .page{max-width:900px;margin:0 auto;padding:28px 20px 80px;}
 
-/* ── Page header ────────────────────────────────────────────────────── */
-.page-header{margin-bottom:28px;padding-bottom:20px;border-bottom:2px solid #BDD9F5;}
-.page-header h1{font-size:22px;font-weight:700;color:#172B4D;letter-spacing:-.3px;margin-bottom:4px;}
-.page-header p{font-size:13px;color:#6B778C;}
+/* ── Page hero ──────────────────────────────────────────────────────── */
+.page-hero{
+  background:#fff;border:1px solid #BDD9F5;border-radius:10px;
+  padding:20px 24px 18px;margin-bottom:20px;
+  box-shadow:0 1px 4px rgba(10,37,96,.07);
+}
+.page-hero h1{font-size:21px;font-weight:700;color:#172B4D;letter-spacing:-.3px;margin-bottom:3px;}
+.page-hero p{font-size:13px;color:#6B778C;margin-bottom:14px;}
+.hero-steps{display:flex;align-items:center;gap:0;flex-wrap:wrap;gap:4px;}
+.hero-step{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8993A4;}
+.hero-step.active{color:#0052CC;font-weight:600;}
+.hero-step.done{color:#36B37E;font-weight:600;}
+.hero-step-num{
+  width:20px;height:20px;border-radius:50%;
+  background:#DFE1E6;color:#6B778C;
+  font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.hero-step.active .hero-step-num{background:#0052CC;color:#fff;}
+.hero-step.done .hero-step-num{background:#36B37E;color:#fff;}
+.hero-step-sep{color:#BDD9F5;padding:0 6px;font-size:14px;}
 
 /* ── Section bar ────────────────────────────────────────────────────── */
-.section-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
-.section-bar h2{font-size:16px;font-weight:700;color:#172B4D;letter-spacing:-.2px;}
+.section-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px;
+  background:#fff;border:1px solid #BDD9F5;border-radius:8px;
+  padding:12px 16px;
+  box-shadow:0 1px 3px rgba(10,37,96,.06);
+}
+.section-bar-left{display:flex;align-items:center;gap:10px;}
+.section-bar h2{font-size:15px;font-weight:700;color:#172B4D;letter-spacing:-.2px;}
 .badge{
   background:#DEEBFF;color:#0747A6;
   font-size:11px;font-weight:700;
-  padding:2px 10px;border-radius:3px;letter-spacing:.2px;
+  padding:2px 10px;border-radius:12px;letter-spacing:.2px;
+}
+.step-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:50%;
+  background:#0052CC;color:#fff;font-size:10px;font-weight:800;flex-shrink:0;
 }
 .btn-add{
-  margin-left:auto;background:#0052CC;color:#fff;border:none;
+  background:#0052CC;color:#fff;border:none;
   font-family:'Inter',sans-serif;font-size:13px;font-weight:600;
-  padding:7px 16px;border-radius:4px;cursor:pointer;transition:background .15s;
+  padding:8px 18px;border-radius:6px;cursor:pointer;
+  transition:background .15s,box-shadow .15s;
+  display:flex;align-items:center;gap:6px;
 }
-.btn-add:hover{background:#0065FF;}
+.btn-add:hover{background:#0065FF;box-shadow:0 2px 8px rgba(0,82,204,.3);}
+.btn-add-icon{font-size:16px;line-height:1;margin-top:-1px;}
 
 /* ── Cards ──────────────────────────────────────────────────────────── */
 .card{
-  background:#fff;border:1px solid #BDD9F5;border-radius:6px;
+  background:#fff;border:1px solid #BDD9F5;border-radius:8px;
   padding:20px;margin-bottom:16px;
   box-shadow:0 1px 4px rgba(10,37,96,.08);
   transition:box-shadow .18s,border-color .18s;
@@ -79,25 +111,31 @@ body{
   text-transform:uppercase;letter-spacing:1px;
   margin-bottom:16px;padding-bottom:12px;
   border-bottom:1px solid #EBF4FF;
-  display:flex;align-items:center;gap:7px;
+  display:flex;align-items:center;gap:8px;
 }
-.card-title::before{
-  content:'';display:inline-block;
-  width:3px;height:13px;border-radius:2px;
-  background:#0052CC;
+.card-title-sub{font-size:10px;font-weight:500;color:#8993A4;margin-left:auto;text-transform:none;letter-spacing:0;font-style:italic;}
+
+/* ── Session tip ──────────────────────────────────────────────────── */
+.session-tip{
+  margin-top:16px;padding:10px 14px;
+  background:#F0F9FF;border:1px solid #BDD9F5;border-radius:6px;
+  font-size:12px;color:#5E6C84;display:flex;align-items:flex-start;gap:8px;line-height:1.5;
 }
+.session-tip-icon{flex-shrink:0;font-size:13px;margin-top:1px;}
 
 /* ── Grid rows ──────────────────────────────────────────────────────── */
 .row{display:grid;gap:14px;margin-bottom:14px;}
 .row.c1{grid-template-columns:1fr;}
 .row.c2{grid-template-columns:1fr 1fr;}
 .row.c3{grid-template-columns:1fr 1fr 1fr;}
+.row.cv{grid-template-columns:3fr 1fr;}
 .row:last-child{margin-bottom:0;}
 
 /* ── Fields & labels ────────────────────────────────────────────────── */
 .field{display:flex;flex-direction:column;gap:5px;}
-label{font-size:12px;font-weight:600;color:#344563;letter-spacing:.2px;}
+label{font-size:12px;font-weight:600;color:#344563;letter-spacing:.2px;display:flex;align-items:center;gap:4px;}
 label .req{color:#DE350B;}
+.field-hint{font-size:11px;color:#8993A4;margin-top:1px;line-height:1.4;}
 
 /* ── Inputs ─────────────────────────────────────────────────────────── */
 input[type="text"],input[type="url"],select,textarea{
@@ -113,7 +151,7 @@ input:focus,select:focus,textarea:focus{
   box-shadow:0 0 0 3px rgba(76,154,255,.18);
 }
 input::placeholder,textarea::placeholder{color:#A5ADBA;}
-textarea{resize:vertical;min-height:72px;line-height:1.5;}
+textarea{resize:vertical;min-height:80px;line-height:1.5;}
 select{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236B778C'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 11px center;
@@ -129,86 +167,132 @@ select option{background:#fff;color:#172B4D;}
 .field.err .ferr{display:block;}
 
 /* ── Severity selector ──────────────────────────────────────────────── */
-.sev-group{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;}
+.sev-group{display:flex;gap:7px;flex-wrap:wrap;margin-top:4px;}
 .sev-opt{position:relative;}
 .sev-opt input[type="radio"]{position:absolute;opacity:0;width:0;height:0;}
 .sev-opt label{
-  display:inline-flex;align-items:center;gap:5px;
-  padding:5px 14px;border-radius:4px;
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 16px;border-radius:6px;
   border:1.5px solid #BDD9F5;background:#F0F9FF;
-  font-size:12px;font-weight:500;color:#344563;
-  cursor:pointer;transition:border-color .15s,background .15s;white-space:nowrap;
+  font-size:12.5px;font-weight:500;color:#344563;
+  cursor:pointer;transition:all .15s;white-space:nowrap;
+  line-height:1;
 }
-.sev-opt label:hover{border-color:#4C9AFF;background:#DEEBFF;color:#0052CC;}
-.sev-opt input:checked+label{color:#fff;border-color:transparent;font-weight:600;}
-.sev-opt[data-s="Critical"] input:checked+label{background:#DE350B;box-shadow:0 1px 4px rgba(222,53,11,.4);}
-.sev-opt[data-s="High"]     input:checked+label{background:#FF5630;box-shadow:0 1px 4px rgba(255,86,48,.4);}
-.sev-opt[data-s="Medium"]   input:checked+label{background:#FF8B00;box-shadow:0 1px 4px rgba(255,139,0,.35);}
-.sev-opt[data-s="Low"]      input:checked+label{background:#36B37E;box-shadow:0 1px 4px rgba(54,179,126,.35);}
-.sev-opt[data-s="Trivial"]  input:checked+label{background:#6B778C;box-shadow:0 1px 4px rgba(107,119,140,.3);}
-.sev-err{font-size:11px;color:#DE350B;margin-top:4px;display:none;font-weight:500;}
+.sev-opt label:hover{border-color:#4C9AFF;background:#DEEBFF;color:#0052CC;transform:translateY(-1px);box-shadow:0 2px 6px rgba(10,37,96,.1);}
+.sev-opt input:checked+label{color:#fff;border-color:transparent;font-weight:600;transform:translateY(-1px);}
+.sev-opt[data-s="Critical"] input:checked+label{background:#DE350B;box-shadow:0 2px 8px rgba(222,53,11,.4);}
+.sev-opt[data-s="High"]     input:checked+label{background:#FF5630;box-shadow:0 2px 8px rgba(255,86,48,.4);}
+.sev-opt[data-s="Medium"]   input:checked+label{background:#FF8B00;box-shadow:0 2px 8px rgba(255,139,0,.35);}
+.sev-opt[data-s="Low"]      input:checked+label{background:#36B37E;box-shadow:0 2px 8px rgba(54,179,126,.35);}
+.sev-opt[data-s="Trivial"]  input:checked+label{background:#6B778C;box-shadow:0 2px 6px rgba(107,119,140,.3);}
+.sev-err{font-size:11px;color:#DE350B;margin-top:5px;display:none;font-weight:500;}
 
 /* ── Bug cards ──────────────────────────────────────────────────────── */
 .bug-card{
-  background:#fff;border:1px solid #BDD9F5;border-left:3px solid #BDD9F5;
-  border-radius:6px;margin-bottom:8px;overflow:hidden;
+  background:#fff;border:1px solid #BDD9F5;border-left:4px solid #4C9AFF;
+  border-radius:8px;margin-bottom:10px;overflow:hidden;
   transition:border-color .15s,box-shadow .15s,border-left-color .15s;
 }
-.bug-card:hover{border-color:#7DB3E8;border-left-color:#0052CC;box-shadow:0 2px 10px rgba(10,37,96,.1);}
+.bug-card:hover{border-color:#7DB3E8;border-left-color:#0052CC;box-shadow:0 3px 12px rgba(10,37,96,.1);}
 .bug-card.collapsed .bug-body{display:none;}
 .bug-head{
-  display:flex;align-items:center;gap:10px;padding:11px 14px;
-  cursor:pointer;user-select:none;background:#EBF4FF;
+  display:flex;align-items:center;gap:10px;padding:11px 16px;
+  cursor:pointer;user-select:none;
+  background:linear-gradient(to right,#EBF4FF,#F5FBFF);
   border-bottom:1px solid #BDD9F5;transition:background .12s;
 }
-.bug-head:hover{background:#DFF0FF;}
+.bug-head:hover{background:linear-gradient(to right,#DFF0FF,#EBF6FF);}
 .bug-card.collapsed .bug-head{border-bottom:none;}
 .bug-num{
-  width:26px;height:26px;border-radius:4px;
-  background:#DEEBFF;color:#0052CC;
+  width:28px;height:28px;border-radius:6px;
+  background:#0052CC;color:#fff;
   font-size:11px;font-weight:700;
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  letter-spacing:0;
 }
+.bug-label{font-size:10px;font-weight:700;color:#7A869A;text-transform:uppercase;letter-spacing:.6px;white-space:nowrap;}
 .bug-summary{flex:1;font-size:13px;color:#A5ADBA;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .bug-summary.has-text{color:#172B4D;font-weight:500;}
-.sev-tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;white-space:nowrap;flex-shrink:0;}
+.sev-tag{font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;white-space:nowrap;flex-shrink:0;}
 .tag-Critical{background:#FFEBE6;color:#BF2600;}
 .tag-High    {background:#FFECE1;color:#D93900;}
 .tag-Medium  {background:#FFF7D6;color:#974F0C;}
 .tag-Low     {background:#E3FCEF;color:#006644;}
 .tag-Trivial {background:#F4F5F7;color:#6B778C;}
-.btn-tog{background:none;border:none;cursor:pointer;color:#7A869A;font-size:12px;padding:3px 6px;border-radius:3px;transition:all .12s;flex-shrink:0;}
-.btn-tog:hover{background:#DFE1E6;color:#172B4D;}
+.btn-tog{
+  background:none;border:none;cursor:pointer;color:#7A869A;
+  font-size:14px;padding:3px 6px;border-radius:4px;transition:all .12s;flex-shrink:0;
+  line-height:1;
+}
+.btn-tog:hover{background:#DEEBFF;color:#0052CC;}
 .bug-card.collapsed .btn-tog{transform:rotate(-90deg);}
-.btn-del{background:none;border:none;cursor:pointer;color:#7A869A;font-size:12px;padding:3px 6px;border-radius:3px;transition:all .12s;flex-shrink:0;}
+.btn-del{
+  background:none;border:none;cursor:pointer;color:#A5ADBA;
+  font-size:12px;padding:3px 8px;border-radius:4px;transition:all .12s;flex-shrink:0;
+}
 .btn-del:hover{background:#FFEBE6;color:#DE350B;}
-.bug-body{padding:16px;background:#fff;}
-.bug-body .row{margin-bottom:12px;}
-.bug-body .row:last-child{margin-bottom:0;}
+
+/* ── Bug body & field groups ─────────────────────────────────────── */
+.bug-body{padding:20px 20px 16px;background:#fff;}
+.field-group{margin-bottom:18px;}
+.field-group.last{margin-bottom:0;}
+.fgroup-title{
+  display:flex;align-items:center;gap:6px;
+  font-size:10px;font-weight:700;color:#8993A4;
+  text-transform:uppercase;letter-spacing:.9px;
+  margin-bottom:10px;padding-bottom:8px;
+  border-bottom:1px dashed #C5E0F8;
+}
+.fgroup-icon{font-size:13px;line-height:1;}
+
+/* ── Expected / Actual distinction ──────────────────────────────── */
+.expected-field textarea,.expected-field input{
+  border-left:3px solid #36B37E;background:#F6FFFB;
+}
+.expected-field textarea:focus,.expected-field input:focus{
+  background:#fff;border-color:#4C9AFF;border-left-color:#36B37E;border-left-width:3px;
+}
+.actual-field textarea,.actual-field input{
+  border-left:3px solid #FF5630;background:#FFF9F7;
+}
+.actual-field textarea:focus,.actual-field input:focus{
+  background:#fff;border-color:#4C9AFF;border-left-color:#FF5630;border-left-width:3px;
+}
+.label-expected{color:#006644;}
+.label-actual{color:#BF2600;}
 
 /* ── Empty state ────────────────────────────────────────────────────── */
 .empty{
-  text-align:center;padding:52px 20px;color:#A5ADBA;font-size:13px;
-  background:#fff;border:1.5px dashed #BDD9F5;
-  border-radius:6px;margin-bottom:12px;
+  text-align:center;padding:56px 20px;color:#8993A4;font-size:13px;
+  background:#fff;border:2px dashed #BDD9F5;
+  border-radius:10px;margin-bottom:12px;
+  transition:border-color .2s;
 }
-.empty .ei{font-size:30px;display:block;margin-bottom:10px;opacity:.7;}
+.empty:hover{border-color:#7DB3E8;}
+.empty .ei{font-size:36px;display:block;margin-bottom:12px;}
+.empty strong{color:#344563;}
 
 /* ── Sticky submit bar ──────────────────────────────────────────────── */
 .submit-bar{
   position:sticky;bottom:0;
-  background:linear-gradient(to top,#E0F2FF 70%,transparent);
-  padding:16px 0 10px;display:flex;align-items:center;gap:14px;
+  background:linear-gradient(to top,#E0F2FF 80%,transparent);
+  padding:14px 0 12px;display:flex;align-items:center;gap:14px;
+}
+.submit-bar-inner{
+  flex:1;background:#fff;border:1px solid #BDD9F5;border-radius:8px;
+  padding:12px 18px;display:flex;align-items:center;gap:14px;
+  box-shadow:0 2px 12px rgba(10,37,96,.12);
 }
 .submit-info{font-size:12px;color:#6B778C;line-height:1.7;}
 .submit-info strong{color:#344563;font-weight:600;}
 .btn-submit{
   margin-left:auto;background:#36B37E;color:#fff;border:none;
   font-family:'Inter',sans-serif;font-size:14px;font-weight:600;
-  padding:10px 26px;border-radius:4px;cursor:pointer;
-  display:flex;align-items:center;gap:8px;transition:background .15s;white-space:nowrap;
+  padding:10px 28px;border-radius:6px;cursor:pointer;
+  display:flex;align-items:center;gap:8px;transition:background .15s,box-shadow .15s;white-space:nowrap;
+  flex-shrink:0;
 }
-.btn-submit:hover:not(:disabled){background:#00875A;}
+.btn-submit:hover:not(:disabled){background:#00875A;box-shadow:0 2px 10px rgba(0,135,90,.35);}
 .btn-submit:disabled{background:#DFE1E6;color:#A5ADBA;cursor:not-allowed;}
 .btn-submit .spin{display:none;width:15px;height:15px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;}
 .btn-submit.loading .lbl{display:none;}
@@ -275,30 +359,37 @@ select option{background:#fff;color:#172B4D;}
 
 /* ── Responsive ─────────────────────────────────────────────────────── */
 @media(max-width:640px){
-  .page{padding:20px 14px 60px;}
+  .page{padding:16px 12px 60px;}
   .topbar-inner{padding:0 14px;height:52px;}
-  .card{padding:14px;}
-  .row.c2,.row.c3{grid-template-columns:1fr;}
+  .card{padding:16px;}
+  .row.c2,.row.c3,.row.cv{grid-template-columns:1fr;}
   .sev-group{flex-wrap:wrap;}
-  .submit-bar{flex-wrap:wrap;padding:12px 0 8px;}
+  .submit-bar{padding:12px 0 8px;}
+  .submit-bar-inner{flex-wrap:wrap;gap:10px;}
   .submit-info{font-size:11px;}
   .btn-submit{width:100%;justify-content:center;}
-  .bug-head{padding:10px 12px;}
-  .bug-body{padding:14px;}
+  .bug-head{padding:10px 14px;}
+  .bug-body{padding:16px;}
   .brand-name{font-size:17px;}
   .brand-sub{display:none;}
+  .section-bar{padding:10px 14px;}
+  .page-hero{padding:16px 18px 14px;}
+  .page-hero h1{font-size:18px;}
+  .hero-steps{display:none;}
 }
 @media(max-width:480px){
-  .page{padding:16px 12px 50px;}
+  .page{padding:14px 10px 50px;}
   .brand-name{font-size:16px;}
   .logo-icon{width:28px;height:28px;}
   label{font-size:11px;}
   input,select,textarea{font-size:13px;padding:7px 9px;}
-  .btn-add{font-size:12px;padding:6px 12px;}
+  .btn-add{font-size:12px;padding:7px 14px;}
   .ov-box{padding:28px 24px;min-width:260px;}
   .success h2{font-size:18px;}
   .s-meta{padding:12px 16px;font-size:12px;}
   .dash-link{font-size:12px;padding:6px 12px;}
+  .sev-opt label{padding:6px 12px;font-size:12px;}
+  .fgroup-title{font-size:9.5px;}
 }
 </style>
 </head>
@@ -355,14 +446,25 @@ select option{background:#fff;color:#172B4D;}
 
 <div class="page">
 
-  <div class="page-header">
+  <div class="page-hero">
     <h1>Bug Report</h1>
     <p>Submit and track bugs found during QA testing · Vantage Circle</p>
+    <div class="hero-steps">
+      <div class="hero-step active"><span class="hero-step-num">1</span>Session Info</div>
+      <span class="hero-step-sep">›</span>
+      <div class="hero-step"><span class="hero-step-num">2</span>Add Bugs</div>
+      <span class="hero-step-sep">›</span>
+      <div class="hero-step"><span class="hero-step-num">3</span>Submit</div>
+    </div>
   </div>
 
   <!-- Session info -->
   <div class="card">
-    <div class="card-title">Session Info — fill once, applies to all bugs below</div>
+    <div class="card-title">
+      <span class="step-badge">1</span>
+      Session Details
+      <span class="card-title-sub">Applies to every bug in this session</span>
+    </div>
     <div class="row c3">
       <div class="field" id="sf0">
         <label>Your Name <span class="req">*</span></label>
@@ -386,13 +488,20 @@ select option{background:#fff;color:#172B4D;}
         <span class="ferr">Please select a product</span>
       </div>
     </div>
+    <div class="session-tip">
+      <span class="session-tip-icon">💡</span>
+      Fill these once — they automatically apply to <strong>every bug</strong> you add below. You can report multiple bugs in a single session.
+    </div>
   </div>
 
   <!-- Bugs -->
   <div class="section-bar">
-    <h2>Bugs</h2>
-    <span class="badge" id="bugCount">0 bugs</span>
-    <button class="btn-add" id="btnAdd">+ Add Bug</button>
+    <div class="section-bar-left">
+      <span class="step-badge">2</span>
+      <h2>Bug Reports</h2>
+      <span class="badge" id="bugCount">0 bugs</span>
+    </div>
+    <button class="btn-add" id="btnAdd"><span class="btn-add-icon">+</span> Add Bug</button>
   </div>
 
   <div id="bugsList"></div>
@@ -403,14 +512,16 @@ select option{background:#fff;color:#172B4D;}
   </div>
 
   <div class="submit-bar" id="submitBar" style="display:none">
-    <div class="submit-info">
-      <strong id="readyCount">0 bugs</strong> ready to submit<br>
-      <strong id="sessionInfo">—</strong>
+    <div class="submit-bar-inner">
+      <div class="submit-info">
+        <strong id="readyCount">0 bugs</strong> ready to submit<br>
+        <strong id="sessionInfo">—</strong>
+      </div>
+      <button class="btn-submit" id="btnSubmit" disabled>
+        <span class="lbl">✓ Submit All Bugs</span>
+        <span class="spin"></span>
+      </button>
     </div>
-    <button class="btn-submit" id="btnSubmit" disabled>
-      <span class="lbl">✓ Submit All Bugs</span>
-      <span class="spin"></span>
-    </button>
   </div>
 
 </div>
@@ -464,65 +575,83 @@ function addBug(){
   c.className='bug-card';c.dataset.id=id;
   c.innerHTML=`
     <div class="bug-head">
-      <div class="bug-num">${id}</div>
-      <div class="bug-summary" id="sm${id}">Click to expand and fill details…</div>
+      <div class="bug-num">#${id}</div>
+      <div class="bug-summary" id="sm${id}">New bug — fill in the details below</div>
       <span class="sev-tag" id="st${id}" style="display:none"></span>
-      <button class="btn-tog">▾</button>
-      <button class="btn-del">✕</button>
+      <button class="btn-tog" title="Expand / Collapse">▾</button>
+      <button class="btn-del" title="Remove this bug">✕</button>
     </div>
     <div class="bug-body">
-      <div class="row c3">
-        <div class="field" id="fm${id}">
-          <label>Module <span class="req">*</span></label>
-          <input type="text" name="module" placeholder="e.g. Login, Dashboard, Cart"/>
-          <span class="ferr">Required</span>
-        </div>
-        <div class="field" id="fp${id}">
-          <label>Platform <span class="req">*</span></label>
-          <select name="platform">${pOpts}</select>
-          <span class="ferr">Required</span>
-        </div>
-        <div class="field">
-          <label>Assign To Developer</label>
-          <select name="assignedTo">${dOpts}</select>
+
+      <div class="field-group">
+        <div class="fgroup-title"><span class="fgroup-icon">📍</span> Bug Context</div>
+        <div class="row c3">
+          <div class="field" id="fm${id}">
+            <label>Module <span class="req">*</span></label>
+            <input type="text" name="module" placeholder="e.g. Login, Cart, Checkout"/>
+            <span class="ferr">Module is required</span>
+          </div>
+          <div class="field" id="fp${id}">
+            <label>Platform <span class="req">*</span></label>
+            <select name="platform">${pOpts}</select>
+            <span class="ferr">Platform is required</span>
+          </div>
+          <div class="field">
+            <label>Assigned Developer</label>
+            <select name="assignedTo">${dOpts}</select>
+          </div>
         </div>
       </div>
-      <div class="row c1">
+
+      <div class="field-group">
+        <div class="fgroup-title"><span class="fgroup-icon">📝</span> Description</div>
         <div class="field" id="fd${id}">
-          <label>Description / Summary <span class="req">*</span></label>
-          <textarea name="description" placeholder="Clear, concise summary of the bug…" rows="2"></textarea>
-          <span class="ferr">Required</span>
+          <label>Bug Summary <span class="req">*</span></label>
+          <textarea name="description" placeholder="Describe what went wrong — be specific and concise" rows="3"></textarea>
+          <span class="ferr">Description is required</span>
         </div>
       </div>
-      <div class="row c2">
-        <div class="field" id="fe${id}">
-          <label>Expected Result <span class="req">*</span></label>
-          <textarea name="expected" placeholder="What should have happened…" rows="2"></textarea>
-          <span class="ferr">Required</span>
-        </div>
-        <div class="field" id="fa${id}">
-          <label>Actual Result <span class="req">*</span></label>
-          <textarea name="actual" placeholder="What actually happened…" rows="2"></textarea>
-          <span class="ferr">Required</span>
-        </div>
-      </div>
-      <div class="row c1" style="margin-bottom:6px">
-        <div class="field">
-          <label>Severity <span class="req">*</span></label>
-          <div class="sev-group">${sevH}</div>
-          <div class="sev-err" id="se${id}">Please select a severity level</div>
+
+      <div class="field-group">
+        <div class="fgroup-title"><span class="fgroup-icon">🔄</span> Behavior</div>
+        <div class="row c2">
+          <div class="field expected-field" id="fe${id}">
+            <label class="label-expected">✔ Expected Result <span class="req">*</span></label>
+            <textarea name="expected" placeholder="What should have happened…" rows="3"></textarea>
+            <span class="ferr">Expected result is required</span>
+          </div>
+          <div class="field actual-field" id="fa${id}">
+            <label class="label-actual">✖ Actual Result <span class="req">*</span></label>
+            <textarea name="actual" placeholder="What actually happened instead…" rows="3"></textarea>
+            <span class="ferr">Actual result is required</span>
+          </div>
         </div>
       </div>
-      <div class="row c2">
+
+      <div class="field-group">
+        <div class="fgroup-title"><span class="fgroup-icon">🏷</span> Classification</div>
+        <div class="row cv">
+          <div class="field">
+            <label>Severity <span class="req">*</span></label>
+            <div class="sev-group">${sevH}</div>
+            <div class="sev-err" id="se${id}">Please select a severity level</div>
+          </div>
+          <div class="field">
+            <label>Status</label>
+            <select name="status">${STATS.map((s,i)=>`<option${i===0?' selected':''}>${s}</option>`).join('')}</select>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group last">
+        <div class="fgroup-title"><span class="fgroup-icon">🔗</span> Evidence</div>
         <div class="field">
           <label>Proof Link</label>
-          <input type="url" name="proof" placeholder="Screenshot / video URL (optional)"/>
-        </div>
-        <div class="field">
-          <label>Status</label>
-          <select name="status">${STATS.map((s,i)=>`<option${i===0?' selected':''}>${s}</option>`).join('')}</select>
+          <input type="url" name="proof" placeholder="Paste a screenshot or video URL (optional)"/>
+          <span class="field-hint">Loom, Google Drive, Jira attachment, or any shareable URL</span>
         </div>
       </div>
+
     </div>`;
 
   document.getElementById('bugsList').appendChild(c);
