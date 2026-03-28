@@ -19,36 +19,54 @@ body{
 
 /* ── Password Gate ──────────────────────────────────────────────────── */
 .gate{
-  position:fixed;inset:0;background:#F1F5F9;
+  position:fixed;inset:0;overflow:hidden;
+  background:linear-gradient(135deg,#08142B 0%,#0F2044 45%,#1A3A8A 100%);
   z-index:99;display:flex;align-items:center;justify-content:center;
 }
+.gate-blob{position:absolute;border-radius:50%;pointer-events:none;}
+.gate-blob.b1{width:700px;height:700px;top:-280px;right:-200px;
+  background:radial-gradient(circle,rgba(37,99,235,.22) 0%,transparent 65%);}
+.gate-blob.b2{width:500px;height:500px;bottom:-180px;left:-160px;
+  background:radial-gradient(circle,rgba(99,102,241,.16) 0%,transparent 65%);}
+.gate-blob.b3{width:240px;height:240px;top:60%;left:58%;
+  background:radial-gradient(circle,rgba(56,189,248,.10) 0%,transparent 65%);}
 .gate-box{
-  background:#fff;border:1px solid #BDD9F5;
-  border-radius:10px;padding:44px 40px;
-  width:min(400px,calc(100vw - 32px));
-  text-align:center;box-shadow:0 4px 24px rgba(10,37,96,.12);
+  background:#fff;border:1px solid rgba(255,255,255,.1);
+  border-radius:16px;padding:44px 40px;
+  width:min(420px,calc(100vw - 32px));
+  text-align:center;
+  box-shadow:0 24px 64px rgba(0,0,0,.4),0 2px 0 rgba(255,255,255,.06) inset;
+  position:relative;z-index:1;
 }
-.gate-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:28px;}
+.gate-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px;}
 .gate-brand{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:#0A2560;letter-spacing:-.3px;}
-.gate-box h2{font-size:19px;font-weight:700;color:#172B4D;margin-bottom:6px;}
-.gate-box p{font-size:13px;color:#6B778C;margin-bottom:26px;}
+.gate-tagline{font-size:11px;font-weight:600;color:#94A3B8;letter-spacing:.7px;text-transform:uppercase;margin-bottom:24px;}
+.gate-box h2{font-size:18px;font-weight:700;color:#172B4D;margin-bottom:6px;}
+.gate-box p{font-size:13px;color:#64748B;line-height:1.55;margin-bottom:18px;}
+.gate-features{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:24px;}
+.gate-features span{font-size:11px;font-weight:500;color:#475569;
+  background:#F1F5F9;border:1px solid #E2E8F0;
+  padding:3px 10px;border-radius:20px;white-space:nowrap;}
 .gate-input{
   width:100%;font-family:'Inter',sans-serif;
   font-size:15px;text-align:center;letter-spacing:4px;
-  background:#F0F9FF;color:#172B4D;
-  border:1.5px solid #BDD9F5;
-  border-radius:4px;padding:11px 14px;outline:none;
+  background:#F8FAFC;color:#172B4D;
+  border:1.5px solid #E2E8F0;
+  border-radius:8px;padding:12px 14px;outline:none;
   margin-bottom:12px;transition:border-color .15s,box-shadow .15s;
 }
-.gate-input:focus{border-color:#4C9AFF;box-shadow:0 0 0 3px rgba(76,154,255,.18);}
+.gate-input:focus{border-color:#3B82F6;box-shadow:0 0 0 3px rgba(59,130,246,.15);}
 .gate-input.shake{animation:shake .3s;}
 .gate-btn{
-  width:100%;background:#0A2560;color:#fff;border:none;
+  width:100%;background:linear-gradient(135deg,#1A3A8A 0%,#2563EB 100%);color:#fff;border:none;
   font-family:'Inter',sans-serif;font-size:14px;font-weight:600;
-  padding:11px;border-radius:4px;cursor:pointer;transition:background .15s;
+  padding:12px;border-radius:8px;cursor:pointer;
+  transition:opacity .15s,box-shadow .15s;
+  box-shadow:0 4px 14px rgba(37,99,235,.35);
 }
-.gate-btn:hover{background:#0052CC;}
-.gate-err{font-size:12px;color:#DE350B;margin-top:10px;display:none;font-weight:500;}
+.gate-btn:hover{opacity:.9;box-shadow:0 6px 20px rgba(37,99,235,.45);}
+.gate-err{font-size:12px;color:#DC2626;margin-top:10px;display:none;font-weight:500;}
+.gate-footer{font-size:11px;color:#94A3B8;margin-top:20px;padding-top:16px;border-top:1px solid #F1F5F9;}
 
 /* ── Page ───────────────────────────────────────────────────────────── */
 .page{max-width:1400px;margin:0 auto;padding:0 20px 60px;}
@@ -138,12 +156,12 @@ body{
 .ctrl-sel option{background:#fff;color:#1E293B;}
 .ctrl-search{width:220px;}
 .date-input{
-  font-family:'Inter',sans-serif;font-size:13px;color:#172B4D;
-  background:#F0F9FF;border:1.5px solid #BDD9F5;
-  border-radius:4px;padding:6px 10px;outline:none;
-  transition:border-color .15s;
+  font-family:'Inter',sans-serif;font-size:13px;color:#1E293B;
+  background:#F8FAFC;border:1.5px solid #E2E8F0;
+  border-radius:6px;padding:6px 10px;outline:none;
+  transition:border-color .15s,box-shadow .15s;
 }
-.date-input:focus{border-color:#4C9AFF;}
+.date-input:focus{border-color:#3B82F6;box-shadow:0 0 0 3px rgba(59,130,246,.12);}
 .date-sep{font-size:12px;color:#A5ADBA;}
 .date-info{font-size:11px;color:#7A869A;margin-left:4px;}
 
@@ -210,7 +228,7 @@ tbody tr{border-bottom:1px solid #F1F5F9;transition:background .1s;}
 tbody tr:last-child{border-bottom:none;}
 tbody tr:nth-child(even){background:#FAFBFC;}
 tbody tr:hover{background:#EFF6FF !important;}
-tbody td{padding:12px 14px;vertical-align:top;}
+tbody td{padding:11px 14px;vertical-align:middle;font-size:13px;color:#1E293B;}
 
 /* col: Bug ID */
 .col-id .bug-id{
@@ -256,10 +274,10 @@ tbody td{padding:12px 14px;vertical-align:top;}
 .stb-Reopened   {background:#EDE9FE;color:#5B21B6;}
 
 /* col: Assigned To */
-.col-assign{font-size:13px;color:#344563;white-space:nowrap;}
+.col-assign{font-size:13px;color:#334155;white-space:nowrap;}
 
 /* col: Date */
-.col-date{font-size:12px;color:#7A869A;white-space:nowrap;}
+.col-date{font-size:12px;color:#64748B;white-space:nowrap;}
 
 /* col: Proof */
 .col-proof{white-space:nowrap;}
@@ -328,18 +346,28 @@ tbody td{padding:12px 14px;vertical-align:top;}
 
 /* ── Card grid ────────────────────────────────────────────────────── */
 #bugCardsWrap{display:none;padding:14px 16px;}
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px;}
-.bcv{background:#fff;border:1px solid #BDD9F5;border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;box-shadow:0 1px 4px rgba(10,37,96,.07);transition:box-shadow .2s,transform .18s;animation:fadeUp .35s ease both;}
-.bcv:hover{box-shadow:0 4px 18px rgba(10,37,96,.14);transform:translateY(-2px);}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+.bcv{
+  background:#fff;border:1px solid #E2E8F0;border-radius:10px;
+  padding:16px;display:flex;flex-direction:column;gap:10px;
+  min-height:140px;
+  box-shadow:0 1px 4px rgba(10,37,96,.06);
+  transition:box-shadow .2s,transform .18s;
+  animation:fadeUp .35s ease both;
+}
+.bcv:hover{box-shadow:0 4px 18px rgba(10,37,96,.12);transform:translateY(-2px);}
 .bcv-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
-.bcv-left{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;}
-.bcv-id{font-family:'JetBrains Mono','Courier New',monospace;font-size:11px;font-weight:700;color:#0052CC;}
-.bcv-title{font-size:13px;font-weight:600;color:#172B4D;line-height:1.4;}
+.bcv-left{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0;}
+.bcv-id{font-family:'JetBrains Mono','Courier New',monospace;font-size:11px;font-weight:700;color:#2563EB;}
+.bcv-title{font-size:13px;font-weight:600;color:#1E293B;line-height:1.45;}
 .bcv-chips{display:flex;flex-wrap:wrap;gap:4px;}
-.bcv-chip{font-size:10px;font-weight:600;color:#5E6C84;background:#EBF4FF;border:1px solid #BDD9F5;padding:2px 6px;border-radius:3px;white-space:nowrap;}
-.bcv-foot{display:flex;align-items:center;justify-content:space-between;gap:6px;padding-top:8px;border-top:1px solid #EBF4FF;margin-top:auto;}
-.bcv-proof{display:inline-flex;align-items:center;font-size:11px;font-weight:500;color:#0052CC;background:#DEEBFF;padding:3px 8px;border-radius:3px;text-decoration:none;}
-.bcv-proof:hover{background:#B3D4FF;}
+.bcv-chip{font-size:11px;font-weight:500;color:#475569;background:#F1F5F9;border:1px solid #E2E8F0;padding:2px 8px;border-radius:4px;white-space:nowrap;}
+.bcv-foot{display:flex;align-items:center;justify-content:space-between;gap:6px;padding-top:10px;border-top:1px solid #F1F5F9;margin-top:auto;flex-wrap:wrap;}
+.bcv-foot-left{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.bcv-foot-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.bcv-date{font-size:11px;color:#94A3B8;}
+.bcv-proof{display:inline-flex;align-items:center;font-size:11px;font-weight:500;color:#2563EB;background:#EFF6FF;padding:3px 9px;border-radius:4px;text-decoration:none;white-space:nowrap;}
+.bcv-proof:hover{background:#DBEAFE;}
 
 /* ── Critical row tint ────────────────────────────────────────────── */
 tbody tr.row-critical{background:#FFFCFC;}
@@ -374,7 +402,7 @@ tbody tr.row-critical:hover{background:#FFF3F0;}
 @media(max-width:480px){
   .stats{grid-template-columns:1fr 1fr;}
   .hdr-actions{gap:6px;}
-  .gate-box{padding:32px 20px;margin:0 12px;}
+  .gate-box{padding:32px 22px;margin:0 12px;border-radius:12px;}
   .gate-brand{font-size:20px;}
   .report-link,.logout-btn{font-size:12px;padding:5px 10px;}
   .tb-row{flex-wrap:wrap;gap:6px;}
@@ -395,7 +423,7 @@ tbody tr.row-critical:hover{background:#FFF3F0;}
   .stat .lbl{font-size:10px;}
   .report-link{display:none;}
   .logout-btn{font-size:11px;padding:4px 8px;}
-  .gate-box{padding:28px 16px;margin:0 8px;}
+  .gate-box{padding:28px 18px;margin:0 8px;border-radius:12px;}
   .gate-brand{font-size:18px;}
   .gate-input{font-size:14px;padding:9px 12px;}
   .gate-btn{font-size:13px;padding:9px;}
@@ -409,6 +437,9 @@ tbody tr.row-critical:hover{background:#FFF3F0;}
 
 <!-- Password Gate -->
 <div class="gate" id="gate">
+  <div class="gate-blob b1"></div>
+  <div class="gate-blob b2"></div>
+  <div class="gate-blob b3"></div>
   <div class="gate-box">
     <div class="gate-logo">
       <svg width="36" height="36" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -425,11 +456,19 @@ tbody tr.row-critical:hover{background:#FFF3F0;}
       </svg>
       <span class="gate-brand">Bugify</span>
     </div>
-    <h2>Admin Access</h2>
-    <p>Enter the dashboard password to continue</p>
+    <div class="gate-tagline">Bug Tracking · Vantage Circle QA</div>
+    <h2>Team Lead Access</h2>
+    <p>Enter your password to unlock the dashboard and view all reported bugs.</p>
+    <div class="gate-features">
+      <span>📊 Analytics</span>
+      <span>🔍 Smart Filters</span>
+      <span>📤 CSV Export</span>
+      <span>🧑‍💻 Tester Breakdown</span>
+    </div>
     <input class="gate-input" type="password" id="gateInput" placeholder="••••••••" maxlength="40"/>
     <button class="gate-btn" id="gateBtn">Unlock Dashboard</button>
     <div class="gate-err" id="gateErr">Incorrect password. Please try again.</div>
+    <div class="gate-footer">QA testers? <a href="index.html" style="color:#3B82F6;text-decoration:none;font-weight:500;">Submit a bug →</a></div>
   </div>
 </div>
 
@@ -875,16 +914,16 @@ function renderCards(slice) {
           <span class="bcv-id">${e(b.bugId || '—')}</span>
           <div class="bcv-title">${e(genTitle(b.description))}</div>
         </div>
-        <span class="sev-badge sb-${e(sev)}" style="flex-shrink:0">${e(sev) || '—'}</span>
+        <span class="sev-badge sb-${e(sev)}">${e(sev) || '—'}</span>
       </div>
       ${chips ? `<div class="bcv-chips">${chips}</div>` : ''}
       <div class="bcv-foot">
-        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <div class="bcv-foot-left">
           <span class="tester-badge">${e(b.tester || '—')}</span>
           <span class="st-badge stb-${e(stat)}">${e(b.status || 'Open')}</span>
         </div>
-        <div style="display:flex;align-items:center;gap:6px">
-          <span style="font-size:11px;color:#7A869A">${fmtDate(b.submittedAt)}</span>
+        <div class="bcv-foot-right">
+          <span class="bcv-date">${fmtDate(b.submittedAt)}</span>
           ${proofHtml}
         </div>
       </div>
