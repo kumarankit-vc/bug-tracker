@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bugify — System Documentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ── Reset ──────────────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+body{font-family:'Inter',sans-serif;color:#1E293B;background:#fff;line-height:1.6;}
+
+/* ── Page layout ─────────────────────────────────────────────── */
+.page{
+  width:210mm;min-height:297mm;
+  margin:0 auto;padding:18mm 18mm 18mm 18mm;
+  background:#fff;position:relative;
+  page-break-after:always;
+}
+.page:last-child{page-break-after:avoid;}
+
+/* ── Screen preview ──────────────────────────────────────────── */
+@media screen{
+  body{background:#E2E8F0;padding:20px 0;}
+  .page{box-shadow:0 4px 32px rgba(0,0,0,.15);margin:0 auto 24px;border-radius:4px;}
+}
+@media print{
+  body{background:#fff;padding:0;}
+  .page{width:100%;min-height:0;margin:0;padding:15mm 18mm;border-radius:0;box-shadow:none;}
+  .no-print{display:none !important;}
+}
+
+/* ── Typography ──────────────────────────────────────────────── */
+h1{font-family:'Space Grotesk',sans-serif;font-weight:800;}
+h2{font-family:'Space Grotesk',sans-serif;font-weight:700;}
+h3{font-family:'Inter',sans-serif;font-weight:700;}
+p{font-size:13px;color:#334155;line-height:1.7;}
+
+/* ── Header stripe (top of each page) ───────────────────────── */
+.page-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:10px;margin-bottom:20px;
+  border-bottom:2px solid #1A3A8A;
+}
+.page-header .brand{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:#1A3A8A;display:flex;align-items:center;gap:6px;}
+.page-header .section-label{font-size:11px;color:#94A3B8;font-weight:500;letter-spacing:.5px;}
+
+/* ── Footer strip ────────────────────────────────────────────── */
+.page-footer{
+  position:absolute;bottom:10mm;left:18mm;right:18mm;
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:10px;color:#94A3B8;border-top:1px solid #E2E8F0;padding-top:5px;
+}
+
+/* ── Section headings ────────────────────────────────────────── */
+.section-title{
+  font-size:18px;font-weight:800;color:#0F2044;margin-bottom:4px;
+  font-family:'Space Grotesk',sans-serif;letter-spacing:-.3px;
+}
+.section-sub{font-size:12px;color:#64748B;margin-bottom:18px;}
+.section-divider{height:3px;width:40px;background:linear-gradient(90deg,#2563EB,#93C5FD);border-radius:2px;margin-bottom:18px;}
+
+/* ── Cover page ──────────────────────────────────────────────── */
+.cover{
+  background:linear-gradient(150deg,#08142B 0%,#0F2044 45%,#1A3A8A 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;min-height:297mm;padding:0;
+  position:relative;overflow:hidden;
+}
+.cover-blob{position:absolute;border-radius:50%;pointer-events:none;}
+.cover-blob.b1{width:500px;height:500px;top:-160px;right:-160px;
+  background:radial-gradient(circle,rgba(37,99,235,.25) 0%,transparent 65%);}
+.cover-blob.b2{width:400px;height:400px;bottom:-120px;left:-120px;
+  background:radial-gradient(circle,rgba(99,102,241,.18) 0%,transparent 65%);}
+.cover-content{position:relative;z-index:1;padding:30mm 20mm;}
+.cover-logo{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:28px;}
+.cover-brand{font-family:'Space Grotesk',sans-serif;font-size:52px;font-weight:800;color:#FFFFFF;letter-spacing:-2px;}
+.cover-badge{display:inline-block;background:rgba(37,99,235,.35);border:1px solid rgba(99,153,255,.4);
+  color:rgba(255,255,255,.85);font-size:12px;font-weight:600;padding:4px 14px;
+  border-radius:20px;letter-spacing:.5px;margin-bottom:22px;}
+.cover-title{font-size:26px;font-weight:700;color:#FFFFFF;margin-bottom:12px;line-height:1.3;font-family:'Space Grotesk',sans-serif;}
+.cover-desc{font-size:14px;color:rgba(255,255,255,.65);max-width:380px;line-height:1.7;margin:0 auto 36px;}
+.cover-meta{display:flex;flex-direction:column;gap:6px;}
+.cover-meta-item{font-size:12px;color:rgba(255,255,255,.5);}
+.cover-meta-item strong{color:rgba(255,255,255,.8);font-weight:600;}
+.cover-divider{width:60px;height:2px;background:rgba(255,255,255,.2);margin:28px auto;}
+.cover-pills{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:28px;}
+.cover-pill{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  color:rgba(255,255,255,.75);font-size:11px;font-weight:500;
+  padding:5px 14px;border-radius:20px;}
+
+/* ── TOC ─────────────────────────────────────────────────────── */
+.toc-list{list-style:none;margin-top:8px;}
+.toc-list li{display:flex;align-items:baseline;gap:6px;padding:7px 0;border-bottom:1px dashed #E2E8F0;}
+.toc-list li:last-child{border-bottom:none;}
+.toc-num{font-size:12px;font-weight:700;color:#2563EB;min-width:22px;}
+.toc-name{font-size:13px;color:#1E293B;font-weight:500;flex:1;}
+.toc-dots{flex:1;border-bottom:2px dotted #CBD5E1;margin:0 8px;height:1px;align-self:center;}
+.toc-page{font-size:12px;color:#94A3B8;font-weight:600;min-width:20px;text-align:right;}
+.toc-section{font-size:11px;font-weight:700;color:#94A3B8;letter-spacing:.7px;text-transform:uppercase;margin:16px 0 6px;}
+
+/* ── Info boxes ──────────────────────────────────────────────── */
+.info-box{border-radius:8px;padding:12px 16px;margin:14px 0;display:flex;gap:12px;}
+.info-box.blue{background:#EFF6FF;border-left:3px solid #3B82F6;}
+.info-box.green{background:#F0FDF4;border-left:3px solid #22C55E;}
+.info-box.amber{background:#FFFBEB;border-left:3px solid #F59E0B;}
+.info-box.red{background:#FEF2F2;border-left:3px solid #EF4444;}
+.info-box-icon{font-size:18px;line-height:1;flex-shrink:0;margin-top:1px;}
+.info-box-body{flex:1;}
+.info-box-title{font-size:12px;font-weight:700;color:#1E293B;margin-bottom:3px;}
+.info-box p{font-size:12px;color:#475569;margin:0;}
+
+/* ── Feature grid ────────────────────────────────────────────── */
+.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;}
+.feature-card{border:1px solid #E2E8F0;border-radius:10px;padding:14px 16px;background:#FAFBFF;}
+.feature-card-icon{font-size:22px;margin-bottom:8px;}
+.feature-card-title{font-size:13px;font-weight:700;color:#0F2044;margin-bottom:5px;}
+.feature-card p{font-size:11.5px;color:#475569;line-height:1.6;}
+
+/* ── Steps ───────────────────────────────────────────────────── */
+.steps{display:flex;flex-direction:column;gap:10px;margin:8px 0;}
+.step{display:flex;gap:14px;align-items:flex-start;}
+.step-num{
+  width:28px;height:28px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,#1A3A8A,#2563EB);
+  color:#fff;font-size:12px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  margin-top:1px;
+}
+.step-body{flex:1;}
+.step-title{font-size:13px;font-weight:700;color:#0F2044;margin-bottom:3px;}
+.step-desc{font-size:12px;color:#475569;line-height:1.6;}
+.step-desc code{background:#F1F5F9;padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#0F2044;}
+
+/* ── UI Mockup elements ──────────────────────────────────────── */
+.mockup{border:1px solid #E2E8F0;border-radius:10px;overflow:hidden;margin:12px 0;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+.mockup-bar{background:linear-gradient(135deg,#0F2044,#1A3A8A);padding:8px 14px;display:flex;align-items:center;gap:8px;}
+.mockup-dots{display:flex;gap:5px;}
+.mockup-dot{width:9px;height:9px;border-radius:50%;}
+.mockup-dot.r{background:#FF5F57;}
+.mockup-dot.y{background:#FEBC2E;}
+.mockup-dot.g{background:#28C840;}
+.mockup-url{flex:1;background:rgba(255,255,255,.1);border-radius:3px;padding:3px 10px;font-size:10px;color:rgba(255,255,255,.6);font-family:'JetBrains Mono',monospace;}
+.mockup-body{padding:14px;background:#F8FAFC;}
+.mockup-body.white{background:#fff;}
+
+/* ── Mini stat cards ─────────────────────────────────────────── */
+.mini-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}
+.mini-stat{border-radius:8px;padding:10px 12px;color:#fff;position:relative;overflow:hidden;}
+.mini-stat.s1{background:linear-gradient(135deg,#2563EB,#1E40AF);}
+.mini-stat.s2{background:linear-gradient(135deg,#DC2626,#991B1B);}
+.mini-stat.s3{background:linear-gradient(135deg,#EA580C,#9A3412);}
+.mini-stat.s4{background:linear-gradient(135deg,#16A34A,#14532D);}
+.mini-stat-ico{font-size:16px;position:absolute;right:8px;top:50%;transform:translateY(-50%);opacity:.22;}
+.mini-stat-lbl{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;opacity:.75;margin-bottom:3px;}
+.mini-stat-val{font-size:20px;font-weight:800;line-height:1;}
+
+/* ── Mini table ──────────────────────────────────────────────── */
+.mini-table{width:100%;border-collapse:collapse;font-size:11px;}
+.mini-table thead th{background:linear-gradient(135deg,#1E3A8A,#1A337A);color:rgba(255,255,255,.8);
+  padding:6px 8px;text-align:left;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;}
+.mini-table tbody tr:nth-child(odd){background:#fff;}
+.mini-table tbody tr:nth-child(even){background:#F8FAFC;}
+.mini-table tbody td{padding:6px 8px;color:#1E293B;border-bottom:1px solid #F1F5F9;vertical-align:middle;}
+.badge{display:inline-block;font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:8px;white-space:nowrap;}
+.badge.critical{background:#FEE2E2;color:#991B1B;}
+.badge.high{background:#FEF3C7;color:#B45309;}
+.badge.medium{background:#FEF9C3;color:#854D0E;}
+.badge.low{background:#D1FAE5;color:#065F46;}
+.badge.open{background:#FEE2E2;color:#991B1B;}
+.badge.fixed{background:#D1FAE5;color:#065F46;}
+.badge.progress{background:#DBEAFE;color:#1E40AF;}
+.badge.trivial{background:#F1F5F9;color:#475569;}
+
+/* ── Mini form fields ────────────────────────────────────────── */
+.mini-form{display:flex;flex-direction:column;gap:8px;}
+.mini-field label{font-size:10px;font-weight:600;color:#475569;display:block;margin-bottom:3px;}
+.mini-field .mini-input{width:100%;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:5px;padding:6px 10px;font-size:11px;color:#334155;}
+.mini-field .mini-input.active{border-color:#3B82F6;background:#EFF6FF;}
+.mini-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+
+/* ── Severity pills row ──────────────────────────────────────── */
+.sev-row{display:flex;gap:5px;flex-wrap:wrap;}
+.sev-pill{font-size:10px;font-weight:600;padding:3px 10px;border-radius:8px;border:1.5px solid transparent;}
+.sev-pill.critical{background:#FEE2E2;color:#991B1B;border-color:#FECACA;}
+.sev-pill.high{background:#FEF3C7;color:#B45309;border-color:#FDE68A;}
+.sev-pill.medium{background:#FEF9C3;color:#854D0E;border-color:#FEF08A;}
+.sev-pill.low{background:#D1FAE5;color:#065F46;border-color:#A7F3D0;}
+.sev-pill.trivial{background:#F1F5F9;color:#475569;border-color:#E2E8F0;}
+.sev-pill.sel{box-shadow:0 0 0 2px #2563EB;border-color:#2563EB;}
+
+/* ── Architecture diagram ────────────────────────────────────── */
+.arch-diagram{display:flex;align-items:center;justify-content:space-between;gap:0;margin:16px 0;padding:20px;
+  background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;}
+.arch-node{text-align:center;flex:1;}
+.arch-node-box{display:inline-block;padding:10px 14px;border-radius:8px;margin-bottom:6px;min-width:90px;}
+.arch-node-label{font-size:10px;font-weight:600;color:#64748B;line-height:1.4;}
+.arch-node-title{font-size:12px;font-weight:700;color:#1E293B;}
+.arch-arrow{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;padding:0 4px;}
+.arch-arrow-line{height:2px;width:50px;background:#CBD5E1;position:relative;}
+.arch-arrow-line::after{content:'▶';position:absolute;right:-6px;top:-6px;color:#94A3B8;font-size:10px;}
+.arch-arrow-label{font-size:9px;color:#94A3B8;font-weight:600;letter-spacing:.3px;white-space:nowrap;}
+.arch-arrow-back{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.arch-arrow-back .arch-arrow-line::after{content:'◀';left:-6px;right:auto;}
+
+/* ── Schema table ────────────────────────────────────────────── */
+.schema-table{width:100%;border-collapse:collapse;font-size:12px;margin:10px 0;}
+.schema-table th{background:#0F2044;color:rgba(255,255,255,.85);padding:8px 12px;text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.4px;}
+.schema-table td{padding:7px 12px;border-bottom:1px solid #F1F5F9;vertical-align:top;}
+.schema-table tr:nth-child(even) td{background:#F8FAFC;}
+.schema-table tr:last-child td{border-bottom:none;}
+.schema-col{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#2563EB;}
+.schema-type{display:inline-block;font-size:10px;font-weight:600;background:#F1F5F9;color:#475569;padding:1px 7px;border-radius:3px;}
+.schema-req{display:inline-block;font-size:10px;font-weight:700;background:#FEE2E2;color:#991B1B;padding:1px 7px;border-radius:3px;}
+.schema-opt{display:inline-block;font-size:10px;font-weight:600;background:#F1F5F9;color:#64748B;padding:1px 7px;border-radius:3px;}
+
+/* ── Status flow ─────────────────────────────────────────────── */
+.status-flow{display:flex;align-items:center;flex-wrap:wrap;gap:0;margin:14px 0;justify-content:center;}
+.status-node{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.status-circle{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;text-align:center;line-height:1.2;padding:4px;}
+.status-name{font-size:9.5px;font-weight:600;color:#475569;}
+.status-arrow{color:#CBD5E1;font-size:18px;padding:0 2px;margin-top:-16px;}
+
+/* ── Tech stack pills ────────────────────────────────────────── */
+.tech-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:6px;}
+.tech-card{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid #E2E8F0;border-radius:8px;background:#FAFBFF;}
+.tech-icon{font-size:24px;flex-shrink:0;line-height:1;}
+.tech-body{}
+.tech-name{font-size:12px;font-weight:700;color:#0F2044;margin-bottom:2px;}
+.tech-desc{font-size:11px;color:#475569;line-height:1.55;}
+.tech-tag{display:inline-block;background:#EFF6FF;border:1px solid #BFDBFE;color:#1D4ED8;font-size:9.5px;font-weight:600;padding:1px 7px;border-radius:10px;margin-top:4px;}
+
+/* ── Benefit cards ───────────────────────────────────────────── */
+.benefit-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:6px;}
+.benefit-card{padding:14px;border-radius:8px;border:1px solid #E2E8F0;text-align:center;}
+.benefit-icon{font-size:26px;margin-bottom:8px;}
+.benefit-title{font-size:12px;font-weight:700;color:#0F2044;margin-bottom:5px;}
+.benefit-desc{font-size:11px;color:#475569;line-height:1.6;}
+
+/* ── Toolbar mockup ──────────────────────────────────────────── */
+.mini-toolbar{background:#fff;border:1px solid #E2E8F0;border-radius:6px;padding:10px 12px;margin-bottom:8px;}
+.mini-toolbar-row{display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap;}
+.mini-toolbar-row:last-child{margin-bottom:0;}
+.mini-ctrl{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:4px;padding:4px 8px;font-size:10px;color:#475569;}
+.mini-ctrl.search{min-width:100px;}
+.mini-pill{background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:12px;padding:3px 10px;font-size:10px;color:#475569;font-weight:500;}
+.mini-pill.active{background:#2563EB;border-color:#2563EB;color:#fff;font-weight:600;}
+.mini-btn-green{background:#16A34A;color:#fff;border:none;padding:4px 10px;border-radius:3px;font-size:10px;font-weight:600;}
+.mini-btn-blue{background:#2563EB;color:#fff;border:none;padding:4px 8px;border-radius:3px;font-size:10px;font-weight:600;}
+.mini-lbl{font-size:9px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.5px;min-width:50px;}
+
+/* ── Callout ─────────────────────────────────────────────────── */
+.callout{border:1px solid #E2E8F0;border-radius:8px;padding:12px 16px;background:#F8FAFC;margin:10px 0;}
+.callout-head{font-size:11px;font-weight:700;color:#1E293B;margin-bottom:5px;display:flex;align-items:center;gap:6px;}
+.callout ul{padding-left:16px;margin-top:4px;}
+.callout ul li{font-size:11.5px;color:#475569;line-height:1.7;}
+
+/* ── Print button ────────────────────────────────────────────── */
+.print-btn{
+  position:fixed;bottom:24px;right:24px;z-index:100;
+  background:#1A3A8A;color:#fff;border:none;
+  font-family:'Inter',sans-serif;font-size:13px;font-weight:600;
+  padding:11px 22px;border-radius:8px;cursor:pointer;
+  box-shadow:0 4px 16px rgba(26,58,138,.4);
+  transition:background .15s,box-shadow .15s;
+}
+.print-btn:hover{background:#2563EB;box-shadow:0 6px 22px rgba(37,99,235,.5);}
+</style>
+</head>
+<body>
+
+<!-- Print button -->
+<button class="print-btn no-print" onclick="window.print()">🖨 Save as PDF</button>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 1 — COVER
+══════════════════════════════════════════════════════════════ -->
+<div class="page cover">
+  <div class="cover-blob b1"></div>
+  <div class="cover-blob b2"></div>
+  <div class="cover-content">
+
+    <div class="cover-logo">
+      <svg width="62" height="62" viewBox="0 0 34 34" fill="none">
+        <rect width="34" height="34" rx="9" fill="#2563EB"/>
+        <ellipse cx="17" cy="21" rx="7.5" ry="8.5" fill="white"/>
+        <circle cx="17" cy="11.5" r="3.5" fill="white"/>
+        <path d="M15 9.5 C13.5 7.5 11 6 9 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+        <path d="M19 9.5 C20.5 7.5 23 6 25 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+        <line x1="17" y1="13" x2="17" y2="29" stroke="#2563EB" stroke-width="1.2" stroke-linecap="round"/>
+        <circle cx="13.5" cy="19" r="1.5" fill="#2563EB" opacity="0.5"/>
+        <circle cx="13.5" cy="24" r="1.5" fill="#2563EB" opacity="0.5"/>
+        <circle cx="20.5" cy="19" r="1.5" fill="#2563EB" opacity="0.5"/>
+        <circle cx="20.5" cy="24" r="1.5" fill="#2563EB" opacity="0.5"/>
+      </svg>
+      <span class="cover-brand">Bugify</span>
+    </div>
+
+    <div class="cover-badge">QA Bug Tracking System</div>
+
+    <h1 class="cover-title">System Documentation<br>& User Guide</h1>
+    <p class="cover-desc">A complete reference for QA testers and team leads — covering how the system works, how to use it, and what it's built with.</p>
+
+    <div class="cover-divider"></div>
+
+    <div class="cover-meta">
+      <div class="cover-meta-item"><strong>Organisation:</strong> Vantage Circle</div>
+      <div class="cover-meta-item"><strong>Team:</strong> QA Testing</div>
+      <div class="cover-meta-item"><strong>Version:</strong> 2.0</div>
+      <div class="cover-meta-item"><strong>Date:</strong> March 2026</div>
+    </div>
+
+    <div class="cover-pills">
+      <span class="cover-pill">📋 Bug Submission</span>
+      <span class="cover-pill">📊 Live Dashboard</span>
+      <span class="cover-pill">📤 CSV Export</span>
+      <span class="cover-pill">🔍 Smart Filters</span>
+      <span class="cover-pill">📂 Google Sheets</span>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 2 — TABLE OF CONTENTS
+══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand">
+      <svg width="18" height="18" viewBox="0 0 34 34" fill="none"><rect width="34" height="34" rx="9" fill="#2563EB"/><ellipse cx="17" cy="21" rx="7.5" ry="8.5" fill="white"/><circle cx="17" cy="11.5" r="3.5" fill="white"/><path d="M15 9.5 C13.5 7.5 11 6 9 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M19 9.5 C20.5 7.5 23 6 25 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>
+      Bugify
+    </div>
+    <div class="section-label">Table of Contents</div>
+  </div>
+
+  <h2 class="section-title">Table of Contents</h2>
+  <div class="section-divider"></div>
+
+  <div class="toc-section">Overview</div>
+  <ul class="toc-list">
+    <li><span class="toc-num">1</span><span class="toc-name">System Overview</span><span class="toc-dots"></span><span class="toc-page">3</span></li>
+    <li><span class="toc-num">2</span><span class="toc-name">Technology Stack</span><span class="toc-dots"></span><span class="toc-page">3</span></li>
+    <li><span class="toc-num">3</span><span class="toc-name">System Architecture & Data Flow</span><span class="toc-dots"></span><span class="toc-page">4</span></li>
+    <li><span class="toc-num">4</span><span class="toc-name">Key Features</span><span class="toc-dots"></span><span class="toc-page">4</span></li>
+  </ul>
+
+  <div class="toc-section">User Guides</div>
+  <ul class="toc-list">
+    <li><span class="toc-num">5</span><span class="toc-name">Bug Submission — For QA Testers</span><span class="toc-dots"></span><span class="toc-page">5</span></li>
+    <li><span class="toc-num">6</span><span class="toc-name">Bug Form Fields Explained</span><span class="toc-dots"></span><span class="toc-page">6</span></li>
+    <li><span class="toc-num">7</span><span class="toc-name">Dashboard — For Team Leads</span><span class="toc-dots"></span><span class="toc-page">7</span></li>
+    <li><span class="toc-num">8</span><span class="toc-name">Filters & Search</span><span class="toc-dots"></span><span class="toc-page">8</span></li>
+  </ul>
+
+  <div class="toc-section">Backend & Data</div>
+  <ul class="toc-list">
+    <li><span class="toc-num">9</span><span class="toc-name">Google Sheets — Data Schema</span><span class="toc-dots"></span><span class="toc-page">9</span></li>
+    <li><span class="toc-num">10</span><span class="toc-name">Bug Status Lifecycle</span><span class="toc-dots"></span><span class="toc-page">9</span></li>
+    <li><span class="toc-num">11</span><span class="toc-name">Bug ID Format</span><span class="toc-dots"></span><span class="toc-page">10</span></li>
+  </ul>
+
+  <div class="toc-section">Reference</div>
+  <ul class="toc-list">
+    <li><span class="toc-num">12</span><span class="toc-name">Benefits & Use Cases</span><span class="toc-dots"></span><span class="toc-page">10</span></li>
+    <li><span class="toc-num">13</span><span class="toc-name">Setup & Deployment</span><span class="toc-dots"></span><span class="toc-page">11</span></li>
+    <li><span class="toc-num">14</span><span class="toc-name">Severity Reference</span><span class="toc-dots"></span><span class="toc-page">11</span></li>
+    <li><span class="toc-num">15</span><span class="toc-name">Frequently Asked Questions</span><span class="toc-dots"></span><span class="toc-page">12</span></li>
+  </ul>
+
+  <div style="margin-top:28px;">
+    <div class="info-box blue">
+      <div class="info-box-icon">💡</div>
+      <div class="info-box-body">
+        <div class="info-box-title">How to use this document</div>
+        <p><strong>QA Testers</strong> — Read sections 5 and 6 to learn how to submit bugs correctly.<br>
+        <strong>Team Leads</strong> — Read sections 7 and 8 to use the dashboard and export reports.<br>
+        <strong>Admins / Developers</strong> — Read sections 9–13 for backend setup and maintenance.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Bugify — QA Bug Tracking System</span>
+    <span>Vantage Circle · March 2026</span>
+    <span>Page 2</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 3 — OVERVIEW + TECH STACK
+══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand"><svg width="18" height="18" viewBox="0 0 34 34" fill="none"><rect width="34" height="34" rx="9" fill="#2563EB"/><ellipse cx="17" cy="21" rx="7.5" ry="8.5" fill="white"/><circle cx="17" cy="11.5" r="3.5" fill="white"/><path d="M15 9.5 C13.5 7.5 11 6 9 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M19 9.5 C20.5 7.5 23 6 25 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>Bugify</div>
+    <div class="section-label">System Overview</div>
+  </div>
+
+  <!-- Section 1 -->
+  <h2 class="section-title">1. System Overview</h2>
+  <div class="section-divider"></div>
+
+  <p><strong>Bugify</strong> is a lightweight, browser-based bug tracking system built for the QA team at Vantage Circle. It allows QA testers to log bugs during testing sessions and gives team leads a live dashboard to monitor, filter, and export all reported bugs — with no app installation or account required.</p>
+
+  <div style="margin:14px 0;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+    <div style="padding:12px 14px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:5px;">🧑‍💻</div>
+      <div style="font-size:12px;font-weight:700;color:#1E40AF;">QA Testers</div>
+      <div style="font-size:11px;color:#475569;margin-top:3px;line-height:1.5;">Submit bugs via a simple form during sprint testing sessions</div>
+    </div>
+    <div style="padding:12px 14px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:5px;">📊</div>
+      <div style="font-size:12px;font-weight:700;color:#14532D;">Team Leads</div>
+      <div style="font-size:11px;color:#475569;margin-top:3px;line-height:1.5;">View all bugs, apply filters, track status, and export reports</div>
+    </div>
+    <div style="padding:12px 14px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:5px;">🛠</div>
+      <div style="font-size:12px;font-weight:700;color:#92400E;">Developers</div>
+      <div style="font-size:11px;color:#475569;margin-top:3px;line-height:1.5;">Receive bug assignments and update status directly in Google Sheets</div>
+    </div>
+  </div>
+
+  <div class="info-box green" style="margin-bottom:18px;">
+    <div class="info-box-icon">✅</div>
+    <div class="info-box-body">
+      <div class="info-box-title">Zero setup for testers</div>
+      <p>QA testers just open a browser link. No login, no app install, no account needed. The team lead manages access to the dashboard separately.</p>
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <h2 class="section-title">2. Technology Stack</h2>
+  <div class="section-divider"></div>
+  <p style="margin-bottom:10px;">Bugify uses only widely available, free tools — no paid services, no npm packages, no build process.</p>
+
+  <div class="tech-grid">
+    <div class="tech-card">
+      <div class="tech-icon">🌐</div>
+      <div class="tech-body">
+        <div class="tech-name">Vanilla HTML / CSS / JavaScript</div>
+        <div class="tech-desc">The entire frontend is written in plain web standards — no frameworks (React, Vue, etc.), no dependencies. Works in any modern browser.</div>
+        <span class="tech-tag">Frontend</span>
+      </div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon">⚙️</div>
+      <div class="tech-body">
+        <div class="tech-name">Google Apps Script</div>
+        <div class="tech-desc">The serverless backend. Deployed as a Web App, it handles all API requests — receiving bug submissions (POST) and serving dashboard data (GET).</div>
+        <span class="tech-tag">Backend / API</span>
+      </div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon">📊</div>
+      <div class="tech-body">
+        <div class="tech-name">Google Sheets</div>
+        <div class="tech-desc">The database. Bugs are stored in a "Master Bug Sheet" and also in individual tester sheets. Team leads can also view/update data directly in Sheets.</div>
+        <span class="tech-tag">Database</span>
+      </div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon">🚀</div>
+      <div class="tech-body">
+        <div class="tech-name">GitHub Pages</div>
+        <div class="tech-desc">Hosts the static HTML files. Every push to the <code style="background:#F1F5F9;padding:1px 4px;border-radius:3px;font-family:monospace;font-size:10px;">main</code> branch automatically redeploys via GitHub Actions.</div>
+        <span class="tech-tag">Hosting</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Bugify — QA Bug Tracking System</span>
+    <span>Vantage Circle · March 2026</span>
+    <span>Page 3</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 4 — ARCHITECTURE + FEATURES
+══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand"><svg width="18" height="18" viewBox="0 0 34 34" fill="none"><rect width="34" height="34" rx="9" fill="#2563EB"/><ellipse cx="17" cy="21" rx="7.5" ry="8.5" fill="white"/><circle cx="17" cy="11.5" r="3.5" fill="white"/><path d="M15 9.5 C13.5 7.5 11 6 9 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M19 9.5 C20.5 7.5 23 6 25 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>Bugify</div>
+    <div class="section-label">Architecture & Features</div>
+  </div>
+
+  <h2 class="section-title">3. System Architecture & Data Flow</h2>
+  <div class="section-divider"></div>
+  <p style="margin-bottom:4px;">Every bug submitted by a tester travels through the following path. Data always flows through Google Apps Script — the HTML pages never touch the spreadsheet directly.</p>
+
+  <!-- Architecture diagram -->
+  <div class="arch-diagram">
+    <div class="arch-node">
+      <div class="arch-node-box" style="background:#EFF6FF;border:2px solid #BFDBFE;">
+        <div style="font-size:22px;margin-bottom:4px;">🧑‍💻</div>
+        <div class="arch-node-title">QA Tester</div>
+      </div>
+      <div class="arch-node-label">index.html<br>Bug Form</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;align-items:center;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:4px;">
+        <div style="height:2px;width:45px;background:#3B82F6;"></div>
+        <div style="font-size:16px;color:#3B82F6;">▶</div>
+        <div style="font-size:9px;color:#3B82F6;font-weight:700;">POST bug data</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:4px;flex-direction:row-reverse;">
+        <div style="height:2px;width:45px;background:#16A34A;"></div>
+        <div style="font-size:16px;color:#16A34A;">◀</div>
+        <div style="font-size:9px;color:#16A34A;font-weight:700;">Bug ID back</div>
+      </div>
+    </div>
+
+    <div class="arch-node">
+      <div class="arch-node-box" style="background:#FFFBEB;border:2px solid #FDE68A;">
+        <div style="font-size:22px;margin-bottom:4px;">⚙️</div>
+        <div class="arch-node-title">Apps Script</div>
+      </div>
+      <div class="arch-node-label">Web App API<br>doPost / doGet</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;align-items:center;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:4px;">
+        <div style="height:2px;width:45px;background:#3B82F6;"></div>
+        <div style="font-size:16px;color:#3B82F6;">▶</div>
+        <div style="font-size:9px;color:#3B82F6;font-weight:700;">writes rows</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:4px;flex-direction:row-reverse;">
+        <div style="height:2px;width:45px;background:#16A34A;"></div>
+        <div style="font-size:16px;color:#16A34A;">◀</div>
+        <div style="font-size:9px;color:#16A34A;font-weight:700;">reads rows</div>
+      </div>
+    </div>
+
+    <div class="arch-node">
+      <div class="arch-node-box" style="background:#F0FDF4;border:2px solid #BBF7D0;">
+        <div style="font-size:22px;margin-bottom:4px;">📊</div>
+        <div class="arch-node-title">Google Sheets</div>
+      </div>
+      <div class="arch-node-label">Master Sheet<br>+ Tester Sheets</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;align-items:center;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:4px;">
+        <div style="height:2px;width:45px;background:#7C3AED;"></div>
+        <div style="font-size:16px;color:#7C3AED;">▶</div>
+        <div style="font-size:9px;color:#7C3AED;font-weight:700;">GET all bugs</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:4px;flex-direction:row-reverse;">
+        <div style="height:2px;width:45px;background:#7C3AED;"></div>
+        <div style="font-size:16px;color:#7C3AED;">◀</div>
+        <div style="font-size:9px;color:#7C3AED;font-weight:700;">JSON list</div>
+      </div>
+    </div>
+
+    <div class="arch-node">
+      <div class="arch-node-box" style="background:#F5F3FF;border:2px solid #DDD6FE;">
+        <div style="font-size:22px;margin-bottom:4px;">📊</div>
+        <div class="arch-node-title">Team Lead</div>
+      </div>
+      <div class="arch-node-label">dashboard.html<br>Dashboard</div>
+    </div>
+  </div>
+
+  <!-- Section 4 -->
+  <h2 class="section-title" style="margin-top:18px;">4. Key Features</h2>
+  <div class="section-divider"></div>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-card-icon">📋</div>
+      <div class="feature-card-title">Multi-Bug Session Submission</div>
+      <p>Testers can log multiple bugs in one session and submit them all at once as a batch. Session details (tester name, sprint, product) apply to all bugs in the session.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon">🆔</div>
+      <div class="feature-card-title">Auto-Generated Bug IDs</div>
+      <p>Each bug gets a unique, sequential ID like <strong>KUM-0001</strong> (3-letter tester prefix + 4-digit number). IDs never repeat, even if two bugs are submitted simultaneously.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon">🔍</div>
+      <div class="feature-card-title">Live Dashboard & Filters</div>
+      <p>Team leads can filter bugs by sprint, product, tester, severity, status, and date range. All filters work together. Stat cards update instantly when filters change.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon">📤</div>
+      <div class="feature-card-title">CSV Export</div>
+      <p>Export the currently filtered view to a CSV file with one click. The filename automatically includes the tester name and date for easy filing.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon">🃏</div>
+      <div class="feature-card-title">Table & Card Views</div>
+      <p>Switch between a structured data table and a card-based kanban-style grid. Both views respect active filters and show the same data.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon">⚡</div>
+      <div class="feature-card-title">Smart Caching</div>
+      <p>The dashboard caches data locally (30-minute freshness window). On reload, saved data shows instantly — no blank screen or spinner on every visit.</p>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Bugify — QA Bug Tracking System</span>
+    <span>Vantage Circle · March 2026</span>
+    <span>Page 4</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 5 — BUG SUBMISSION GUIDE
+══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand"><svg width="18" height="18" viewBox="0 0 34 34" fill="none"><rect width="34" height="34" rx="9" fill="#2563EB"/><ellipse cx="17" cy="21" rx="7.5" ry="8.5" fill="white"/><circle cx="17" cy="11.5" r="3.5" fill="white"/><path d="M15 9.5 C13.5 7.5 11 6 9 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M19 9.5 C20.5 7.5 23 6 25 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>Bugify</div>
+    <div class="section-label">Bug Submission Guide</div>
+  </div>
+
+  <h2 class="section-title">5. Bug Submission — For QA Testers</h2>
+  <div class="section-divider"></div>
+  <p style="margin-bottom:14px;">Open <strong>index.html</strong> (or the GitHub Pages URL shared by your team lead) in any browser. You will see the Bug Report form.</p>
+
+  <!-- Form mockup -->
+  <div class="mockup">
+    <div class="mockup-bar">
+      <div class="mockup-dots"><div class="mockup-dot r"></div><div class="mockup-dot y"></div><div class="mockup-dot g"></div></div>
+      <div class="mockup-url">bugify.vantage.circle / index.html</div>
+    </div>
+    <div class="mockup-body" style="background:linear-gradient(135deg,#0F2044,#1A3A8A);padding:14px;">
+      <div style="color:#fff;margin-bottom:10px;">
+        <div style="font-size:15px;font-weight:700;margin-bottom:2px;">🐛 Bug Report</div>
+        <div style="font-size:10px;opacity:.65;">Submit and track bugs found during QA testing · Vantage Circle</div>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <div style="background:rgba(37,99,235,.6);border:1px solid rgba(99,153,255,.5);border-radius:12px;padding:3px 10px;font-size:10px;font-weight:600;color:#fff;">① Session Info</div>
+          <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:3px 10px;font-size:10px;color:rgba(255,255,255,.6);">② Add Bugs</div>
+          <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:3px 10px;font-size:10px;color:rgba(255,255,255,.6);">③ Submit</div>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:8px;padding:12px;">
+        <div style="font-size:11px;font-weight:700;color:#0F2044;margin-bottom:8px;border-bottom:1px solid #F1F5F9;padding-bottom:6px;">Session Details</div>
+        <div class="mini-row" style="margin-bottom:8px;">
+          <div>
+            <div style="font-size:10px;font-weight:600;color:#475569;margin-bottom:3px;">Your Name <span style="color:#DC2626">*</span></div>
+            <div style="background:#EFF6FF;border:1.5px solid #3B82F6;border-radius:5px;padding:5px 8px;font-size:11px;color:#1E40AF;">Kumar Ankit</div>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:600;color:#475569;margin-bottom:3px;">Sprint <span style="color:#DC2626">*</span></div>
+            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:5px;padding:5px 8px;font-size:11px;color:#475569;">Sprint 42</div>
+          </div>
+        </div>
+        <div style="font-size:10px;font-weight:600;color:#475569;margin-bottom:3px;">Product <span style="color:#DC2626">*</span></div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:5px;padding:5px 8px;font-size:11px;color:#475569;margin-bottom:8px;">Vantage Rewards</div>
+        <div style="background:#1A3A8A;color:#fff;border-radius:6px;padding:8px;text-align:center;font-size:11px;font-weight:600;">+ Add Bug</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Steps -->
+  <div class="steps" style="margin-top:14px;">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Fill in Session Details</div>
+        <div class="step-desc">At the top, select your <strong>Name</strong>, enter the <strong>Sprint</strong> number (e.g. Sprint 42), and select the <strong>Product</strong> you are testing. These three fields apply to every bug you add in this session. They are saved in your browser so you don't need to re-enter them next time.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Click "+ Add Bug"</div>
+        <div class="step-desc">Press the blue <strong>+ Add Bug</strong> button. A bug card will expand below the session details. Fill in the bug's details (see Section 6 for all fields). You can add as many bugs as you find in one session — click the button again for each new bug.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Fill in Bug Details</div>
+        <div class="step-desc">Each bug card has: <strong>Module</strong>, <strong>Platform</strong>, <strong>Description</strong>, <strong>Expected Result</strong>, <strong>Actual Result</strong>, <strong>Severity</strong>, <strong>Proof Link</strong>, and <strong>Assigned Developer</strong>. Fields marked with a red asterisk (<span style="color:#DC2626">*</span>) are required. The form highlights missing fields in red if you try to submit without them.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Submit All Bugs at Once</div>
+        <div class="step-desc">Once all bug cards are filled, click the green <strong>Submit All Bugs</strong> button at the bottom. All bugs are sent together as a single batch. A confirmation screen will appear showing "Bugs Submitted!" along with a summary of your session. The form then resets for the next session.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box amber" style="margin-top:12px;">
+    <div class="info-box-icon">⚠️</div>
+    <div class="info-box-body">
+      <div class="info-box-title">Proof Link is required</div>
+      <p>Always attach a screenshot or screen recording. Upload it to Google Drive, Confluence, or any shareable link and paste the URL in the Proof Link field. Bugs without proof are harder to reproduce and investigate.</p>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Bugify — QA Bug Tracking System</span>
+    <span>Vantage Circle · March 2026</span>
+    <span>Page 5</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 6 — FORM FIELDS EXPLAINED
+══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand"><svg width="18" height="18" viewBox="0 0 34 34" fill="none"><rect width="34" height="34" rx="9" fill="#2563EB"/><ellipse cx="17" cy="21" rx="7.5" ry="8.5" fill="white"/><circle cx="17" cy="11.5" r="3.5" fill="white"/><path d="M15 9.5 C13.5 7.5 11 6 9 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M19 9.5 C20.5 7.5 23 6 25 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>Bugify</div>
+    <div class="section-label">Form Fields</div>
+  </div>
+
+  <h2 class="section-title">6. Bug Form Fields Explained</h2>
+  <div class="section-divider"></div>
+
+  <table class="schema-table">
+    <thead>
+      <tr>
+        <th style="width:16%">Field</th>
+        <th style="width:10%">Required</th>
+        <th>What to Write</th>
+        <th style="width:28%">Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="schema-col">Module</span></td>
+        <td><span class="schema-req">Required</span></td>
+        <td style="font-size:11.5px;color:#334155;">The feature area or section of the app where the bug was found.</td>
+        <td style="font-size:11px;color:#475569;font-style:italic;">Rewards Catalogue, Dashboard, Login, Notifications</td>
+      </tr>
+      <tr>
+        <td><span class="schema-col">Platform</span></td>
+        <td><span class="schema-req">Required</span></td>
+        <td style="font-size:11.5px;color:#334155;">The device or access method used during testing.</td>
+        <td style="font-size:11px;color:#475569;font-style:italic;">Web, Android, iOS, API, Desktop</td>
+      </tr>
+      <tr>
+        <td><span class="schema-col">Description</span></td>
+        <td><span class="schema-req">Required</span></td>
+        <td style="font-size:11.5px;color:#334155;">A short, clear summary of what went wrong. Be specific — include page name, action taken, and observed issue.</td>
+        <td style="font-size:11px;color:#475569;font-style:italic;">"Redeeming a reward on the Catalogue page shows a success toast but the order is not created"</td>
+      </tr>
+      <tr>
+        <td><span class="schema-col">Expected Result</span></td>
+        <td><span class="schema-req">Required</span></td>
+        <td style="font-size:11.5px;color:#334155;">What should happen when following the correct flow.</td>
+        <td style="font-size:11px;color:#475569;font-style:italic;">"Order should appear in My Orders within 30 seconds"</td>
+      </tr>
+      <tr>
+        <td><span class="schema-col">Actual Result</span></td>
+        <td><span class="schema-req">Required</span></td>
+        <td style="font-size:11.5px;color:#334155;">What actually happened instead. The difference between Expected and Actual is the bug.</td>
+        <td style="font-size:11px;color:#475569;font-style:italic;">"Toast shows 'Order placed' but My Orders shows nothing"</td>
+      </tr>
+      <tr>
+        <td><span class="schema-col">Severity</span></td>
+        <td><span class="schema-req">Required</span></td>
+        <td style="font-size:11.5px;color:#334155;">How severely the bug impacts the user. Select one from the severity scale (see below).</td>
+        <td style="font-size:11px;"><span class="sev-pill critical">Critical</span></td>
+      </tr>
+      <tr>
+        <td><span class="schema-col">Proof Link</span></td>
+        <td><span class="schema-req">Required</span></td>
+        <td style="font-size:11.5px;color:#334155;">URL to a screenshot, video, or recording showing the bug. Upload to Google Drive or similar, set to "Anyone with link can view", then paste the URL here.</td>
+        <td style="font-size:11px;color:#475569;font-style:italic;">drive.google.com/file/d/…</td>
+      </tr>
+      <tr>
+        <td><span class="schema-col">Assigned Dev</span></td>
+        <td><span class="schema-opt">Optional</span></td>
+        <td style="font-size:11.5px;color:#334155;">The developer or team member responsible for fixing this bug. Can be left blank if unknown.</td>
+        <td style="font-size:11px;color:#475569;font-style:italic;">Abhishek Das, Gaurav, Rahul Roy</td>
+      </tr>
+      <tr>
+        <td><span class="schema-col">Status</span></td>
+        <td><span class="schema-opt">Auto</span></td>
+        <td style="font-size:11.5px;color:#334155;">Automatically set to <strong>Open</strong> when submitted. Updated later by the team via Google Sheets or the dashboard.</td>
+        <td style="font-size:11px;"><span class="badge open">Open</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Severity scale -->
+  <h3 style="font-size:14px;font-weight:700;color:#0F2044;margin:18px 0 10px;">Severity Scale</h3>
+  <table class="schema-table">
+    <thead>
+      <tr><th style="width:15%">Level</th><th style="width:22%">When to use</th><th>Definition</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="sev-pill critical" style="font-size:11px;">🔴 Critical</span></td>
+        <td style="font-size:11px;color:#334155;">App is broken / data loss</td>
+        <td style="font-size:11.5px;color:#475569;">The entire feature or product is non-functional. Users cannot complete a core task. Requires immediate fix before release.</td>
+      </tr>
+      <tr>
+        <td><span class="sev-pill high" style="font-size:11px;">🟠 High</span></td>
+        <td style="font-size:11px;color:#334155;">Major feature broken</td>
+        <td style="font-size:11.5px;color:#475569;">A major feature is broken with no workaround. Affects a large number of users or a critical business flow.</td>
+      </tr>
+      <tr>
+        <td><span class="sev-pill medium" style="font-size:11px;">🟡 Medium</span></td>
+        <td style="font-size:11px;color:#334155;">Feature broken, has workaround</td>
+        <td style="font-size:11.5px;color:#475569;">A feature is broken but a workaround exists. Should be fixed but does not block the release.</td>
+      </tr>
+      <tr>
+        <td><span class="sev-pill low" style="font-size:11px;">🟢 Low</span></td>
+        <td style="font-size:11px;color:#334155;">Minor issue</td>
+        <td style="font-size:11.5px;color:#475569;">Minor cosmetic or functional issue with minimal impact on users. Can be addressed in a future sprint.</td>
+      </tr>
+      <tr>
+        <td><span class="sev-pill trivial" style="font-size:11px;">⚪ Trivial</span></td>
+        <td style="font-size:11px;color:#334155;">Cosmetic / nitpick</td>
+        <td style="font-size:11.5px;color:#475569;">Typos, alignment issues, minor visual inconsistencies. Does not affect functionality.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-footer">
+    <span>Bugify — QA Bug Tracking System</span>
+    <span>Vantage Circle · March 2026</span>
+    <span>Page 6</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 7 — DASHBOARD GUIDE
+══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand"><svg width="18" height="18" viewBox="0 0 34 34" fill="none"><rect width="34" height="34" rx="9" fill="#2563EB"/><ellipse cx="17" cy="21" rx="7.5" ry="8.5" fill="white"/><circle cx="17" cy="11.5" r="3.5" fill="white"/><path d="M15 9.5 C13.5 7.5 11 6 9 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M19 9.5 C20.5 7.5 23 6 25 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>Bugify</div>
+    <div class="section-label">Dashboard Guide</div>
+  </div>
+
+  <h2 class="section-title">7. Dashboard — For Team Leads</h2>
+  <div class="section-divider"></div>
+  <p style="margin-bottom:12px;">Open <strong>dashboard.html</strong> in any browser. You will be prompted for a password before seeing any data.</p>
+
+  <!-- Dashboard mockup -->
+  <div class="mockup">
+    <div class="mockup-bar">
+      <div class="mockup-dots"><div class="mockup-dot r"></div><div class="mockup-dot y"></div><div class="mockup-dot g"></div></div>
+      <div class="mockup-url">bugify.vantage.circle / dashboard.html</div>
+      <div style="display:flex;gap:8px;margin-left:8px;">
+        <div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:3px;padding:2px 8px;font-size:10px;color:rgba(255,255,255,.75);">+ Report Bug</div>
+        <div style="border:1px solid rgba(255,255,255,.2);border-radius:3px;padding:2px 8px;font-size:10px;color:rgba(255,255,255,.6);">Logout</div>
+      </div>
+    </div>
+    <div class="mockup-body">
+      <!-- Stats -->
+      <div class="mini-stats">
+        <div class="mini-stat s1"><div class="mini-stat-ico">🐛</div><div class="mini-stat-lbl">Total Bugs</div><div class="mini-stat-val">47</div></div>
+        <div class="mini-stat s2"><div class="mini-stat-ico">🔴</div><div class="mini-stat-lbl">Open</div><div class="mini-stat-val">18</div></div>
+        <div class="mini-stat s3"><div class="mini-stat-ico">⚡</div><div class="mini-stat-lbl">Critical/High</div><div class="mini-stat-val">11</div></div>
+        <div class="mini-stat s4"><div class="mini-stat-ico">✅</div><div class="mini-stat-lbl">Resolved</div><div class="mini-stat-val">24</div></div>
+      </div>
+      <!-- Toolbar -->
+      <div class="mini-toolbar">
+        <div class="mini-toolbar-row">
+          <div class="mini-ctrl search">🔍 Search bugs…</div>
+          <div class="mini-ctrl">All Sprints ▾</div>
+          <div class="mini-ctrl">All Products ▾</div>
+          <div class="mini-ctrl">All Severities ▾</div>
+          <div class="mini-ctrl">All Statuses ▾</div>
+          <div class="mini-btn-green">↓ Export CSV</div>
+          <div style="display:flex;gap:3px;margin-left:4px;">
+            <div class="mini-btn-blue">☰ Table</div>
+            <div style="background:#F8FAFC;border:1px solid #E2E8F0;padding:3px 6px;border-radius:3px;font-size:10px;color:#475569;">⊞ Cards</div>
+          </div>
+        </div>
+        <div class="mini-toolbar-row">
+          <div class="mini-lbl">👤 Testers</div>
+          <div class="mini-pill active">Kumar Ankit <span style="background:rgba(255,255,255,.28);padding:0 4px;border-radius:6px;font-size:9px;margin-left:3px;">12</span></div>
+          <div class="mini-pill">Sharique <span style="background:rgba(0,0,0,.1);padding:0 4px;border-radius:6px;font-size:9px;margin-left:3px;">8</span></div>
+          <div class="mini-pill">Sanjay <span style="background:rgba(0,0,0,.1);padding:0 4px;border-radius:6px;font-size:9px;margin-left:3px;">9</span></div>
+          <div class="mini-pill">Ankur <span style="background:rgba(0,0,0,.1);padding:0 4px;border-radius:6px;font-size:9px;margin-left:3px;">7</span></div>
+        </div>
+      </div>
+      <!-- Table -->
+      <table class="mini-table">
+        <thead><tr><th>Bug ID</th><th>Tester</th><th>Description</th><th>Severity</th><th>Status</th><th>Assigned To</th><th>Submitted</th></tr></thead>
+        <tbody>
+          <tr>
+            <td style="font-family:monospace;font-size:10px;font-weight:700;color:#2563EB;">KUM-0012</td>
+            <td><span style="background:#DBEAFE;color:#1E40AF;font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;">Kumar Ankit</span></td>
+            <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;">Reward redemption fails silently</td>
+            <td><span class="badge critical">Critical</span></td>
+            <td><span class="badge open">Open</span></td>
+            <td style="font-size:11px;">Abhishek Das</td>
+            <td style="font-size:10px;color:#94A3B8;">25 Mar 26</td>
+          </tr>
+          <tr>
+            <td style="font-family:monospace;font-size:10px;font-weight:700;color:#2563EB;">KUM-0011</td>
+            <td><span style="background:#DBEAFE;color:#1E40AF;font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;">Kumar Ankit</span></td>
+            <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;">Profile image not loading on mobile</td>
+            <td><span class="badge high">High</span></td>
+            <td><span class="badge progress">In Progress</span></td>
+            <td style="font-size:11px;">Gaurav</td>
+            <td style="font-size:10px;color:#94A3B8;">25 Mar 26</td>
+          </tr>
+          <tr>
+            <td style="font-family:monospace;font-size:10px;font-weight:700;color:#2563EB;">KUM-0010</td>
+            <td><span style="background:#DBEAFE;color:#1E40AF;font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;">Kumar Ankit</span></td>
+            <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;">Sort order resets on page refresh</td>
+            <td><span class="badge medium">Medium</span></td>
+            <td><span class="badge fixed">Fixed</span></td>
+            <td style="font-size:11px;">Rahul Roy</td>
+            <td style="font-size:10px;color:#94A3B8;">24 Mar 26</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h3 style="font-size:13px;font-weight:700;color:#0F2044;margin:14px 0 8px;">Dashboard Sections Explained</h3>
+  <div class="callout">
+    <div class="callout-head">📊 Stat Cards (Top Row)</div>
+    <ul>
+      <li><strong>Total Bugs</strong> — count of all bugs matching current filters</li>
+      <li><strong>Open</strong> — bugs with status "Open" or "Reopened" (need attention)</li>
+      <li><strong>Critical / High</strong> — bugs with high-impact severity</li>
+      <li><strong>Resolved</strong> — bugs marked Fixed, Verified, or Closed</li>
+    </ul>
+    <p style="margin-top:6px;font-size:11.5px;color:#475569;">⚡ All four cards update live whenever you apply a filter or click a tester name.</p>
+  </div>
+
+  <div class="callout" style="margin-top:8px;">
+    <div class="callout-head">👤 Tester Pills</div>
+    <ul>
+      <li>Each tester's name appears as a clickable pill showing their total bug count</li>
+      <li>Click a pill to filter the entire dashboard to just that tester's bugs</li>
+      <li>Multiple testers can be selected at the same time (multi-select)</li>
+      <li>Click <strong>✕ Clear</strong> to deselect all and show all bugs again</li>
+    </ul>
+  </div>
+
+  <div class="page-footer">
+    <span>Bugify — QA Bug Tracking System</span>
+    <span>Vantage Circle · March 2026</span>
+    <span>Page 7</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 8 — FILTERS, VIEWS & EXPORT
+══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand"><svg width="18" height="18" viewBox="0 0 34 34" fill="none"><rect width="34" height="34" rx="9" fill="#2563EB"/><ellipse cx="17" cy="21" rx="7.5" ry="8.5" fill="white"/><circle cx="17" cy="11.5" r="3.5" fill="white"/><path d="M15 9.5 C13.5 7.5 11 6 9 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M19 9.5 C20.5 7.5 23 6 25 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>Bugify</div>
+    <div class="section-label">Filters, Views & Export</div>
+  </div>
+
+  <h2 class="section-title">8. Filters & Search</h2>
+  <div class="section-divider"></div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+    <div class="feature-card">
+      <div class="feature-card-icon">🔎</div>
+      <div class="feature-card-title">Full-Text Search</div>
+      <p>Type anything in the search box to search across Bug ID, description, tester name, module, product, sprint, assigned developer, and platform simultaneously. Results update as you type (400ms debounce).</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon">📅</div>
+      <div class="feature-card-title">Date Range Filter</div>
+      <p>Select a From and To date to narrow down bugs submitted in a specific time window. A summary (e.g. "From 2026-03-01 → 14 bugs") appears automatically. Click <strong>✕ Clear dates</strong> to reset.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon">🏷</div>
+      <div class="feature-card-title">Sprint / Product / Severity / Status</div>
+      <p>Four dropdowns let you drill down to exactly the subset of bugs you need. All dropdowns and tester pills work together — every active filter stacks on top of the others.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon">🔃</div>
+      <div class="feature-card-title">Column Sorting</div>
+      <p>Click any column header in the table to sort by that column. Click again to reverse the sort direction. A ▲ or ▼ indicator shows the active sort. Defaults to newest first (Submitted date descending).</p>
+    </div>
+  </div>
+
+  <!-- Card vs Table view -->
+  <h3 style="font-size:14px;font-weight:700;color:#0F2044;margin-bottom:10px;">Table View vs Card View</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+    <div style="border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;">
+      <div style="background:#1E3A8A;padding:8px 12px;font-size:11px;font-weight:700;color:#fff;">☰ Table View</div>
+      <div style="padding:10px 12px;background:#fff;">
+        <p style="font-size:11.5px;">All bugs in a structured spreadsheet layout. Best for scanning many bugs quickly, sorting by column, and seeing all data at once. Supports 50 bugs per page with pagination.</p>
+        <p style="font-size:11px;color:#64748B;margin-top:6px;">Use when: reviewing all bugs in a sprint, preparing a status report.</p>
+      </div>
+    </div>
+    <div style="border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;">
+      <div style="background:#0F2044;padding:8px 12px;font-size:11px;font-weight:700;color:#fff;">⊞ Card View</div>
+      <div style="padding:10px 12px;background:#fff;">
+        <p style="font-size:11.5px;">Each bug displayed as a compact card showing ID, title, severity badge, status badge, tester name, and proof link. Great for a visual overview by tester or severity.</p>
+        <p style="font-size:11px;color:#64748B;margin-top:6px;">Use when: doing a quick triage, showing bugs in a standup or review.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export section -->
+  <h3 style="font-size:14px;font-weight:700;color:#0F2044;margin-bottom:8px;">📤 Exporting to CSV</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Apply your filters</div>
+        <div class="step-desc">Set any filters you need — e.g. select Sprint 42 + tester "Kumar Ankit" + Status "Open". The export always exports exactly what is currently visible after filtering.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Click "↓ Export CSV"</div>
+        <div class="step-desc">The green Export CSV button is in the top-right of the toolbar. Clicking it downloads a <code>.csv</code> file to your computer. The filename automatically includes the tester name and date (e.g. <code>bugs_Kumar_Ankit_2026-03-25.csv</code>).</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Open in Excel / Google Sheets</div>
+        <div class="step-desc">The CSV contains all 14 columns: Bug ID, Tester, Sprint, Product, Module, Platform, Description, Expected, Actual, Severity, Proof Link, Status, Assigned To, Submitted At.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box blue" style="margin-top:10px;">
+    <div class="info-box-icon">🔄</div>
+    <div class="info-box-body">
+      <div class="info-box-title">Refreshing Data</div>
+      <p>The dashboard caches data for 30 minutes. Click <strong>↻ Refresh</strong> at any time to force-fetch the latest bugs from Google Sheets. If a new bug was just submitted and doesn't appear, refresh.</p>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Bugify — QA Bug Tracking System</span>
+    <span>Vantage Circle · March 2026</span>
+    <span>Page 8</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 9 — GOOGLE SHEETS SCHEMA + STATUS LIFECYCLE
+══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand"><svg width="18" height="18" viewBox="0 0 34 34" fill="none"><rect width="34" height="34" rx="9" fill="#2563EB"/><ellipse cx="17" cy="21" rx="7.5" ry="8.5" fill="white"/><circle cx="17" cy="11.5" r="3.5" fill="white"/><path d="M15 9.5 C13.5 7.5 11 6 9 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M19 9.5 C20.5 7.5 23 6 25 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>Bugify</div>
+    <div class="section-label">Google Sheets & Status Lifecycle</div>
+  </div>
+
+  <h2 class="section-title">9. Google Sheets — Data Schema</h2>
+  <div class="section-divider"></div>
+  <p style="margin-bottom:10px;">Every submitted bug is stored in the Google Spreadsheet in two places: the <strong>Master Bug Sheet</strong> (all bugs from all testers) and a <strong>per-tester sheet</strong> (only that tester's bugs). Both are created automatically on first use.</p>
+
+  <table class="schema-table">
+    <thead>
+      <tr><th style="width:5%">#</th><th style="width:22%">Column Name</th><th style="width:14%">Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td style="font-size:11px;color:#94A3B8;font-weight:600;">A</td><td><span class="schema-col">Bug ID</span></td><td><span class="schema-type">Text</span></td><td style="font-size:11.5px;color:#334155;">Auto-generated. Format: PREFIX-NNNN (e.g. KUM-0001). Unique and sequential per tester.</td></tr>
+      <tr><td style="font-size:11px;color:#94A3B8;font-weight:600;">B</td><td><span class="schema-col">Sprint</span></td><td><span class="schema-type">Text</span></td><td style="font-size:11.5px;color:#334155;">Sprint identifier entered by the tester (e.g. "Sprint 42").</td></tr>
+      <tr><td style="font-size:11px;color:#94A3B8;font-weight:600;">C</td><td><span class="schema-col">Module</span></td><td><span class="schema-type">Text</span></td><td style="font-size:11.5px;color:#334155;">Feature area where the bug was found (e.g. "Rewards Catalogue").</td></tr>
+      <tr><td style="font-size:11px;color:#94A3B8;font-weight:600;">D</td><td><span class="schema-col">Product</span></td><td><span class="schema-type">Text</span></td><td style="font-size:11.5px;color:#334155;">Product being tested (e.g. "Vantage Rewards", "Vantage Perks").</td></tr>
+      <tr><td style="font-size:11px;color:#94A3B8;font-weight:600;">E</td><td><span class="schema-col">Platform</span></td><td><span class="schema-type">Text</span></td><td style="font-size:11.5px;color:#334155;">Testing device/environment (Web, Android, iOS, API, Desktop).</td></tr>
+      <tr><td style="font-size:11px;color:#94A3B8;font-weight:600;">F</td><td><span class="schema-col">Description / Summary</span></td><td><span class="schema-type">Text</span></td><td style="font-size:11.5px;color:#334155;">Full bug description as entered by the tester.</td></tr>
+      <tr><td style="font-size:11px;color:#94A3B8;font-weight:600;">G</td><td><span class="schema-col">Expected Result</span></td><td><span class="schema-type">Text</span></td><td style="font-size:11.5px;color:#334155;">What the tester expected to happen.</td></tr>
+      <tr><td style="font-size:11px;color:#94A3B8;font-weight:600;">H</td><td><span class="schema-col">Actual Result</span></td><td><span class="schema-type">Text</span></td><td style="font-size:11.5px;color:#334155;">What actually happened (the bug behaviour).</td></tr>
+      <tr><td style="font-size:11px;color:#94A3B8;font-weight:600;">I</td><td><span class="schema-col">Severity</span></td><td><span class="schema-type">Enum</span></td><td style="font-size:11.5px;color:#334155;">Critical / High / Medium / Low / Trivial</td></tr>
+      <tr><td style="font-size:11px;color:#94A3B8;font-weight:600;">J</td><td><span class="schema-col">Proof Link</span></td><td><span class="schema-type">URL</span></td><td style="font-size:11.5px;color:#334155;">Link to screenshot or screen recording evidence.</td></tr>
+      <tr><td style="font-size:11px;color:#94A3B8;font-weight:600;">K</td><td><span class="schema-col">Status</span></td><td><span class="schema-type">Enum</span> <span style="font-size:9px;color:#16A34A;font-weight:700;">↻ Editable</span></td><td style="font-size:11.5px;color:#334155;">Open / In Progress / Fixed / Verified / Closed / Reopened. Has a dropdown in Sheets.</td></tr>
+      <tr><td style="font-size:11px;color:#94A3B8;font-weight:600;">L</td><td><span class="schema-col">Assigned To</span></td><td><span class="schema-type">Text</span></td><td style="font-size:11.5px;color:#334155;">Developer or team member assigned to fix the bug.</td></tr>
+      <tr><td style="font-size:11px;color:#94A3B8;font-weight:600;">M</td><td><span class="schema-col">Tester</span></td><td><span class="schema-type">Text</span> <span style="font-size:9px;color:#2563EB;font-weight:700;">Master only</span></td><td style="font-size:11.5px;color:#334155;">The tester who submitted the bug. Present in the Master sheet; absent from tester sheets.</td></tr>
+      <tr><td style="font-size:11px;color:#94A3B8;font-weight:600;">N</td><td><span class="schema-col">Submitted At</span></td><td><span class="schema-type">ISO Date</span></td><td style="font-size:11.5px;color:#334155;">UTC timestamp of when the bug was submitted (e.g. 2026-03-25T09:14:33.000Z).</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title" style="margin-top:20px;">10. Bug Status Lifecycle</h2>
+  <div class="section-divider"></div>
+  <p style="margin-bottom:12px;">Bugs follow a defined workflow. Status can be updated directly in Google Sheets (column K) using the dropdown — the change automatically mirrors to the Master Bug Sheet and reflects in the dashboard on next refresh.</p>
+
+  <div class="status-flow">
+    <div class="status-node">
+      <div class="status-circle" style="background:#FEE2E2;border:2px solid #FECACA;color:#991B1B;">Open</div>
+      <div class="status-name">New bug</div>
+    </div>
+    <div class="status-arrow">→</div>
+    <div class="status-node">
+      <div class="status-circle" style="background:#DBEAFE;border:2px solid #BFDBFE;color:#1E40AF;">In Progress</div>
+      <div class="status-name">Dev working</div>
+    </div>
+    <div class="status-arrow">→</div>
+    <div class="status-node">
+      <div class="status-circle" style="background:#D1FAE5;border:2px solid #A7F3D0;color:#065F46;">Fixed</div>
+      <div class="status-name">Dev done</div>
+    </div>
+    <div class="status-arrow">→</div>
+    <div class="status-node">
+      <div class="status-circle" style="background:#BBF7D0;border:2px solid #86EFAC;color:#14532D;">Verified</div>
+      <div class="status-name">QA confirmed</div>
+    </div>
+    <div class="status-arrow">→</div>
+    <div class="status-node">
+      <div class="status-circle" style="background:#F1F5F9;border:2px solid #CBD5E1;color:#475569;">Closed</div>
+      <div class="status-name">Done</div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:4px;font-size:11px;color:#94A3B8;">If a closed or fixed bug reappears → set to <span style="background:#EDE9FE;color:#5B21B6;padding:1px 8px;border-radius:8px;font-weight:600;font-size:10.5px;">Reopened</span> to re-enter the cycle</div>
+
+  <div class="page-footer">
+    <span>Bugify — QA Bug Tracking System</span>
+    <span>Vantage Circle · March 2026</span>
+    <span>Page 9</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 10 — BUG ID FORMAT + BENEFITS
+══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand"><svg width="18" height="18" viewBox="0 0 34 34" fill="none"><rect width="34" height="34" rx="9" fill="#2563EB"/><ellipse cx="17" cy="21" rx="7.5" ry="8.5" fill="white"/><circle cx="17" cy="11.5" r="3.5" fill="white"/><path d="M15 9.5 C13.5 7.5 11 6 9 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M19 9.5 C20.5 7.5 23 6 25 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>Bugify</div>
+    <div class="section-label">Bug ID Format & Benefits</div>
+  </div>
+
+  <h2 class="section-title">11. Bug ID Format</h2>
+  <div class="section-divider"></div>
+
+  <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:18px;margin-bottom:14px;display:flex;align-items:center;gap:20px;">
+    <div style="text-align:center;flex-shrink:0;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:700;color:#2563EB;letter-spacing:2px;">KUM-0017</div>
+      <div style="font-size:11px;color:#94A3B8;margin-top:4px;">Example Bug ID</div>
+    </div>
+    <div style="flex:1;">
+      <div style="display:flex;gap:0;margin-bottom:8px;">
+        <div style="background:#DBEAFE;border:1.5px solid #93C5FD;border-radius:6px 0 0 6px;padding:8px 14px;text-align:center;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:#1E40AF;">KUM</div>
+          <div style="font-size:10px;color:#3B82F6;margin-top:2px;">Prefix</div>
+        </div>
+        <div style="background:#F1F5F9;border:1.5px solid #CBD5E1;border-left:none;padding:8px 6px;display:flex;align-items:center;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:16px;color:#94A3B8;">-</div>
+        </div>
+        <div style="background:#F0FDF4;border:1.5px solid #86EFAC;border-left:none;border-radius:0 6px 6px 0;padding:8px 14px;text-align:center;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:#16A34A;">0017</div>
+          <div style="font-size:10px;color:#16A34A;margin-top:2px;">Sequence</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#475569;line-height:1.7;">
+        <strong>Prefix</strong> = first 3 letters of the tester's name, uppercase (KUM from "Kumar Ankit").<br>
+        <strong>Sequence</strong> = 4-digit zero-padded number, increments per tester, never resets.<br>
+        IDs are generated by Google Apps Script using persistent script properties, so they are collision-safe even with simultaneous submissions.
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box blue">
+    <div class="info-box-icon">💡</div>
+    <div class="info-box-body">
+      <div class="info-box-title">Referencing bugs in conversations</div>
+      <p>Always refer to bugs by their ID in Slack, JIRA, or emails — e.g. "KUM-0017 is blocking the release". This ensures everyone is talking about the same bug and it can be found instantly in the dashboard using the search box.</p>
+    </div>
+  </div>
+
+  <!-- Section 12 -->
+  <h2 class="section-title" style="margin-top:20px;">12. Benefits & Use Cases</h2>
+  <div class="section-divider"></div>
+
+  <div class="benefit-grid">
+    <div class="benefit-card">
+      <div class="benefit-icon">🚀</div>
+      <div class="benefit-title">No Setup for Testers</div>
+      <div class="benefit-desc">Open a link, select your name, start logging bugs. No account, no install, no training needed.</div>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">⚡</div>
+      <div class="benefit-title">Batch Submissions</div>
+      <div class="benefit-desc">Submit 10 bugs in one click rather than reloading the page after every bug — saves significant time during intensive testing sprints.</div>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">📊</div>
+      <div class="benefit-title">Sprint Overview</div>
+      <div class="benefit-desc">Team leads get an instant view of how many bugs were found per sprint, by whom, and how many are still open vs fixed.</div>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">🏷</div>
+      <div class="benefit-title">Severity Tracking</div>
+      <div class="benefit-desc">Critical and High bugs are highlighted separately so the team can prioritise fixes before minor issues.</div>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">📤</div>
+      <div class="benefit-title">Shareable Reports</div>
+      <div class="benefit-desc">One-click CSV export lets team leads share bug reports with product managers, developers, or stakeholders in a format they can open anywhere.</div>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">🔒</div>
+      <div class="benefit-title">Secure Dashboard</div>
+      <div class="benefit-desc">The dashboard is password-protected. Testers only have access to the submission form, keeping the full bug database private to the QA lead.</div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Bugify — QA Bug Tracking System</span>
+    <span>Vantage Circle · March 2026</span>
+    <span>Page 10</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 11 — SETUP & DEPLOYMENT + SEVERITY REF
+══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand"><svg width="18" height="18" viewBox="0 0 34 34" fill="none"><rect width="34" height="34" rx="9" fill="#2563EB"/><ellipse cx="17" cy="21" rx="7.5" ry="8.5" fill="white"/><circle cx="17" cy="11.5" r="3.5" fill="white"/><path d="M15 9.5 C13.5 7.5 11 6 9 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M19 9.5 C20.5 7.5 23 6 25 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>Bugify</div>
+    <div class="section-label">Setup & Deployment</div>
+  </div>
+
+  <h2 class="section-title">13. Setup & Deployment</h2>
+  <div class="section-divider"></div>
+  <p style="margin-bottom:12px;">Initial setup is a one-time task for the system administrator. After setup, the system runs automatically with zero maintenance.</p>
+
+  <h3 style="font-size:13px;font-weight:700;color:#0F2044;margin-bottom:8px;">Backend — Google Apps Script</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Create a Google Sheet</div>
+        <div class="step-desc">Go to <code>sheets.google.com</code> → New Sheet. Copy the Sheet ID from the URL (the long string between <code>/d/</code> and <code>/edit</code>). Paste it into <code>google-apps-script.js</code> as the value of <code>SHEET_ID</code>.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Deploy the Web App</div>
+        <div class="step-desc">Open <code>script.google.com</code> → New Project. Paste the contents of <code>google-apps-script.js</code>. Click <strong>Deploy → New Deployment → Web App</strong>. Set "Execute as: Me", "Who has access: Anyone". Copy the deployment URL.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Run one-time setup functions</div>
+        <div class="step-desc">In the Apps Script editor, run <code>setupTrigger()</code> to install the auto-sync onEdit trigger. Run <code>setupValidation()</code> to add Status dropdowns to all tester sheets.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Update config.js</div>
+        <div class="step-desc">Paste the Web App URL into <code>config.js</code> as <code>scriptUrl</code>. Set <code>dashboardPassword</code> to a secure password. Commit and push — GitHub Actions will deploy to GitHub Pages automatically.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box amber" style="margin:12px 0 16px;">
+    <div class="info-box-icon">⚠️</div>
+    <div class="info-box-body">
+      <div class="info-box-title">Re-deploying after backend changes</div>
+      <p>If you edit <code>google-apps-script.js</code>, you must manually create a new deployment in the Apps Script editor (Deploy → Manage Deployments → New Version). The URL stays the same — the change takes effect immediately after the new deployment is saved.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">14. Severity Quick Reference</h2>
+  <div class="section-divider"></div>
+
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;text-align:center;">
+    <div style="border:1.5px solid #FECACA;border-radius:8px;padding:12px 8px;background:#FEF2F2;">
+      <div style="font-size:20px;margin-bottom:6px;">🔴</div>
+      <div style="font-size:12px;font-weight:700;color:#991B1B;">Critical</div>
+      <div style="font-size:10.5px;color:#B91C1C;margin-top:4px;line-height:1.5;">App broken. Fix immediately. Blocks release.</div>
+    </div>
+    <div style="border:1.5px solid #FDE68A;border-radius:8px;padding:12px 8px;background:#FFFBEB;">
+      <div style="font-size:20px;margin-bottom:6px;">🟠</div>
+      <div style="font-size:12px;font-weight:700;color:#B45309;">High</div>
+      <div style="font-size:10.5px;color:#D97706;margin-top:4px;line-height:1.5;">Major feature broken. No workaround. Fix before release.</div>
+    </div>
+    <div style="border:1.5px solid #FEF08A;border-radius:8px;padding:12px 8px;background:#FEFCE8;">
+      <div style="font-size:20px;margin-bottom:6px;">🟡</div>
+      <div style="font-size:12px;font-weight:700;color:#854D0E;">Medium</div>
+      <div style="font-size:10.5px;color:#A16207;margin-top:4px;line-height:1.5;">Feature broken but workaround exists. Fix this sprint.</div>
+    </div>
+    <div style="border:1.5px solid #A7F3D0;border-radius:8px;padding:12px 8px;background:#F0FDF4;">
+      <div style="font-size:20px;margin-bottom:6px;">🟢</div>
+      <div style="font-size:12px;font-weight:700;color:#065F46;">Low</div>
+      <div style="font-size:10.5px;color:#047857;margin-top:4px;line-height:1.5;">Minor issue. Doesn't block users. Fix in next sprint.</div>
+    </div>
+    <div style="border:1.5px solid #CBD5E1;border-radius:8px;padding:12px 8px;background:#F8FAFC;">
+      <div style="font-size:20px;margin-bottom:6px;">⚪</div>
+      <div style="font-size:12px;font-weight:700;color:#475569;">Trivial</div>
+      <div style="font-size:10.5px;color:#64748B;margin-top:4px;line-height:1.5;">Cosmetic / typo. No impact on functionality.</div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Bugify — QA Bug Tracking System</span>
+    <span>Vantage Circle · March 2026</span>
+    <span>Page 11</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 12 — FAQ
+══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand"><svg width="18" height="18" viewBox="0 0 34 34" fill="none"><rect width="34" height="34" rx="9" fill="#2563EB"/><ellipse cx="17" cy="21" rx="7.5" ry="8.5" fill="white"/><circle cx="17" cy="11.5" r="3.5" fill="white"/><path d="M15 9.5 C13.5 7.5 11 6 9 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M19 9.5 C20.5 7.5 23 6 25 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>Bugify</div>
+    <div class="section-label">Frequently Asked Questions</div>
+  </div>
+
+  <h2 class="section-title">15. Frequently Asked Questions</h2>
+  <div class="section-divider"></div>
+
+  <div style="display:flex;flex-direction:column;gap:12px;">
+
+    <div style="border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;">
+      <div style="background:#F8FAFC;padding:10px 14px;border-bottom:1px solid #E2E8F0;display:flex;gap:10px;align-items:center;">
+        <div style="background:#DBEAFE;color:#2563EB;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;">Q</div>
+        <div style="font-size:13px;font-weight:600;color:#0F2044;">I submitted a bug but it doesn't appear on the dashboard. What do I do?</div>
+      </div>
+      <div style="padding:10px 14px;font-size:12px;color:#475569;line-height:1.7;">Click the <strong>↻ Refresh</strong> button on the dashboard to bypass the 30-minute cache and fetch the latest data. If it still doesn't appear after refreshing, check whether the Google Apps Script deployment is active and that the Sheet ID in the script matches the actual spreadsheet.</div>
+    </div>
+
+    <div style="border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;">
+      <div style="background:#F8FAFC;padding:10px 14px;border-bottom:1px solid #E2E8F0;display:flex;gap:10px;align-items:center;">
+        <div style="background:#DBEAFE;color:#2563EB;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;">Q</div>
+        <div style="font-size:13px;font-weight:600;color:#0F2044;">Can I edit or delete a bug after submitting?</div>
+      </div>
+      <div style="padding:10px 14px;font-size:12px;color:#475569;line-height:1.7;">The form does not support editing submitted bugs. To correct a bug, open the Google Sheet directly (ask your team lead for access) and edit the row manually. You can also submit a new bug with the corrected information and note in the description that it supersedes the previous one.</div>
+    </div>
+
+    <div style="border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;">
+      <div style="background:#F8FAFC;padding:10px 14px;border-bottom:1px solid #E2E8F0;display:flex;gap:10px;align-items:center;">
+        <div style="background:#DBEAFE;color:#2563EB;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;">Q</div>
+        <div style="font-size:13px;font-weight:600;color:#0F2044;">How do I update the status of a bug?</div>
+      </div>
+      <div style="padding:10px 14px;font-size:12px;color:#475569;line-height:1.7;">Open the Google Spreadsheet and find your tester sheet (tab named after you). In column K (Status), click the cell for the bug you want to update — a dropdown will appear. Select the new status. The change automatically syncs to the Master Bug Sheet within seconds and will appear on the dashboard on next refresh.</div>
+    </div>
+
+    <div style="border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;">
+      <div style="background:#F8FAFC;padding:10px 14px;border-bottom:1px solid #E2E8F0;display:flex;gap:10px;align-items:center;">
+        <div style="background:#DBEAFE;color:#2563EB;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;">Q</div>
+        <div style="font-size:13px;font-weight:600;color:#0F2044;">My name is not in the tester dropdown. What should I do?</div>
+      </div>
+      <div style="padding:10px 14px;font-size:12px;color:#475569;line-height:1.7;">Contact your team lead or system admin and ask them to add your name to the <code style="background:#F1F5F9;padding:1px 5px;border-radius:3px;font-family:monospace;font-size:11px;">TESTERS</code> array in <code style="background:#F1F5F9;padding:1px 5px;border-radius:3px;font-family:monospace;font-size:11px;">index.html</code>. After the change is pushed to GitHub, your name will appear in the dropdown.</div>
+    </div>
+
+    <div style="border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;">
+      <div style="background:#F8FAFC;padding:10px 14px;border-bottom:1px solid #E2E8F0;display:flex;gap:10px;align-items:center;">
+        <div style="background:#DBEAFE;color:#2563EB;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;">Q</div>
+        <div style="font-size:13px;font-weight:600;color:#0F2044;">The form shows an error "Submission failed — check your connection". What's wrong?</div>
+      </div>
+      <div style="padding:10px 14px;font-size:12px;color:#475569;line-height:1.7;">This means the request to Google Apps Script timed out (after 25 seconds) or failed. Possible causes: (1) no internet connection, (2) the Apps Script deployment was revoked or expired and needs to be redeployed, (3) Google's servers are temporarily slow. Try again in a few minutes. If it persists, the admin should check the deployment status.</div>
+    </div>
+
+    <div style="border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;">
+      <div style="background:#F8FAFC;padding:10px 14px;border-bottom:1px solid #E2E8F0;display:flex;gap:10px;align-items:center;">
+        <div style="background:#DBEAFE;color:#2563EB;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;">Q</div>
+        <div style="font-size:13px;font-weight:600;color:#0F2044;">How do I share proof (screenshots/videos)?</div>
+      </div>
+      <div style="padding:10px 14px;font-size:12px;color:#475569;line-height:1.7;">Upload to <strong>Google Drive</strong> → right-click the file → Share → "Anyone with the link can view" → Copy link. Paste that link in the Proof Link field. Alternatively use Confluence, Loom, or any other platform that gives a public or shared view URL. Avoid attaching files directly — use shareable links only.</div>
+    </div>
+
+  </div>
+
+  <!-- Back cover strip -->
+  <div style="margin-top:24px;background:linear-gradient(135deg,#0F2044,#1A3A8A);border-radius:10px;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;color:#fff;">
+    <div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;margin-bottom:3px;">Bugify</div>
+      <div style="font-size:11px;opacity:.65;">QA Bug Tracking System · Vantage Circle</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:11px;opacity:.65;">Version 2.0 · March 2026</div>
+      <div style="font-size:11px;opacity:.5;margin-top:2px;">Built with HTML · Google Apps Script · Google Sheets · GitHub Pages</div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Bugify — QA Bug Tracking System</span>
+    <span>Vantage Circle · March 2026</span>
+    <span>Page 12</span>
+  </div>
+</div>
+
+</body>
+</html>
