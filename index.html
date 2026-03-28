@@ -640,7 +640,8 @@ function addBug(){
   }
   ctr++;
   const id=ctr;
-  const dOpts='<option value="">— Unassigned —</option>'+DEVS.map(d=>`<option>${d}</option>`).join('');
+  const allAssignees=[...new Set([...TESTERS,...DEVS])].sort((a,b)=>a.localeCompare(b));
+  const dOpts='<option value="">— Unassigned —</option>'+allAssignees.map(d=>`<option>${d}</option>`).join('');
   const pOpts='<option value="">Select…</option>'+PLATS.map(p=>`<option>${p}</option>`).join('');
   const sevH=SEVS.map(s=>`<div class="sev-opt" data-s="${s}"><input type="radio" name="sev_${id}" id="sv${id}${s}" value="${s}"><label for="sv${id}${s}">${SICO[s]} ${s}</label></div>`).join('');
 
