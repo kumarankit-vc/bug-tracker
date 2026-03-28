@@ -189,14 +189,6 @@ select option{background:#fff;color:#172B4D;}
 .sev-opt[data-s="Low"]      input:checked+label{background:#36B37E;box-shadow:0 2px 8px rgba(54,179,126,.35);}
 .sev-opt[data-s="Trivial"]  input:checked+label{background:#6B778C;box-shadow:0 2px 6px rgba(107,119,140,.3);}
 .sev-err{font-size:11px;color:#DE350B;margin-top:5px;display:none;font-weight:500;}
-.sev-opt[data-s="P1"] input:checked+label{background:#DC2626;box-shadow:0 2px 8px rgba(220,38,38,.4);}
-.sev-opt[data-s="P2"] input:checked+label{background:#D97706;box-shadow:0 2px 8px rgba(217,119,6,.4);}
-.sev-opt[data-s="P3"] input:checked+label{background:#2563EB;box-shadow:0 2px 8px rgba(37,99,235,.4);}
-.sev-opt[data-s="P4"] input:checked+label{background:#16A34A;box-shadow:0 2px 8px rgba(22,163,74,.35);}
-.tag-P1{background:#FEE2E2;color:#991B1B;}
-.tag-P2{background:#FEF3C7;color:#B45309;}
-.tag-P3{background:#DBEAFE;color:#1E40AF;}
-.tag-P4{background:#D1FAE5;color:#065F46;}
 
 /* ── Bug cards ──────────────────────────────────────────────────────── */
 .bug-card{
@@ -622,8 +614,6 @@ const DEVS = [
 const PLATS = ["Web","Android","iOS","Desktop","API","Other"];
 const SEVS  = ["Critical","High","Medium","Low","Trivial"];
 const SICO  = {Critical:"🔴",High:"🟠",Medium:"🟡",Low:"🟢",Trivial:"⚪"};
-const PRIS  = ["P1","P2","P3","P4"];
-const PICO  = {P1:"🔴",P2:"🟠",P3:"🔵",P4:"🟢"};
 const STATS = ["Open","In Progress","Fixed","Verified","Closed","Reopened"];
 
 const tSel = document.getElementById('testerSel');
@@ -653,7 +643,6 @@ function addBug(){
   const dOpts='<option value="">— Unassigned —</option>'+DEVS.map(d=>`<option>${d}</option>`).join('');
   const pOpts='<option value="">Select…</option>'+PLATS.map(p=>`<option>${p}</option>`).join('');
   const sevH=SEVS.map(s=>`<div class="sev-opt" data-s="${s}"><input type="radio" name="sev_${id}" id="sv${id}${s}" value="${s}"><label for="sv${id}${s}">${SICO[s]} ${s}</label></div>`).join('');
-  const priH=PRIS.map(p=>`<div class="sev-opt" data-s="${p}"><input type="radio" name="pri_${id}" id="pv${id}${p}" value="${p}"><label for="pv${id}${p}">${PICO[p]} ${p}</label></div>`).join('');
 
   const c=document.createElement('div');
   c.className='bug-card';c.dataset.id=id;
@@ -662,7 +651,6 @@ function addBug(){
       <div class="bug-num">#${id}</div>
       <div class="bug-summary" id="sm${id}">New bug — fill in the details below</div>
       <span class="sev-tag" id="st${id}" style="display:none"></span>
-      <span class="sev-tag" id="pt${id}" style="display:none"></span>
       <button class="btn-tog" title="Expand / Collapse">▾</button>
       <button class="btn-del" title="Remove this bug">✕</button>
     </div>
@@ -718,21 +706,12 @@ function addBug(){
 
       <div class="field-group">
         <div class="fgroup-title"><span class="fgroup-icon">🏷</span><span>Classification</span></div>
-        <div class="row c1">
+        <div class="row cv">
           <div class="field">
             <label>Severity <span class="req">*</span></label>
             <div class="sev-group">${sevH}</div>
             <div class="sev-err" id="se${id}">Please select a severity level</div>
           </div>
-        </div>
-        <div class="row c1" style="margin-top:10px">
-          <div class="field">
-            <label>Priority <span class="req">*</span></label>
-            <div class="sev-group">${priH}</div>
-            <div class="sev-err" id="pe${id}">Please select a priority level</div>
-          </div>
-        </div>
-        <div class="row c1" style="margin-top:10px">
           <div class="field">
             <label>Status</label>
             <select name="status">${STATS.map((s,i)=>`<option${i===0?' selected':''}>${s}</option>`).join('')}</select>
@@ -785,11 +764,6 @@ function addBug(){
     t.textContent=r.value;t.className='sev-tag tag-'+r.value;t.style.display='';
     document.getElementById('se'+id).style.display='none';
   }));
-  c.querySelectorAll(`[name="pri_${id}"]`).forEach(r=>r.addEventListener('change',()=>{
-    const t=document.getElementById('pt'+id);
-    t.textContent=r.value;t.className='sev-tag tag-'+r.value;t.style.display='';
-    document.getElementById('pe'+id).style.display='none';
-  }));
   c.querySelectorAll('input,select,textarea').forEach(el=>
     el.addEventListener('input',()=>{const f=el.closest('.field');if(f)f.classList.remove('err');}));
 
@@ -820,7 +794,6 @@ function valCard(c){
   const proofEl=c.querySelector('[name="proof"]'),proofFg=document.getElementById('fpr'+id);
   if(!proofEl||!proofEl.value.trim()){if(proofFg)proofFg.classList.add('err');ok=false;}
   if(!c.querySelector(`[name="sev_${id}"]:checked`)){document.getElementById('se'+id).style.display='block';ok=false;}
-  if(!c.querySelector(`[name="pri_${id}"]:checked`)){document.getElementById('pe'+id).style.display='block';ok=false;}
   if(!ok)c.classList.remove('collapsed');
   return ok;
 }
@@ -829,7 +802,6 @@ function getData(c){
   return{module:g('module'),platform:g('platform'),description:g('description'),
     expected:g('expected'),actual:g('actual'),
     severity:(c.querySelector(`[name="sev_${id}"]:checked`)||{}).value||'',
-    priority:(c.querySelector(`[name="pri_${id}"]:checked`)||{}).value||'',
     proof:g('proof'),status:g('status')||'Open',assignedTo:g('assignedTo')};
 }
 

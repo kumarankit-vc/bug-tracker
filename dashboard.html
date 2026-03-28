@@ -237,7 +237,7 @@ tbody td{padding:12px 14px;vertical-align:top;}
 }
 
 /* col: Severity */
-.col-sev,.col-status,.col-pri{white-space:nowrap;}
+.col-sev,.col-status{white-space:nowrap;}
 .sev-badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;white-space:nowrap;letter-spacing:.2px;}
 .sb-Critical{background:#FEE2E2;color:#991B1B;}
 .sb-High    {background:#FEF3C7;color:#B45309;}
@@ -245,13 +245,6 @@ tbody td{padding:12px 14px;vertical-align:top;}
 .sb-Low     {background:#D1FAE5;color:#065F46;}
 .sb-Trivial {background:#F1F5F9;color:#475569;}
 .sb-        {background:#F1F5F9;color:#64748B;}
-/* Priority badges */
-.pri-badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;white-space:nowrap;letter-spacing:.2px;}
-.pb-P1{background:#FEE2E2;color:#991B1B;}
-.pb-P2{background:#FEF3C7;color:#B45309;}
-.pb-P3{background:#DBEAFE;color:#1E40AF;}
-.pb-P4{background:#D1FAE5;color:#065F46;}
-.pb- {background:#F1F5F9;color:#64748B;}
 
 /* col: Status */
 .st-badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;white-space:nowrap;letter-spacing:.2px;}
@@ -487,13 +480,6 @@ tbody tr.row-critical:hover{background:#FFF3F0;}
         <option value="">All Severities</option>
         <option>Critical</option><option>High</option><option>Medium</option><option>Low</option><option>Trivial</option>
       </select>
-      <select class="ctrl ctrl-sel" id="fPriority">
-        <option value="">All Priorities</option>
-        <option value="P1">P1 — Must Fix</option>
-        <option value="P2">P2 — Should Fix</option>
-        <option value="P3">P3 — Can Wait</option>
-        <option value="P4">P4 — Nice to Have</option>
-      </select>
       <select class="ctrl ctrl-sel" id="fStatus">
         <option value="">All Statuses</option>
         <option>Open</option><option>In Progress</option><option>Fixed</option><option>Verified</option><option>Closed</option><option>Reopened</option>
@@ -531,7 +517,6 @@ tbody tr.row-critical:hover{background:#FFF3F0;}
             <th data-col="tester">Tester</th>
             <th data-col="description">Description &amp; Details</th>
             <th data-col="severity">Severity</th>
-            <th data-col="priority">Priority</th>
             <th data-col="status">Status</th>
             <th data-col="assignedTo">Assigned To</th>
             <th data-col="submittedAt">Submitted</th>
@@ -673,7 +658,6 @@ function normBug(b) {
     expected:    b.expected    || b.expectedResult     || '',
     actual:      b.actual      || b.actualResult       || '',
     severity:    b.severity                           || '',
-    priority:    b.priority                           || '',
     proof:       b.proof       || b.proofLink          || '',
     status:      b.status                             || 'Open',
     assignedTo:  b.assignedTo                         || '',
@@ -767,7 +751,7 @@ function render() {
   applyFilters();  // resets to page 1
 }
 
-// ── Stats — always computed from the full unfiltered dataset ─────
+// ── Stats — computed from provided dataset (filtered or full) ────
 function animCount(el, target) {
   const start = parseInt(el.textContent) || 0;
   if (start === target) return;
@@ -779,11 +763,12 @@ function animCount(el, target) {
     if (i >= steps) { el.textContent = target; clearInterval(t); }
   }, dur / steps);
 }
-function updateStats() {
-  animCount(document.getElementById('sv0'), allBugs.length);
-  animCount(document.getElementById('sv1'), allBugs.filter(b => b.status === 'Open' || b.status === 'Reopened').length);
-  animCount(document.getElementById('sv2'), allBugs.filter(b => b.severity === 'Critical' || b.severity === 'High').length);
-  animCount(document.getElementById('sv3'), allBugs.filter(b => ['Fixed','Verified','Closed'].includes(b.status)).length);
+function updateStats(bugs) {
+  if (!bugs) bugs = allBugs;
+  animCount(document.getElementById('sv0'), bugs.length);
+  animCount(document.getElementById('sv1'), bugs.filter(b => b.status === 'Open' || b.status === 'Reopened').length);
+  animCount(document.getElementById('sv2'), bugs.filter(b => b.severity === 'Critical' || b.severity === 'High').length);
+  animCount(document.getElementById('sv3'), bugs.filter(b => ['Fixed','Verified','Closed'].includes(b.status)).length);
 }
 
 // ── Populate sprint / product dropdowns + tester pills ───────────
@@ -822,7 +807,6 @@ function applyFilters() {
   const selectedTesters = [...document.querySelectorAll('#fTesterGroup .tester-pill.active')].map(el => el.dataset.tester);
   const pr    = document.getElementById('fProduct').value;
   const sv    = document.getElementById('fSev').value;
-  const prio  = document.getElementById('fPriority').value;
   const st    = document.getElementById('fStatus').value;
   const dfrom = document.getElementById('fDateFrom').value;
   const dto   = document.getElementById('fDateTo').value;
@@ -833,8 +817,7 @@ function applyFilters() {
     if (sp && b.sprint   !== sp) return false;
     if (selectedTesters.length && !selectedTesters.includes(b.tester)) return false;
     if (pr && b.product  !== pr) return false;
-    if (sv   && b.severity !== sv)   return false;
-    if (prio && b.priority !== prio) return false;
+    if (sv && b.severity !== sv) return false;
     if (st && b.status   !== st) return false;
     if (q) {
       const hay = [b.bugId,b.tester,b.description,b.module,b.product,b.sprint,b.assignedTo,b.platform]
@@ -856,6 +839,7 @@ function applyFilters() {
   });
 
   filteredBugs = bugs;
+  updateStats(filteredBugs);
   renderPage();
 }
 
@@ -891,10 +875,7 @@ function renderCards(slice) {
           <span class="bcv-id">${e(b.bugId || '—')}</span>
           <div class="bcv-title">${e(genTitle(b.description))}</div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0">
-          <span class="sev-badge sb-${e(sev)}">${e(sev) || '—'}</span>
-          ${b.priority ? `<span class="pri-badge pb-${e(b.priority)}">${e(b.priority)}</span>` : ''}
-        </div>
+        <span class="sev-badge sb-${e(sev)}" style="flex-shrink:0">${e(sev) || '—'}</span>
       </div>
       ${chips ? `<div class="bcv-chips">${chips}</div>` : ''}
       <div class="bcv-foot">
@@ -959,7 +940,6 @@ function renderPage() {
       const proofHtml = b.proof
         ? `<a href="${e(b.proof)}" class="proof-btn" target="_blank" rel="noopener">🔗 View</a>`
         : `<span class="no-proof">—</span>`;
-      const prio = b.priority || '';
       const hasMore = b.description && b.description.length > 75;
       return `<tr${sev === 'Critical' ? ' class="row-critical"' : ''}>
         <td class="col-id"><span class="bug-id">${e(b.bugId || '—')}</span></td>
@@ -970,7 +950,6 @@ function renderPage() {
           ${chips ? `<div class="desc-meta">${chips}</div>` : ''}
         </td>
         <td class="col-sev"><span class="sev-badge sb-${e(sev)}">${e(sev) || '—'}</span></td>
-        <td class="col-pri"><span class="pri-badge pb-${e(prio)}">${e(prio) || '—'}</span></td>
         <td class="col-status"><span class="st-badge stb-${e(stat)}">${e(b.status || 'Open')}</span></td>
         <td class="col-assign">${e(b.assignedTo || '—')}</td>
         <td class="col-date">${fmtDate(b.submittedAt)}</td>
@@ -1021,7 +1000,7 @@ document.querySelectorAll('thead th[data-col]').forEach(th => {
 
 // ── Filter/search listeners ───────────────────────────────────────
 // Selects fire immediately; free-text search is debounced 400 ms
-['fSprint','fProduct','fSev','fPriority','fStatus','fDateFrom','fDateTo']
+['fSprint','fProduct','fSev','fStatus','fDateFrom','fDateTo']
   .forEach(id => document.getElementById(id).addEventListener('input', applyFilters));
 
 // Tester pills — toggle active state on click, then re-filter
@@ -1077,10 +1056,10 @@ document.getElementById('btnNextPage').addEventListener('click', () => {
 document.getElementById('btnExport').addEventListener('click', () => {
   if (!filteredBugs.length) { alert('No bugs to export with current filters.'); return; }
   const h = ['Bug ID','Tester','Sprint','Product','Module','Platform','Description',
-             'Expected','Actual','Severity','Priority','Proof','Status','Assigned To','Submitted At'];
+             'Expected','Actual','Severity','Proof','Status','Assigned To','Submitted At'];
   const rows = filteredBugs.map(b =>
     [b.bugId,b.tester,b.sprint,b.product,b.module,b.platform,
-     b.description,b.expected,b.actual,b.severity,b.priority,b.proof,
+     b.description,b.expected,b.actual,b.severity,b.proof,
      b.status,b.assignedTo,b.submittedAt]
       .map(v => `"${(v || '').replace(/"/g, '""')}"`)
   );

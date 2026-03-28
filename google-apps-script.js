@@ -65,15 +65,15 @@ function appendBug(ss, data) {
     data.assignedTo  || "",
   ];
 
-  // Master sheet row (includes Tester + Submitted At + Priority)
-  master.appendRow([...baseRow, data.tester || "", ts, data.priority || ""]);
-  formatRow(master, master.getLastRow(), data.severity, 15);
+  // Master sheet row (includes Tester + Submitted At)
+  master.appendRow([...baseRow, data.tester || "", ts]);
+  formatRow(master, master.getLastRow(), data.severity, 14);
 
-  // Per-tester sheet row (no Tester column, has Submitted At + Priority)
+  // Per-tester sheet row (no Tester column, has Submitted At)
   const tSheet = getOrCreate(ss, data.tester || "Unknown");
   ensureHeaders(tSheet, false);
-  tSheet.appendRow([...baseRow, ts, data.priority || ""]);
-  formatRow(tSheet, tSheet.getLastRow(), data.severity, 14);
+  tSheet.appendRow([...baseRow, ts]);
+  formatRow(tSheet, tSheet.getLastRow(), data.severity, 13);
 
   return bugId;
 }
@@ -222,10 +222,10 @@ function ensureHeaders(sheet, isMaster) {
   const h = isMaster
     ? ["Bug ID","Sprint","Module","Product","Platform",
        "Description / Summary","Expected Result","Actual Result",
-       "Severity","Proof Link","Status","Assigned To","Tester","Submitted At","Priority"]
+       "Severity","Proof Link","Status","Assigned To","Tester","Submitted At"]
     : ["Bug ID","Sprint","Module","Product","Platform",
        "Description / Summary","Expected Result","Actual Result",
-       "Severity","Proof Link","Status","Assigned To","Submitted At","Priority"];
+       "Severity","Proof Link","Status","Assigned To","Submitted At"];
   sheet.appendRow(h);
   sheet.getRange(1, 1, 1, h.length)
     .setBackground("#1a3a6b")
