@@ -51,7 +51,10 @@ body{
   background:#fff;border:1px solid #BDD9F5;border-radius:10px;
   padding:14px 20px 12px;margin-bottom:14px;
   box-shadow:0 1px 4px rgba(10,37,96,.07);
+  position:relative;overflow:hidden;
 }
+.hero-deco{position:absolute;right:16px;top:50%;transform:translateY(-50%);pointer-events:none;animation:heroBugFloat 5s ease-in-out infinite;opacity:0.08;}
+@keyframes heroBugFloat{0%,100%{transform:translateY(-50%) rotate(-8deg) scale(1)}50%{transform:translateY(calc(-50% - 8px)) rotate(8deg) scale(1.05)}}
 .page-hero h1{font-size:20px;font-weight:700;color:#172B4D;letter-spacing:-.3px;margin-bottom:2px;}
 .page-hero p{font-size:13px;color:#6B778C;margin-bottom:10px;}
 .hero-steps{display:flex;align-items:center;gap:0;flex-wrap:wrap;gap:4px;}
@@ -498,6 +501,18 @@ select option{background:#fff;color:#172B4D;}
 <div class="page">
 
   <div class="page-hero">
+    <svg class="hero-deco" width="80" height="80" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="34" height="34" rx="9" fill="#0052CC"/>
+      <ellipse cx="17" cy="21" rx="7.5" ry="8.5" fill="white"/>
+      <circle cx="17" cy="11.5" r="3.5" fill="white"/>
+      <path d="M15 9.5 C13.5 7.5 11 6 9 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+      <path d="M19 9.5 C20.5 7.5 23 6 25 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+      <line x1="17" y1="13" x2="17" y2="29" stroke="#0052CC" stroke-width="1.2" stroke-linecap="round"/>
+      <circle cx="13.5" cy="19" r="1.5" fill="#0052CC" opacity="0.45"/>
+      <circle cx="13.5" cy="24" r="1.5" fill="#0052CC" opacity="0.45"/>
+      <circle cx="20.5" cy="19" r="1.5" fill="#0052CC" opacity="0.45"/>
+      <circle cx="20.5" cy="24" r="1.5" fill="#0052CC" opacity="0.45"/>
+    </svg>
     <h1>Bug Report</h1>
     <p>Submit and track bugs found during QA testing · Vantage Circle</p>
     <div class="hero-steps">
@@ -597,8 +612,8 @@ const DEVS = [
   "Pulak Bordoloi","Rongon Kumar","Phukan","Anisha Haque"
 ];
 const PLATS = ["Web","Android","iOS","Desktop","API","Other"];
-const SEVS  = ["Critical","High","Medium","Low"];
-const SICO  = {Critical:"🔴",High:"🟠",Medium:"🟡",Low:"🟢"};
+const SEVS  = ["Critical","High","Medium","Low","Trivial"];
+const SICO  = {Critical:"🔴",High:"🟠",Medium:"🟡",Low:"🟢",Trivial:"⚪"};
 const STATS = ["Open","In Progress","Fixed","Verified","Closed","Reopened"];
 
 const tSel = document.getElementById('testerSel');

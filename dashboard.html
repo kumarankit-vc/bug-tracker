@@ -220,7 +220,7 @@ tbody td{padding:13px 14px;vertical-align:top;}
 }
 
 /* col: Description */
-.col-desc{min-width:320px;max-width:480px;}
+.col-desc{min-width:180px;max-width:320px;}
 .desc-text{font-size:13px;color:#172B4D;line-height:1.5;margin-bottom:5px;word-break:break-word;}
 .desc-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
 .meta-chip{
@@ -306,6 +306,48 @@ tbody td{padding:13px 14px;vertical-align:top;}
 /* ── Keyframes ──────────────────────────────────────────────────────── */
 @keyframes spin {to{transform:rotate(360deg)}}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* ── Desc: title + expand ─────────────────────────────────────────── */
+.desc-title{font-size:13px;font-weight:600;color:#172B4D;line-height:1.4;word-break:break-word;}
+.desc-toggle{font-size:11px;color:#4C9AFF;background:none;border:none;cursor:pointer;padding:0;font-family:inherit;font-weight:500;margin:3px 0 2px;display:inline-block;}
+.desc-toggle:hover{color:#0052CC;}
+.desc-expand{display:none;font-size:12px;color:#5E6C84;line-height:1.5;margin-top:4px;padding:5px 8px;background:#F8FBFF;border-left:2px solid #C5E0F8;border-radius:0 3px 3px 0;word-break:break-word;}
+.desc-expand.open{display:block;}
+
+/* ── View toggle ──────────────────────────────────────────────────── */
+.view-toggle{display:flex;gap:4px;margin-left:4px;}
+.vt-btn{font-family:'Inter',sans-serif;font-size:12px;font-weight:500;padding:5px 10px;border-radius:4px;cursor:pointer;border:1.5px solid #BDD9F5;background:#fff;color:#344563;transition:all .15s;}
+.vt-btn.active{background:#DEEBFF;border-color:#4C9AFF;color:#0052CC;font-weight:600;}
+
+/* ── Card grid ────────────────────────────────────────────────────── */
+#bugCardsWrap{display:none;padding:14px 16px;}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px;}
+.bcv{background:#fff;border:1px solid #BDD9F5;border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;box-shadow:0 1px 4px rgba(10,37,96,.07);transition:box-shadow .2s,transform .18s;animation:fadeUp .35s ease both;}
+.bcv:hover{box-shadow:0 4px 18px rgba(10,37,96,.14);transform:translateY(-2px);}
+.bcv-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.bcv-left{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;}
+.bcv-id{font-family:'JetBrains Mono','Courier New',monospace;font-size:11px;font-weight:700;color:#0052CC;}
+.bcv-title{font-size:13px;font-weight:600;color:#172B4D;line-height:1.4;}
+.bcv-chips{display:flex;flex-wrap:wrap;gap:4px;}
+.bcv-chip{font-size:10px;font-weight:600;color:#5E6C84;background:#EBF4FF;border:1px solid #BDD9F5;padding:2px 6px;border-radius:3px;white-space:nowrap;}
+.bcv-foot{display:flex;align-items:center;justify-content:space-between;gap:6px;padding-top:8px;border-top:1px solid #EBF4FF;margin-top:auto;}
+.bcv-proof{display:inline-flex;align-items:center;font-size:11px;font-weight:500;color:#0052CC;background:#DEEBFF;padding:3px 8px;border-radius:3px;text-decoration:none;}
+.bcv-proof:hover{background:#B3D4FF;}
+
+/* ── Critical row tint ────────────────────────────────────────────── */
+tbody tr.row-critical{background:#FFFCFC;}
+tbody tr.row-critical:hover{background:#FFF3F0;}
+
+/* ── Animated decorations ─────────────────────────────────────────── */
+.anim-bug{animation:bugFloat 4s ease-in-out infinite;display:block;margin:0 auto 12px;}
+@keyframes bugFloat{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-10px) rotate(6deg)}}
+.header-logo:hover svg{animation:bugWiggle .7s ease;}
+@keyframes bugWiggle{0%{transform:rotate(0)}20%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}80%{transform:rotate(-5deg)}100%{transform:rotate(0)}}
+
+/* ── Stat card entrance ───────────────────────────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.stat{animation:fadeUp .45s ease both;}
+.stat:nth-child(1){animation-delay:.04s}.stat:nth-child(2){animation-delay:.09s}.stat:nth-child(3){animation-delay:.14s}.stat:nth-child(4){animation-delay:.19s}
 
 /* ── Responsive ─────────────────────────────────────────────────────── */
 @media(max-width:1024px){.stats{grid-template-columns:1fr 1fr;}}
@@ -429,7 +471,7 @@ tbody td{padding:13px 14px;vertical-align:top;}
       <select class="ctrl ctrl-sel" id="fProduct"><option value="">All Products</option></select>
       <select class="ctrl ctrl-sel" id="fSev">
         <option value="">All Severities</option>
-        <option>Critical</option><option>High</option><option>Medium</option><option>Low</option>
+        <option>Critical</option><option>High</option><option>Medium</option><option>Low</option><option>Trivial</option>
       </select>
       <select class="ctrl ctrl-sel" id="fStatus">
         <option value="">All Statuses</option>
@@ -437,6 +479,10 @@ tbody td{padding:13px 14px;vertical-align:top;}
       </select>
       <button class="btn-refresh" id="btnRefresh">↻ Refresh</button>
       <button class="btn-export" id="btnExport">↓ Export CSV</button>
+      <div class="view-toggle">
+        <button class="vt-btn active" id="btnViewTable" title="Table view">☰ Table</button>
+        <button class="vt-btn" id="btnViewCards" title="Card view">⊞ Cards</button>
+      </div>
     </div>
     <div class="tb-row">
       <span class="tb-label">👤 Testers</span>
@@ -473,12 +519,27 @@ tbody td{padding:13px 14px;vertical-align:top;}
         <tbody id="bugBody"></tbody>
       </table>
     </div>
-    <div class="empty-row" id="emptyRow" style="display:none"><span>🔍</span>No bugs found matching your filters.</div>
+    <div class="empty-row" id="emptyRow" style="display:none">
+      <svg class="anim-bug" width="52" height="52" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="34" height="34" rx="9" fill="#DEEBFF"/>
+        <ellipse cx="17" cy="21" rx="7.5" ry="8.5" fill="#4C9AFF"/>
+        <circle cx="17" cy="11.5" r="3.5" fill="#4C9AFF"/>
+        <path d="M15 9.5 C13.5 7.5 11 6 9 5" stroke="#4C9AFF" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+        <path d="M19 9.5 C20.5 7.5 23 6 25 5" stroke="#4C9AFF" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+        <line x1="17" y1="13" x2="17" y2="29" stroke="#DEEBFF" stroke-width="1.2" stroke-linecap="round"/>
+        <circle cx="13.5" cy="19" r="1.5" fill="#DEEBFF" opacity="0.6"/>
+        <circle cx="13.5" cy="24" r="1.5" fill="#DEEBFF" opacity="0.6"/>
+        <circle cx="20.5" cy="19" r="1.5" fill="#DEEBFF" opacity="0.6"/>
+        <circle cx="20.5" cy="24" r="1.5" fill="#DEEBFF" opacity="0.6"/>
+      </svg>
+      No bugs found matching your filters.
+    </div>
     <div class="error-row" id="errorRow" style="display:none">
       <span>⚠️</span>
       Could not load data. The server took too long to respond.
       <div><button class="btn-retry" onclick="loadBugs(true)">↺ Try Again</button></div>
     </div>
+    <div id="bugCardsWrap"></div>
   </div>
 
   <!-- Pagination -->
@@ -564,6 +625,7 @@ let currentPage  = 1;
 let sortCol      = 'submittedAt';
 let sortAsc      = false;
 let searchTimer  = null;
+let viewMode     = 'table';  // 'table' | 'cards'
 
 // ── Pre-fetch fires immediately at page load — before user types password ────
 // The response arrives while the user authenticates (~2–4 s), so unlock()
@@ -771,6 +833,56 @@ function applyFilters() {
   renderPage();
 }
 
+// ── Generate compact title from description ───────────────────────
+function genTitle(desc) {
+  if (!desc) return '—';
+  const m = desc.match(/^(.{10,80})[.!?\n]/);
+  if (m) return m[1].trim();
+  if (desc.length <= 75) return desc;
+  const cut = desc.lastIndexOf(' ', 75);
+  return (cut > 20 ? desc.slice(0, cut) : desc.slice(0, 75)) + '…';
+}
+function toggleDesc(btn) {
+  const exp = btn.nextElementSibling;
+  const open = exp.classList.toggle('open');
+  btn.textContent = open ? '▲ less' : '▼ more';
+}
+
+// ── Render card grid ──────────────────────────────────────────────
+function renderCards(slice) {
+  const e = s => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const wrap = document.getElementById('bugCardsWrap');
+  wrap.innerHTML = '<div class="cards-grid">' + slice.map((b, i) => {
+    const sev  = b.severity || '';
+    const stat = (b.status || 'Open').replace(/ /g, '-');
+    const chips = [b.sprint, b.product, b.module, b.platform].filter(Boolean)
+      .map(v => `<span class="bcv-chip">${e(v)}</span>`).join('');
+    const proofHtml = b.proof
+      ? `<a href="${e(b.proof)}" class="bcv-proof" target="_blank" rel="noopener">🔗 Proof</a>` : '';
+    return `<div class="bcv" style="animation-delay:${Math.min(i * 0.04, 0.5)}s">
+      <div class="bcv-top">
+        <div class="bcv-left">
+          <span class="bcv-id">${e(b.bugId || '—')}</span>
+          <div class="bcv-title">${e(genTitle(b.description))}</div>
+        </div>
+        <span class="sev-badge sb-${e(sev)}" style="flex-shrink:0">${e(sev) || '—'}</span>
+      </div>
+      ${chips ? `<div class="bcv-chips">${chips}</div>` : ''}
+      <div class="bcv-foot">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <span class="tester-badge">${e(b.tester || '—')}</span>
+          <span class="st-badge stb-${e(stat)}">${e(b.status || 'Open')}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:11px;color:#7A869A">${fmtDate(b.submittedAt)}</span>
+          ${proofHtml}
+        </div>
+      </div>
+    </div>`;
+  }).join('') + '</div>';
+  wrap.style.display = 'block';
+}
+
 // ── Render the current page slice ─────────────────────────────────
 function renderPage() {
   updateSortIndicators();
@@ -789,6 +901,7 @@ function renderPage() {
 
   if (!filteredBugs.length) {
     document.getElementById('bugTable').style.display      = 'none';
+    document.getElementById('bugCardsWrap').style.display  = 'none';
     document.getElementById('emptyRow').style.display      = 'block';
     document.getElementById('paginationBar').style.display = 'none';
     return;
@@ -798,33 +911,42 @@ function renderPage() {
   currentPage      = Math.min(Math.max(1, currentPage), totalPages);
   const slice      = filteredBugs.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
-  document.getElementById('bugTable').style.display = 'table';
   document.getElementById('emptyRow').style.display = 'none';
 
   const e = s => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
-  document.getElementById('bugBody').innerHTML = slice.map(b => {
-    const sev  = b.severity || '';
-    const stat = (b.status || 'Open').replace(/ /g, '-');
-    const chips = [b.sprint, b.product, b.module, b.platform].filter(Boolean)
-                   .map(v => `<span class="meta-chip">${e(v)}</span>`).join('');
-    const proofHtml = b.proof
-      ? `<a href="${e(b.proof)}" class="proof-btn" target="_blank" rel="noopener">🔗 View</a>`
-      : `<span class="no-proof">—</span>`;
-    return `<tr>
-      <td class="col-id"><span class="bug-id">${e(b.bugId || '—')}</span></td>
-      <td class="col-tester"><span class="tester-badge">${e(b.tester || '—')}</span></td>
-      <td class="col-desc">
-        <div class="desc-text">${e(b.description || '—')}</div>
-        ${chips ? `<div class="desc-meta">${chips}</div>` : ''}
-      </td>
-      <td class="col-sev"><span class="sev-badge sb-${e(sev)}">${e(sev) || '—'}</span></td>
-      <td class="col-status"><span class="st-badge stb-${e(stat)}">${e(b.status || 'Open')}</span></td>
-      <td class="col-assign">${e(b.assignedTo || '—')}</td>
-      <td class="col-date">${fmtDate(b.submittedAt)}</td>
-      <td class="col-proof">${proofHtml}</td>
-    </tr>`;
-  }).join('');
+  if (viewMode === 'cards') {
+    document.getElementById('bugTable').style.display     = 'none';
+    renderCards(slice);
+  } else {
+    document.getElementById('bugCardsWrap').style.display = 'none';
+    document.getElementById('bugTable').style.display     = 'table';
+
+    document.getElementById('bugBody').innerHTML = slice.map(b => {
+      const sev  = b.severity || '';
+      const stat = (b.status || 'Open').replace(/ /g, '-');
+      const chips = [b.sprint, b.product, b.module, b.platform].filter(Boolean)
+                     .map(v => `<span class="meta-chip">${e(v)}</span>`).join('');
+      const proofHtml = b.proof
+        ? `<a href="${e(b.proof)}" class="proof-btn" target="_blank" rel="noopener">🔗 View</a>`
+        : `<span class="no-proof">—</span>`;
+      const hasMore = b.description && b.description.length > 75;
+      return `<tr${sev === 'Critical' ? ' class="row-critical"' : ''}>
+        <td class="col-id"><span class="bug-id">${e(b.bugId || '—')}</span></td>
+        <td class="col-tester"><span class="tester-badge">${e(b.tester || '—')}</span></td>
+        <td class="col-desc">
+          <div class="desc-title">${e(genTitle(b.description))}</div>
+          ${hasMore ? `<button class="desc-toggle" onclick="toggleDesc(this)">▼ more</button><div class="desc-expand">${e(b.description)}</div>` : ''}
+          ${chips ? `<div class="desc-meta">${chips}</div>` : ''}
+        </td>
+        <td class="col-sev"><span class="sev-badge sb-${e(sev)}">${e(sev) || '—'}</span></td>
+        <td class="col-status"><span class="st-badge stb-${e(stat)}">${e(b.status || 'Open')}</span></td>
+        <td class="col-assign">${e(b.assignedTo || '—')}</td>
+        <td class="col-date">${fmtDate(b.submittedAt)}</td>
+        <td class="col-proof">${proofHtml}</td>
+      </tr>`;
+    }).join('');
+  }
 
   // Pagination bar
   const bar   = document.getElementById('paginationBar');
@@ -892,6 +1014,20 @@ document.getElementById('btnClearDate').addEventListener('click', () => {
   document.getElementById('fDateTo').value          = '';
   document.getElementById('dateRangeInfo').textContent = '';
   applyFilters();
+});
+
+// View toggle — table vs cards
+document.getElementById('btnViewTable').addEventListener('click', () => {
+  viewMode = 'table';
+  document.getElementById('btnViewTable').classList.add('active');
+  document.getElementById('btnViewCards').classList.remove('active');
+  renderPage();
+});
+document.getElementById('btnViewCards').addEventListener('click', () => {
+  viewMode = 'cards';
+  document.getElementById('btnViewCards').classList.add('active');
+  document.getElementById('btnViewTable').classList.remove('active');
+  renderPage();
 });
 
 // Refresh — bypass cache and re-fetch from GAS
