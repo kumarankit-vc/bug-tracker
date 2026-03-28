@@ -374,10 +374,10 @@ tbody tr.row-critical{background:#FFFCFC;}
 tbody tr.row-critical:hover{background:#FFF3F0;}
 
 /* ── Animated decorations ─────────────────────────────────────────── */
-.anim-bug{animation:bugFloat 4s ease-in-out infinite;display:block;margin:0 auto 12px;}
-@keyframes bugFloat{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-10px) rotate(6deg)}}
-.header-logo:hover svg{animation:bugWiggle .7s ease;}
-@keyframes bugWiggle{0%{transform:rotate(0)}20%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}80%{transform:rotate(-5deg)}100%{transform:rotate(0)}}
+.anim-bug{animation:bugFloat 3.5s ease-in-out infinite;display:block;margin:0 auto 16px;}
+@keyframes bugFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.header-logo:hover svg{animation:bugWiggle .6s ease;}
+@keyframes bugWiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-10deg)}75%{transform:rotate(10deg)}}
 
 /* ── Stat card entrance ───────────────────────────────────────────── */
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
@@ -566,19 +566,39 @@ tbody tr.row-critical:hover{background:#FFF3F0;}
       </table>
     </div>
     <div class="empty-row" id="emptyRow" style="display:none">
-      <svg class="anim-bug" width="52" height="52" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="34" height="34" rx="9" fill="#DEEBFF"/>
-        <ellipse cx="17" cy="21" rx="7.5" ry="8.5" fill="#4C9AFF"/>
-        <circle cx="17" cy="11.5" r="3.5" fill="#4C9AFF"/>
-        <path d="M15 9.5 C13.5 7.5 11 6 9 5" stroke="#4C9AFF" stroke-width="1.4" stroke-linecap="round" fill="none"/>
-        <path d="M19 9.5 C20.5 7.5 23 6 25 5" stroke="#4C9AFF" stroke-width="1.4" stroke-linecap="round" fill="none"/>
-        <line x1="17" y1="13" x2="17" y2="29" stroke="#DEEBFF" stroke-width="1.2" stroke-linecap="round"/>
-        <circle cx="13.5" cy="19" r="1.5" fill="#DEEBFF" opacity="0.6"/>
-        <circle cx="13.5" cy="24" r="1.5" fill="#DEEBFF" opacity="0.6"/>
-        <circle cx="20.5" cy="19" r="1.5" fill="#DEEBFF" opacity="0.6"/>
-        <circle cx="20.5" cy="24" r="1.5" fill="#DEEBFF" opacity="0.6"/>
+      <!-- Simple bug illustration: oval body + round head + antennae + 6 legs -->
+      <svg class="anim-bug" width="72" height="72" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Body -->
+        <ellipse cx="32" cy="39" rx="12" ry="15" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1.5"/>
+        <!-- Head -->
+        <circle cx="32" cy="22" r="7" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1.5"/>
+        <!-- Eyes -->
+        <circle cx="29" cy="21" r="1.8" fill="#3B82F6"/>
+        <circle cx="35" cy="21" r="1.8" fill="#3B82F6"/>
+        <!-- Body centre line -->
+        <line x1="32" y1="25" x2="32" y2="53" stroke="#93C5FD" stroke-width="1.2" stroke-linecap="round"/>
+        <!-- Antennae -->
+        <path d="M29 16 C27 12 24 10 21 8" stroke="#93C5FD" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        <path d="M35 16 C37 12 40 10 43 8" stroke="#93C5FD" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        <!-- Antenna tips -->
+        <circle cx="21" cy="8" r="1.5" fill="#93C5FD"/>
+        <circle cx="43" cy="8" r="1.5" fill="#93C5FD"/>
+        <!-- Legs left -->
+        <line x1="21" y1="33" x2="11" y2="29" stroke="#93C5FD" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="21" y1="39" x2="11" y2="39" stroke="#93C5FD" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="21" y1="45" x2="11" y2="50" stroke="#93C5FD" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Legs right -->
+        <line x1="43" y1="33" x2="53" y2="29" stroke="#93C5FD" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="43" y1="39" x2="53" y2="39" stroke="#93C5FD" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="43" y1="45" x2="53" y2="50" stroke="#93C5FD" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Spots -->
+        <circle cx="27" cy="36" r="2.5" fill="#93C5FD" opacity="0.5"/>
+        <circle cx="37" cy="36" r="2.5" fill="#93C5FD" opacity="0.5"/>
+        <circle cx="27" cy="45" r="2.5" fill="#93C5FD" opacity="0.5"/>
+        <circle cx="37" cy="45" r="2.5" fill="#93C5FD" opacity="0.5"/>
       </svg>
-      No bugs found matching your filters.
+      <div style="font-size:14px;font-weight:600;color:#64748B;margin-bottom:4px;">No bugs found</div>
+      <div style="font-size:12px;color:#94A3B8;">Try adjusting your filters</div>
     </div>
     <div class="error-row" id="errorRow" style="display:none">
       <span>⚠️</span>

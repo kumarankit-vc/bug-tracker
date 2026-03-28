@@ -53,8 +53,8 @@ body{
   box-shadow:0 1px 4px rgba(10,37,96,.07);
   position:relative;overflow:hidden;
 }
-.hero-deco{position:absolute;right:16px;top:50%;transform:translateY(-50%);pointer-events:none;animation:heroBugFloat 5s ease-in-out infinite;opacity:0.08;}
-@keyframes heroBugFloat{0%,100%{transform:translateY(-50%) rotate(-8deg) scale(1)}50%{transform:translateY(calc(-50% - 8px)) rotate(8deg) scale(1.05)}}
+.hero-deco{position:absolute;right:20px;top:50%;transform:translateY(-50%);pointer-events:none;animation:heroBugFloat 4s ease-in-out infinite;opacity:0.13;}
+@keyframes heroBugFloat{0%,100%{transform:translateY(-50%)}50%{transform:translateY(calc(-50% - 8px))}}
 .page-hero h1{font-size:20px;font-weight:700;color:#172B4D;letter-spacing:-.3px;margin-bottom:2px;}
 .page-hero p{font-size:13px;color:#6B778C;margin-bottom:10px;}
 .hero-steps{display:flex;align-items:center;gap:0;flex-wrap:wrap;gap:4px;}
@@ -501,17 +501,27 @@ select option{background:#fff;color:#172B4D;}
 <div class="page">
 
   <div class="page-hero">
-    <svg class="hero-deco" width="80" height="80" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="34" height="34" rx="9" fill="#0052CC"/>
-      <ellipse cx="17" cy="21" rx="7.5" ry="8.5" fill="white"/>
-      <circle cx="17" cy="11.5" r="3.5" fill="white"/>
-      <path d="M15 9.5 C13.5 7.5 11 6 9 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/>
-      <path d="M19 9.5 C20.5 7.5 23 6 25 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/>
-      <line x1="17" y1="13" x2="17" y2="29" stroke="#0052CC" stroke-width="1.2" stroke-linecap="round"/>
-      <circle cx="13.5" cy="19" r="1.5" fill="#0052CC" opacity="0.45"/>
-      <circle cx="13.5" cy="24" r="1.5" fill="#0052CC" opacity="0.45"/>
-      <circle cx="20.5" cy="19" r="1.5" fill="#0052CC" opacity="0.45"/>
-      <circle cx="20.5" cy="24" r="1.5" fill="#0052CC" opacity="0.45"/>
+    <!-- Decorative bug illustration -->
+    <svg class="hero-deco" width="90" height="90" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="32" cy="39" rx="12" ry="15" fill="white" stroke="white" stroke-width="1.5"/>
+      <circle cx="32" cy="22" r="7" fill="white" stroke="white" stroke-width="1.5"/>
+      <circle cx="29" cy="21" r="1.8" fill="#0052CC"/>
+      <circle cx="35" cy="21" r="1.8" fill="#0052CC"/>
+      <line x1="32" y1="25" x2="32" y2="53" stroke="white" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+      <path d="M29 16 C27 12 24 10 21 8" stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+      <path d="M35 16 C37 12 40 10 43 8" stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+      <circle cx="21" cy="8" r="2" fill="white"/>
+      <circle cx="43" cy="8" r="2" fill="white"/>
+      <line x1="21" y1="33" x2="11" y2="29" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="21" y1="39" x2="11" y2="39" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="21" y1="45" x2="11" y2="50" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="43" y1="33" x2="53" y2="29" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="43" y1="39" x2="53" y2="39" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="43" y1="45" x2="53" y2="50" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="27" cy="36" r="2.5" fill="white" opacity="0.4"/>
+      <circle cx="37" cy="36" r="2.5" fill="white" opacity="0.4"/>
+      <circle cx="27" cy="45" r="2.5" fill="white" opacity="0.4"/>
+      <circle cx="37" cy="45" r="2.5" fill="white" opacity="0.4"/>
     </svg>
     <h1>Bug Report</h1>
     <p>Submit and track bugs found during QA testing · Vantage Circle</p>
