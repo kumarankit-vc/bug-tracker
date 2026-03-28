@@ -836,7 +836,7 @@ document.getElementById('btnSubmit').addEventListener('click',async()=>{
     document.getElementById('pTxt').textContent=`${payload.length} / ${payload.length}`;
     setTimeout(()=>{
       document.getElementById('overlay').classList.remove('show');
-      document.getElementById('successHeading').textContent=payload.length===1?'Bug Submitted!':payload.length+' Bugs Submitted!';
+      document.getElementById('successHeading').textContent=payload.length===1?'Bugs Submitted!':payload.length+' Bugs Submitted!';
       document.getElementById('sMeta').innerHTML=
         `Tester: <strong>${tester}</strong><br>Sprint: <strong>${sprint}</strong><br>Product: <strong>${product}</strong><br>Bugs submitted: <strong style="color:#4ADE80">${payload.length}</strong>`;
       document.getElementById('successScreen').classList.add('show');
