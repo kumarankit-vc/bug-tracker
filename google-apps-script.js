@@ -65,15 +65,15 @@ function appendBug(ss, data) {
     data.assignedTo  || "",
   ];
 
-  // Master sheet row (includes Tester + Submitted At)
-  master.appendRow([...baseRow, data.tester || "", ts]);
-  formatRow(master, master.getLastRow(), data.severity, 14);
+  // Master sheet row (includes Tester + Submitted At + Priority)
+  master.appendRow([...baseRow, data.tester || "", ts, data.priority || ""]);
+  formatRow(master, master.getLastRow(), data.severity, 15);
 
-  // Per-tester sheet row (no Tester column, has Submitted At)
+  // Per-tester sheet row (no Tester column, has Submitted At + Priority)
   const tSheet = getOrCreate(ss, data.tester || "Unknown");
   ensureHeaders(tSheet, false);
-  tSheet.appendRow([...baseRow, ts]);
-  formatRow(tSheet, tSheet.getLastRow(), data.severity, 13);
+  tSheet.appendRow([...baseRow, ts, data.priority || ""]);
+  formatRow(tSheet, tSheet.getLastRow(), data.severity, 14);
 
   return bugId;
 }
@@ -176,7 +176,8 @@ const FIELD_MAP = {
   "Status":                 "status",
   "Assigned To":            "assignedTo",
   "Tester":                 "tester",
-  "Submitted At":           "submittedAt"
+  "Submitted At":           "submittedAt",
+  "Priority":               "priority"
 };
 
 function getAllBugs() {
@@ -221,10 +222,10 @@ function ensureHeaders(sheet, isMaster) {
   const h = isMaster
     ? ["Bug ID","Sprint","Module","Product","Platform",
        "Description / Summary","Expected Result","Actual Result",
-       "Severity","Proof Link","Status","Assigned To","Tester","Submitted At"]
+       "Severity","Proof Link","Status","Assigned To","Tester","Submitted At","Priority"]
     : ["Bug ID","Sprint","Module","Product","Platform",
        "Description / Summary","Expected Result","Actual Result",
-       "Severity","Proof Link","Status","Assigned To","Submitted At"];
+       "Severity","Proof Link","Status","Assigned To","Submitted At","Priority"];
   sheet.appendRow(h);
   sheet.getRange(1, 1, 1, h.length)
     .setBackground("#1a3a6b")
@@ -233,7 +234,7 @@ function ensureHeaders(sheet, isMaster) {
     .setFontSize(10);
   sheet.setFrozenRows(1);
   if (isMaster) {
-    [100,100,160,140,100,300,240,240,100,220,120,180,160,180]
+    [100,100,160,140,100,300,240,240,100,220,120,180,160,180,80]
       .forEach((w, i) => sheet.setColumnWidth(i + 1, w));
   } else {
     // New tester sheet: pre-apply Status dropdown to rows 2–1000

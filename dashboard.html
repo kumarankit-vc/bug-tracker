@@ -13,13 +13,13 @@ html{overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
 /* ── Base ───────────────────────────────────────────────────────────── */
 body{
   font-family:'Inter',sans-serif;
-  background:#E0F2FF;color:#172B4D;
+  background:#F1F5F9;color:#1E293B;
   min-height:100vh;font-size:14px;overflow-x:hidden;
 }
 
 /* ── Password Gate ──────────────────────────────────────────────────── */
 .gate{
-  position:fixed;inset:0;background:#E0F2FF;
+  position:fixed;inset:0;background:#F1F5F9;
   z-index:99;display:flex;align-items:center;justify-content:center;
 }
 .gate-box{
@@ -55,13 +55,13 @@ body{
 
 /* ── Header / Top bar ───────────────────────────────────────────────── */
 .header{
-  background:linear-gradient(135deg,#0A2560 0%,#0D3080 100%);
-  border-bottom:2px solid #0A2560;
-  box-shadow:0 2px 12px rgba(10,37,96,.25);
+  background:linear-gradient(135deg,#0F2044 0%,#1A3A8A 100%);
+  border-bottom:2px solid #0D1F42;
+  box-shadow:0 2px 16px rgba(9,25,65,.35);
   display:flex;align-items:center;justify-content:space-between;
   padding:0 0 0 0;margin:0 -20px 24px;
   padding-left:20px;padding-right:20px;
-  height:58px;position:sticky;top:0;z-index:20;
+  height:60px;position:sticky;top:0;z-index:20;
 }
 .header-left{display:flex;align-items:center;gap:10px;}
 .header-logo{display:flex;align-items:center;gap:10px;}
@@ -84,34 +84,37 @@ body{
 .logout-btn:hover{border-color:rgba(255,255,255,.5);color:#FFFFFF;background:rgba(255,255,255,.1);}
 
 /* ── Stats cards ────────────────────────────────────────────────────── */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
 .stat{
-  background:#fff;border:1px solid #BDD9F5;border-top:3px solid #BDD9F5;
-  border-radius:6px;padding:18px 20px;
-  transition:box-shadow .18s,border-color .18s;
+  border-radius:12px;padding:20px 22px;
+  position:relative;overflow:hidden;
+  transition:transform .2s,box-shadow .2s;
+  border:none;
 }
-.stat:hover{box-shadow:0 4px 14px rgba(10,37,96,.12);border-color:#7DB3E8;}
-.stat.s1{border-top-color:#0052CC;}
-.stat.s2{border-top-color:#DE350B;}
-.stat.s3{border-top-color:#FF8B00;}
-.stat.s4{border-top-color:#36B37E;}
+.stat:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.22);}
+.stat::after{
+  content:'';position:absolute;right:-20px;bottom:-20px;
+  width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.1);
+  pointer-events:none;
+}
+.stat.s1{background:linear-gradient(135deg,#2563EB 0%,#1E40AF 100%);}
+.stat.s2{background:linear-gradient(135deg,#DC2626 0%,#991B1B 100%);}
+.stat.s3{background:linear-gradient(135deg,#EA580C 0%,#9A3412 100%);}
+.stat.s4{background:linear-gradient(135deg,#16A34A 0%,#14532D 100%);}
 .stat .lbl{
-  font-size:11px;font-weight:700;color:#5E6C84;
+  font-size:11px;font-weight:700;color:rgba(255,255,255,.7);
   text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;
 }
-.stat .val{font-size:32px;font-weight:700;line-height:1;letter-spacing:-.5px;color:#172B4D;}
-.stat .sub{font-size:11px;color:#7A869A;margin-top:6px;}
-.stat.s1 .val{color:#0052CC;}
-.stat.s2 .val{color:#DE350B;}
-.stat.s3 .val{color:#FF8B00;}
-.stat.s4 .val{color:#36B37E;}
+.stat .val{font-size:34px;font-weight:800;line-height:1;letter-spacing:-.5px;color:#fff;}
+.stat .sub{font-size:11px;color:rgba(255,255,255,.55);margin-top:6px;}
+.stat-ico{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:30px;opacity:0.22;pointer-events:none;user-select:none;}
 
 /* ── Toolbar ────────────────────────────────────────────────────────── */
 .toolbar{
-  background:#fff;border:1px solid #BDD9F5;
-  border-radius:6px;padding:12px 16px;margin-bottom:14px;
+  background:#fff;border:1px solid #E2E8F0;
+  border-radius:10px;padding:13px 16px;margin-bottom:14px;
   display:flex;flex-direction:column;gap:10px;
-  box-shadow:0 1px 4px rgba(10,37,96,.08);
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
 }
 .tb-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
 .tb-label{
@@ -121,18 +124,18 @@ body{
 }
 .ctrl{
   font-family:'Inter',sans-serif;font-size:13px;
-  color:#172B4D;background:#F0F9FF;
-  border:1.5px solid #BDD9F5;
-  border-radius:4px;padding:6px 10px;outline:none;
+  color:#1E293B;background:#F8FAFC;
+  border:1.5px solid #E2E8F0;
+  border-radius:6px;padding:6px 10px;outline:none;
   -webkit-appearance:none;transition:border-color .15s,box-shadow .15s;
   min-width:0;
 }
-.ctrl:focus{border-color:#4C9AFF;box-shadow:0 0 0 3px rgba(76,154,255,.15);}
+.ctrl:focus{border-color:#3B82F6;box-shadow:0 0 0 3px rgba(59,130,246,.12);}
 .ctrl-sel{
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236B778C'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 8px center;padding-right:24px;cursor:pointer;background-color:#F0F9FF;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394A3B8'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 8px center;padding-right:24px;cursor:pointer;background-color:#F8FAFC;
 }
-.ctrl-sel option{background:#fff;color:#172B4D;}
+.ctrl-sel option{background:#fff;color:#1E293B;}
 .ctrl-search{width:220px;}
 .date-input{
   font-family:'Inter',sans-serif;font-size:13px;color:#172B4D;
@@ -156,12 +159,15 @@ body{
 .tester-pills{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
 .tester-pill{
   font-family:'Inter',sans-serif;font-size:12px;font-weight:500;
-  padding:4px 12px;border-radius:4px;cursor:pointer;
-  border:1.5px solid #BDD9F5;background:#fff;color:#344563;
+  padding:4px 12px;border-radius:20px;cursor:pointer;
+  border:1.5px solid #E2E8F0;background:#F8FAFC;color:#475569;
   transition:all .15s;user-select:none;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:0;
 }
-.tester-pill:hover{border-color:#4C9AFF;background:#DEEBFF;color:#0052CC;}
-.tester-pill.active{background:#DEEBFF;border-color:#4C9AFF;color:#0052CC;font-weight:600;}
+.tester-pill:hover{border-color:#3B82F6;background:#EFF6FF;color:#1D4ED8;}
+.tester-pill.active{background:#2563EB;border-color:#2563EB;color:#fff;font-weight:600;box-shadow:0 2px 8px rgba(37,99,235,.3);}
+.pill-count{display:inline-flex;align-items:center;justify-content:center;background:rgba(0,0,0,.13);font-size:10px;font-weight:700;padding:1px 5px;border-radius:8px;margin-left:5px;line-height:14px;min-width:16px;}
+.tester-pill.active .pill-count{background:rgba(255,255,255,.28);}
 .btn-refresh{
   font-family:'Inter',sans-serif;font-size:13px;font-weight:500;
   padding:6px 13px;border-radius:4px;cursor:pointer;
@@ -180,30 +186,31 @@ body{
 
 /* ── Table ──────────────────────────────────────────────────────────── */
 .tbl-wrap{
-  background:#fff;border:1px solid #BDD9F5;
-  border-radius:6px;overflow:hidden;
-  box-shadow:0 1px 4px rgba(10,37,96,.08);
+  background:#fff;border:1px solid #E2E8F0;
+  border-radius:10px;overflow:hidden;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
 }
 .tbl-scroll{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;min-width:900px;}
+table{width:100%;border-collapse:collapse;min-width:1040px;}
 
 thead th{
-  background:#EBF4FF;
+  background:linear-gradient(to bottom,#1E3A8A,#1A337A);
   font-size:11px;font-weight:700;text-transform:uppercase;
-  letter-spacing:.7px;color:#5E6C84;
+  letter-spacing:.7px;color:rgba(255,255,255,.75);
   padding:11px 14px;text-align:left;
-  border-bottom:2px solid #BDD9F5;
+  border-bottom:none;
   white-space:nowrap;cursor:pointer;user-select:none;
   transition:color .15s;
 }
-thead th:hover{color:#0052CC;}
-thead th.sort-asc::after{content:' ▲';font-size:9px;color:#0052CC;}
-thead th.sort-desc::after{content:' ▼';font-size:9px;color:#0052CC;}
+thead th:hover{color:#fff;}
+thead th.sort-asc::after{content:' ▲';font-size:9px;color:#7DD3FC;}
+thead th.sort-desc::after{content:' ▼';font-size:9px;color:#7DD3FC;}
 
-tbody tr{border-bottom:1px solid #EBF4FF;transition:background .1s;}
+tbody tr{border-bottom:1px solid #F1F5F9;transition:background .1s;}
 tbody tr:last-child{border-bottom:none;}
-tbody tr:hover{background:#EBF4FF;}
-tbody td{padding:13px 14px;vertical-align:top;}
+tbody tr:nth-child(even){background:#FAFBFC;}
+tbody tr:hover{background:#EFF6FF !important;}
+tbody td{padding:12px 14px;vertical-align:top;}
 
 /* col: Bug ID */
 .col-id .bug-id{
@@ -213,10 +220,10 @@ tbody td{padding:13px 14px;vertical-align:top;}
 
 /* col: Tester */
 .col-tester .tester-badge{
-  display:inline-block;background:#DEEBFF;
-  color:#0747A6;
+  display:inline-block;background:#DBEAFE;
+  color:#1E40AF;
   font-size:11px;font-weight:600;
-  padding:3px 9px;border-radius:3px;white-space:nowrap;
+  padding:3px 9px;border-radius:10px;white-space:nowrap;
 }
 
 /* col: Description */
@@ -224,29 +231,36 @@ tbody td{padding:13px 14px;vertical-align:top;}
 .desc-text{font-size:13px;color:#172B4D;line-height:1.5;margin-bottom:5px;word-break:break-word;}
 .desc-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
 .meta-chip{
-  font-size:10px;font-weight:600;color:#5E6C84;
-  background:#EBF4FF;border:1px solid #BDD9F5;
+  font-size:10px;font-weight:600;color:#475569;
+  background:#F1F5F9;border:1px solid #E2E8F0;
   padding:2px 7px;border-radius:3px;white-space:nowrap;
 }
 
 /* col: Severity */
-.col-sev,.col-status{white-space:nowrap;}
-.sev-badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:3px;white-space:nowrap;}
-.sb-Critical{background:#FFEBE6;color:#BF2600;}
-.sb-High    {background:#FFECE1;color:#D93900;}
-.sb-Medium  {background:#FFF7D6;color:#974F0C;}
-.sb-Low     {background:#E3FCEF;color:#006644;}
-.sb-Trivial {background:#F4F5F7;color:#5E6C84;}
-.sb-        {background:#F4F5F7;color:#7A869A;}
+.col-sev,.col-status,.col-pri{white-space:nowrap;}
+.sev-badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;white-space:nowrap;letter-spacing:.2px;}
+.sb-Critical{background:#FEE2E2;color:#991B1B;}
+.sb-High    {background:#FEF3C7;color:#B45309;}
+.sb-Medium  {background:#FEF9C3;color:#854D0E;}
+.sb-Low     {background:#D1FAE5;color:#065F46;}
+.sb-Trivial {background:#F1F5F9;color:#475569;}
+.sb-        {background:#F1F5F9;color:#64748B;}
+/* Priority badges */
+.pri-badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;white-space:nowrap;letter-spacing:.2px;}
+.pb-P1{background:#FEE2E2;color:#991B1B;}
+.pb-P2{background:#FEF3C7;color:#B45309;}
+.pb-P3{background:#DBEAFE;color:#1E40AF;}
+.pb-P4{background:#D1FAE5;color:#065F46;}
+.pb- {background:#F1F5F9;color:#64748B;}
 
 /* col: Status */
-.st-badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:3px;white-space:nowrap;}
-.stb-Open       {background:#FFEBE6;color:#BF2600;}
-.stb-In-Progress{background:#DEEBFF;color:#0747A6;}
-.stb-Fixed      {background:#E3FCEF;color:#006644;}
-.stb-Verified   {background:#E3FCEF;color:#006644;}
-.stb-Closed     {background:#F4F5F7;color:#5E6C84;}
-.stb-Reopened   {background:#EAE6FF;color:#403294;}
+.st-badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;white-space:nowrap;letter-spacing:.2px;}
+.stb-Open       {background:#FEE2E2;color:#991B1B;}
+.stb-In-Progress{background:#DBEAFE;color:#1E40AF;}
+.stb-Fixed      {background:#D1FAE5;color:#065F46;}
+.stb-Verified   {background:#BBF7D0;color:#14532D;}
+.stb-Closed     {background:#F1F5F9;color:#475569;}
+.stb-Reopened   {background:#EDE9FE;color:#5B21B6;}
 
 /* col: Assigned To */
 .col-assign{font-size:13px;color:#344563;white-space:nowrap;}
@@ -287,8 +301,8 @@ tbody td{padding:13px 14px;vertical-align:top;}
 
 /* ── Pagination ─────────────────────────────────────────────────────── */
 .pagination{
-  background:#EBF4FF;border:1px solid #BDD9F5;border-top:none;
-  border-radius:0 0 6px 6px;
+  background:#F8FAFC;border:1px solid #E2E8F0;border-top:none;
+  border-radius:0 0 10px 10px;
   display:flex;align-items:center;justify-content:space-between;
   padding:10px 16px;margin-top:-1px;
 }
@@ -457,10 +471,10 @@ tbody tr.row-critical:hover{background:#FFF3F0;}
 
   <!-- Stats -->
   <div class="stats">
-    <div class="stat s1"><div class="lbl">Total Bugs</div><div class="val" id="sv0">—</div><div class="sub">all time</div></div>
-    <div class="stat s2"><div class="lbl">Open</div><div class="val" id="sv1">—</div><div class="sub">need attention</div></div>
-    <div class="stat s3"><div class="lbl">Critical / High</div><div class="val" id="sv2">—</div><div class="sub">priority</div></div>
-    <div class="stat s4"><div class="lbl">Resolved</div><div class="val" id="sv3">—</div><div class="sub">fixed + verified</div></div>
+    <div class="stat s1"><div class="stat-ico">🐛</div><div class="lbl">Total Bugs</div><div class="val" id="sv0">—</div><div class="sub">all time</div></div>
+    <div class="stat s2"><div class="stat-ico">🔴</div><div class="lbl">Open</div><div class="val" id="sv1">—</div><div class="sub">need attention</div></div>
+    <div class="stat s3"><div class="stat-ico">⚡</div><div class="lbl">Critical / High</div><div class="val" id="sv2">—</div><div class="sub">priority bugs</div></div>
+    <div class="stat s4"><div class="stat-ico">✅</div><div class="lbl">Resolved</div><div class="val" id="sv3">—</div><div class="sub">fixed + verified</div></div>
   </div>
 
   <!-- Toolbar -->
@@ -472,6 +486,13 @@ tbody tr.row-critical:hover{background:#FFF3F0;}
       <select class="ctrl ctrl-sel" id="fSev">
         <option value="">All Severities</option>
         <option>Critical</option><option>High</option><option>Medium</option><option>Low</option><option>Trivial</option>
+      </select>
+      <select class="ctrl ctrl-sel" id="fPriority">
+        <option value="">All Priorities</option>
+        <option value="P1">P1 — Must Fix</option>
+        <option value="P2">P2 — Should Fix</option>
+        <option value="P3">P3 — Can Wait</option>
+        <option value="P4">P4 — Nice to Have</option>
       </select>
       <select class="ctrl ctrl-sel" id="fStatus">
         <option value="">All Statuses</option>
@@ -510,6 +531,7 @@ tbody tr.row-critical:hover{background:#FFF3F0;}
             <th data-col="tester">Tester</th>
             <th data-col="description">Description &amp; Details</th>
             <th data-col="severity">Severity</th>
+            <th data-col="priority">Priority</th>
             <th data-col="status">Status</th>
             <th data-col="assignedTo">Assigned To</th>
             <th data-col="submittedAt">Submitted</th>
@@ -651,6 +673,7 @@ function normBug(b) {
     expected:    b.expected    || b.expectedResult     || '',
     actual:      b.actual      || b.actualResult       || '',
     severity:    b.severity                           || '',
+    priority:    b.priority                           || '',
     proof:       b.proof       || b.proofLink          || '',
     status:      b.status                             || 'Open',
     assignedTo:  b.assignedTo                         || '',
@@ -782,10 +805,11 @@ function populateFilters() {
   const testers = [...new Set(allBugs.map(b => b.tester).filter(Boolean))].sort();
   group.innerHTML = '';
   testers.forEach(name => {
+    const count = allBugs.filter(b => b.tester === name).length;
     const btn = document.createElement('button');
     btn.className = 'tester-pill' + (active.has(name) ? ' active' : '');
     btn.dataset.tester = name;
-    btn.textContent = name;
+    btn.innerHTML = name + '<span class="pill-count">' + count + '</span>';
     group.appendChild(btn);
   });
 }
@@ -798,6 +822,7 @@ function applyFilters() {
   const selectedTesters = [...document.querySelectorAll('#fTesterGroup .tester-pill.active')].map(el => el.dataset.tester);
   const pr    = document.getElementById('fProduct').value;
   const sv    = document.getElementById('fSev').value;
+  const prio  = document.getElementById('fPriority').value;
   const st    = document.getElementById('fStatus').value;
   const dfrom = document.getElementById('fDateFrom').value;
   const dto   = document.getElementById('fDateTo').value;
@@ -808,7 +833,8 @@ function applyFilters() {
     if (sp && b.sprint   !== sp) return false;
     if (selectedTesters.length && !selectedTesters.includes(b.tester)) return false;
     if (pr && b.product  !== pr) return false;
-    if (sv && b.severity !== sv) return false;
+    if (sv   && b.severity !== sv)   return false;
+    if (prio && b.priority !== prio) return false;
     if (st && b.status   !== st) return false;
     if (q) {
       const hay = [b.bugId,b.tester,b.description,b.module,b.product,b.sprint,b.assignedTo,b.platform]
@@ -865,7 +891,10 @@ function renderCards(slice) {
           <span class="bcv-id">${e(b.bugId || '—')}</span>
           <div class="bcv-title">${e(genTitle(b.description))}</div>
         </div>
-        <span class="sev-badge sb-${e(sev)}" style="flex-shrink:0">${e(sev) || '—'}</span>
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0">
+          <span class="sev-badge sb-${e(sev)}">${e(sev) || '—'}</span>
+          ${b.priority ? `<span class="pri-badge pb-${e(b.priority)}">${e(b.priority)}</span>` : ''}
+        </div>
       </div>
       ${chips ? `<div class="bcv-chips">${chips}</div>` : ''}
       <div class="bcv-foot">
@@ -930,6 +959,7 @@ function renderPage() {
       const proofHtml = b.proof
         ? `<a href="${e(b.proof)}" class="proof-btn" target="_blank" rel="noopener">🔗 View</a>`
         : `<span class="no-proof">—</span>`;
+      const prio = b.priority || '';
       const hasMore = b.description && b.description.length > 75;
       return `<tr${sev === 'Critical' ? ' class="row-critical"' : ''}>
         <td class="col-id"><span class="bug-id">${e(b.bugId || '—')}</span></td>
@@ -940,6 +970,7 @@ function renderPage() {
           ${chips ? `<div class="desc-meta">${chips}</div>` : ''}
         </td>
         <td class="col-sev"><span class="sev-badge sb-${e(sev)}">${e(sev) || '—'}</span></td>
+        <td class="col-pri"><span class="pri-badge pb-${e(prio)}">${e(prio) || '—'}</span></td>
         <td class="col-status"><span class="st-badge stb-${e(stat)}">${e(b.status || 'Open')}</span></td>
         <td class="col-assign">${e(b.assignedTo || '—')}</td>
         <td class="col-date">${fmtDate(b.submittedAt)}</td>
@@ -990,7 +1021,7 @@ document.querySelectorAll('thead th[data-col]').forEach(th => {
 
 // ── Filter/search listeners ───────────────────────────────────────
 // Selects fire immediately; free-text search is debounced 400 ms
-['fSprint','fProduct','fSev','fStatus','fDateFrom','fDateTo']
+['fSprint','fProduct','fSev','fPriority','fStatus','fDateFrom','fDateTo']
   .forEach(id => document.getElementById(id).addEventListener('input', applyFilters));
 
 // Tester pills — toggle active state on click, then re-filter
@@ -1046,10 +1077,10 @@ document.getElementById('btnNextPage').addEventListener('click', () => {
 document.getElementById('btnExport').addEventListener('click', () => {
   if (!filteredBugs.length) { alert('No bugs to export with current filters.'); return; }
   const h = ['Bug ID','Tester','Sprint','Product','Module','Platform','Description',
-             'Expected','Actual','Severity','Proof','Status','Assigned To','Submitted At'];
+             'Expected','Actual','Severity','Priority','Proof','Status','Assigned To','Submitted At'];
   const rows = filteredBugs.map(b =>
     [b.bugId,b.tester,b.sprint,b.product,b.module,b.platform,
-     b.description,b.expected,b.actual,b.severity,b.proof,
+     b.description,b.expected,b.actual,b.severity,b.priority,b.proof,
      b.status,b.assignedTo,b.submittedAt]
       .map(v => `"${(v || '').replace(/"/g, '""')}"`)
   );
