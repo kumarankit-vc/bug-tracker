@@ -677,9 +677,59 @@ select option{background:#fff;color:#172B4D;}
   will-change:transform;
 }
 
+/* ── CTA footer strip ───────────────────────────────────────────────── */
+.feat-cta{
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  margin-top:22px;padding:18px 22px;
+  background:rgba(0,0,0,.18);
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:10px;
+}
+.feat-cta-left{display:flex;flex-direction:column;gap:6px;}
+.feat-cta-label{
+  font-size:11px;font-weight:600;
+  color:rgba(255,255,255,.5);letter-spacing:.6px;text-transform:uppercase;
+}
+.feat-cta-steps{
+  display:flex;align-items:center;gap:8px;
+}
+.feat-cta-step{
+  display:flex;align-items:center;gap:6px;
+  font-size:12.5px;font-weight:500;color:rgba(255,255,255,.82);
+}
+.feat-cta-num{
+  width:22px;height:22px;border-radius:50%;
+  background:rgba(255,255,255,.15);
+  border:1.5px solid rgba(255,255,255,.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;color:#fff;flex-shrink:0;
+}
+.feat-cta-sep{
+  color:rgba(255,255,255,.25);font-size:14px;font-weight:300;
+  padding:0 2px;
+}
+.btn-start-reporting{
+  display:flex;align-items:center;gap:9px;
+  background:#fff;color:#0E3386;
+  border:none;font-family:'Inter',sans-serif;
+  font-size:14px;font-weight:700;
+  padding:11px 26px;border-radius:7px;cursor:pointer;
+  white-space:nowrap;flex-shrink:0;
+  box-shadow:0 3px 16px rgba(0,0,0,.22);
+  transition:background .18s,transform .14s,box-shadow .18s;
+}
+.btn-start-reporting:hover{
+  background:#EEF4FF;
+  transform:translateY(-2px);
+  box-shadow:0 6px 24px rgba(0,0,0,.28);
+}
+.btn-start-reporting:active{transform:translateY(0);box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.btn-start-reporting svg{flex-shrink:0;transition:transform .18s;}
+.btn-start-reporting:hover svg{transform:translateX(3px);}
+
 /* Responsive */
 @media(max-width:640px){
-  .feat-banner-inner{padding:24px 14px 22px;}
+  .feat-banner-inner{padding:24px 14px 20px;}
   .benefit-item{padding:0 10px;}
   .benefit-label{font-size:11.5px;max-width:100px;}
   .benefit-icon{width:42px;height:42px;}
@@ -689,6 +739,10 @@ select option{background:#fff;color:#172B4D;}
   .benefits-row{margin-bottom:18px;}
   .dp-summary{display:none;}
   .dash-preview-wrap{padding:12px;}
+  .feat-cta{padding:14px 16px;gap:14px;}
+  .feat-cta-label{display:none;}
+  .feat-cta-step span:last-child{display:none;}
+  .btn-start-reporting{font-size:13px;padding:10px 18px;}
 }
 @media(max-width:480px){
   .benefit-icon{width:38px;height:38px;}
@@ -696,7 +750,8 @@ select option{background:#fff;color:#172B4D;}
   .feat-list{flex:0 0 130px;padding:14px 12px;}
   .feat-list-item h3{font-size:11.5px;}
   .feat-list-item p{font-size:10px;}
-  .btn-more-feat{font-size:11px;padding:7px 14px;}
+  .feat-cta{flex-direction:column;align-items:stretch;gap:12px;}
+  .btn-start-reporting{width:100%;justify-content:center;}
 }
 @media(max-width:390px){
   .feat-list{display:none;}
@@ -806,7 +861,6 @@ select option{background:#fff;color:#172B4D;}
           <h3>Live Dashboard</h3>
           <p>Track progress across sprints, modules and team members instantly</p>
         </div>
-        <button class="btn-more-feat" onclick="document.querySelector('.page').scrollIntoView({behavior:'smooth'})">Start Reporting ›</button>
       </div>
 
       <!-- Center: mini dashboard preview -->
@@ -954,12 +1008,42 @@ select option{background:#fff;color:#172B4D;}
       </div>
 
     </div>
+
+    <!-- CTA footer strip -->
+    <div class="feat-cta">
+      <div class="feat-cta-left">
+        <span class="feat-cta-label">How it works</span>
+        <div class="feat-cta-steps">
+          <span class="feat-cta-step">
+            <span class="feat-cta-num">1</span>
+            <span>Session Info</span>
+          </span>
+          <span class="feat-cta-sep">›</span>
+          <span class="feat-cta-step">
+            <span class="feat-cta-num">2</span>
+            <span>Add Bugs</span>
+          </span>
+          <span class="feat-cta-sep">›</span>
+          <span class="feat-cta-step">
+            <span class="feat-cta-num">3</span>
+            <span>Submit</span>
+          </span>
+        </div>
+      </div>
+      <button class="btn-start-reporting" onclick="document.getElementById('report-form').scrollIntoView({behavior:'smooth'})">
+        Start Reporting
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </button>
+    </div>
+
   </div>
 </section>
 
 <div class="page">
 
-  <div class="page-hero">
+  <div class="page-hero" id="report-form">
     <!-- Decorative bug illustration -->
     <svg class="hero-deco" width="90" height="90" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="32" cy="39" rx="12" ry="15" fill="white" stroke="white" stroke-width="1.5"/>
