@@ -549,43 +549,7 @@ select option{background:#fff;color:#172B4D;}
       </div>
       <div class="field" id="sf1">
         <label>Sprint <span class="req">*</span></label>
-        <select id="sprintInput">
-          <option value="">— Select sprint —</option>
-          <optgroup label="Vantage Reward">
-            <option>VC Sprint 136</option>
-            <option>VC Sprint 135</option>
-            <option>VC Sprint 134</option>
-            <option>VC Sprint 133</option>
-            <option>VC Sprint 132</option>
-            <option>VC Sprint 131</option>
-            <option>VC Sprint 130</option>
-            <option>VC Sprint 129</option>
-            <option>VC Sprint 128</option>
-            <option>VC Sprint 126</option>
-            <option>VC Sprint 125</option>
-            <option>VC Sprint 124</option>
-            <option>VC Sprint 121</option>
-            <option>VC Sprint 120</option>
-            <option>VC Sprint 119</option>
-            <option>VC Sprint 118</option>
-            <option>VC Sprint 117</option>
-          </optgroup>
-          <optgroup label="Vantage Fit">
-            <option>VF Sprint 53</option>
-            <option>VF Sprint 52</option>
-            <option>VF Sprint 51</option>
-            <option>VF Sprint 50</option>
-          </optgroup>
-          <optgroup label="Vantage Pulse">
-            <option>PUL Sprint 33</option>
-            <option>PUL Sprint 31</option>
-            <option>PUL Sprint 30</option>
-            <option>PUL Sprint 28</option>
-            <option>PUL Sprint 25</option>
-            <option>PUL Sprint 23</option>
-            <option>PUL Sprint 20</option>
-          </optgroup>
-        </select>
+        <input type="text" id="sprintInput" placeholder="e.g. Sprint 14"/>
         <span class="ferr">Sprint is required</span>
       </div>
       <div class="field" id="sf2">
@@ -642,10 +606,10 @@ select option{background:#fff;color:#172B4D;}
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwG9wrY-6DGt03TaqS6i0FKM5SdCfI0qg_qzu4b26CR6BAOuIb-VbNuLBW7Cu0wZHkt/exec";
 
 const TESTERS = [
-  "Kumar Ankit","Mushtaq Rejowan","Meghna Dutta",
-  "Ankur Duarah","Nipjyoti Saikia","Sanjay Singha"
+  "Kumar Ankit","Sharique Zarar Rahman","Sanjay Singha","Ankur Duarah",
+  "Nipjyoti Saikia","Ayushman Chaudhury","Raktim Kakati","Adin Ankur Saikia",
+  "Kongkona Das","Mushtaq Rejowan","Meghna Dutta"
 ];
-const MODS = ["Cart","Leaderboard","Login","Profile","Redemption","Reward","Workout","Workout Challenge"];
 const DEVS = [
   "Abhishek Das","Anirban C","Anirban D","Anjan","ArindamParashar","Bidyut",
   "Chirantan","David","Devashish","Dhruba","Gaurav","Gayatri","Gitanjal",
@@ -672,7 +636,7 @@ TESTERS.forEach(t=>{const o=document.createElement('option');o.value=o.textConte
 
 tSel.addEventListener('change',()=>document.getElementById('sf0').classList.remove('err'));
 pSel.addEventListener('change',()=>document.getElementById('sf2').classList.remove('err'));
-sIn.addEventListener('change',()=>document.getElementById('sf1').classList.remove('err'));
+sIn.addEventListener('input',()=>document.getElementById('sf1').classList.remove('err'));
 
 let ctr=0;
 
@@ -708,7 +672,7 @@ function addBug(){
         <div class="row c3">
           <div class="field" id="fm${id}">
             <label>Module <span class="req">*</span></label>
-            <select name="module"><option value="">— Select module —</option>${MODS.map(m=>`<option>${m}</option>`).join('')}</select>
+            <input type="text" name="module" placeholder="e.g. Login, Cart, Checkout"/>
             <span class="ferr">Module is required</span>
           </div>
           <div class="field" id="fp${id}">
