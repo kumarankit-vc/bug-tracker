@@ -31,13 +31,12 @@ body{
 .gate-blob.b3{width:240px;height:240px;top:60%;left:58%;
   background:radial-gradient(circle,rgba(56,189,248,.10) 0%,transparent 65%);}
 .gate-box{
-  background:rgba(8,16,40,0.68);
-  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
-  border:1px solid rgba(255,255,255,.09);
+  background:#fff;
+  border:1px solid #E2E8F0;
   border-radius:22px;padding:48px 44px;
   width:min(400px,calc(100vw - 32px));
   text-align:center;
-  box-shadow:0 40px 80px rgba(0,0,0,.55), 0 1px 0 rgba(255,255,255,.07) inset;
+  box-shadow:0 32px 72px rgba(0,0,0,.38), 0 1px 0 rgba(255,255,255,.9) inset;
   position:relative;z-index:1;
 }
 .gate-icon{
@@ -45,38 +44,37 @@ body{
   background:linear-gradient(145deg,#1E40AF 0%,#2563EB 100%);
   display:flex;align-items:center;justify-content:center;
   margin:0 auto 18px;
-  box-shadow:0 8px 24px rgba(37,99,235,.38);
+  box-shadow:0 8px 24px rgba(37,99,235,.32);
 }
 .gate-wordmark{
   font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;
-  color:rgba(255,255,255,.35);letter-spacing:2px;text-transform:uppercase;
+  color:#94A3B8;letter-spacing:2px;text-transform:uppercase;
   margin-bottom:22px;
 }
-.gate-box h2{font-size:19px;font-weight:700;color:#F1F5F9;margin-bottom:7px;letter-spacing:-.2px;}
-.gate-box p{font-size:12.5px;color:rgba(148,163,184,.65);line-height:1.6;margin-bottom:26px;}
-.gate-sep{height:1px;background:rgba(255,255,255,.07);margin:0 0 26px;}
+.gate-box h2{font-size:19px;font-weight:700;color:#0F172A;margin-bottom:7px;letter-spacing:-.2px;}
+.gate-box p{font-size:12.5px;color:#64748B;line-height:1.6;margin-bottom:26px;}
+.gate-sep{height:1px;background:#F1F5F9;margin:0 0 26px;}
 .gate-input{
   width:100%;font-family:'Inter',sans-serif;
   font-size:15px;text-align:center;letter-spacing:5px;
-  background:rgba(255,255,255,.05);
-  color:#F1F5F9;
-  border:1.5px solid rgba(255,255,255,.11);
+  background:#F8FAFC;color:#0F172A;
+  border:1.5px solid #E2E8F0;
   border-radius:10px;padding:13px 16px;outline:none;
   margin-bottom:14px;transition:border-color .15s,box-shadow .15s;
 }
-.gate-input::placeholder{color:rgba(255,255,255,.18);letter-spacing:3px;}
-.gate-input:focus{border-color:rgba(59,130,246,.55);box-shadow:0 0 0 3px rgba(59,130,246,.14);}
+.gate-input::placeholder{color:#CBD5E1;letter-spacing:3px;}
+.gate-input:focus{border-color:#3B82F6;box-shadow:0 0 0 3px rgba(59,130,246,.12);}
 .gate-input.shake{animation:shake .3s;}
 .gate-btn{
   width:100%;background:linear-gradient(135deg,#1A3A8A 0%,#2563EB 100%);color:#fff;border:none;
   font-family:'Inter',sans-serif;font-size:14px;font-weight:600;letter-spacing:.1px;
   padding:13px;border-radius:10px;cursor:pointer;
   transition:opacity .15s,box-shadow .15s;
-  box-shadow:0 4px 18px rgba(37,99,235,.42);
+  box-shadow:0 4px 18px rgba(37,99,235,.38);
 }
-.gate-btn:hover{opacity:.88;box-shadow:0 6px 24px rgba(37,99,235,.52);}
-.gate-err{font-size:12px;color:#FC8181;margin-top:10px;display:none;font-weight:500;}
-.gate-footer{font-size:12px;color:rgba(148,163,184,.45);margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,.06);}
+.gate-btn:hover{opacity:.88;box-shadow:0 6px 24px rgba(37,99,235,.48);}
+.gate-err{font-size:12px;color:#DC2626;margin-top:10px;display:none;font-weight:500;}
+.gate-footer{font-size:12px;color:#94A3B8;margin-top:22px;padding-top:18px;border-top:1px solid #F1F5F9;}
 
 /* ── Page ───────────────────────────────────────────────────────────── */
 .page{max-width:1400px;margin:0 auto;padding:0 20px 60px;}
@@ -464,7 +462,7 @@ tbody tr.row-critical:hover{background:#FFF3F0;}
     <input class="gate-input" type="password" id="gateInput" placeholder="••••••••" maxlength="40"/>
     <button class="gate-btn" id="gateBtn">Unlock Dashboard</button>
     <div class="gate-err" id="gateErr">Incorrect password. Please try again.</div>
-    <div class="gate-footer">QA tester? <a href="index.html" style="color:rgba(96,165,250,.75);text-decoration:none;font-weight:500;">Submit a bug →</a></div>
+    <div class="gate-footer">QA tester? <a href="index.html" style="color:#2563EB;text-decoration:none;font-weight:500;">Submit a bug →</a></div>
   </div>
 </div>
 
