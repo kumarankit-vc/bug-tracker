@@ -546,49 +546,18 @@ select option{background:#fff;color:#172B4D;}
   align-items:center;justify-content:center;
   text-align:center;
 }
-.hero-badge{
-  display:inline-flex;align-items:center;gap:7px;
-  background:rgba(255,255,255,.1);
-  border:1px solid rgba(255,255,255,.2);
-  border-radius:20px;padding:5px 14px 5px 10px;
-  font-size:11px;font-weight:600;
-  color:rgba(255,255,255,.8);letter-spacing:.6px;text-transform:uppercase;
-  margin-bottom:16px;
-}
-.hero-badge-dot{
-  width:7px;height:7px;border-radius:50%;
-  background:#4ADE80;
-  box-shadow:0 0 7px rgba(74,222,128,.65);
-}
 .feat-hero-title{
   font-family:'Bebas Neue',sans-serif;
   font-size:54px;font-weight:400;
   color:#fff;
   letter-spacing:3px;line-height:1.05;
-  margin-bottom:14px;
+  margin-bottom:10px;
   text-shadow:0 2px 20px rgba(0,0,0,.25);
 }
 .feat-hero-title span{color:rgba(180,215,255,.85);}
-.hero-tagline{
-  display:flex;align-items:center;flex-wrap:wrap;
-  justify-content:center;gap:0;
-  max-width:500px;
-  background:rgba(0,0,0,.18);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:10px;
-  padding:10px 20px;
-}
-.hero-tagline-main{
-  font-size:13px;font-weight:500;
-  color:rgba(255,255,255,.78);letter-spacing:.1px;
-}
-.hero-tagline-sep{
-  color:rgba(255,255,255,.3);margin:0 8px;font-size:13px;
-}
-.hero-tagline-end{
-  font-size:13px;font-weight:600;
-  color:rgba(160,210,255,.95);
-  font-style:italic;letter-spacing:.05px;
+.feat-hero-sub{
+  font-size:13.5px;color:rgba(255,255,255,.62);
+  max-width:390px;line-height:1.65;
 }
 
 /* ── Cylindrical pill CTA — sits below showcase ─────────────────────── */
@@ -865,7 +834,7 @@ select option{background:#fff;color:#172B4D;}
   .dp-summary{display:none;}
   .dash-preview-wrap{padding:12px;}
   .feat-hero-title{font-size:38px;letter-spacing:2px;}
-  .hero-tagline{padding:8px 14px;}
+  .feat-hero-sub{font-size:12.5px;}
   .btn-hero-report{font-size:13px;padding:12px 36px;}
   .scroll-indicator{padding:8px 0 0;}
 }
@@ -876,9 +845,7 @@ select option{background:#fff;color:#172B4D;}
   .feat-list-item h3{font-size:11px;}
   .feat-list-item p{font-size:10px;}
   .feat-hero-title{font-size:30px;letter-spacing:1.5px;}
-  .hero-tagline{flex-direction:column;gap:2px;padding:8px 12px;}
-  .hero-tagline-sep{display:none;}
-  .hero-tagline-main,.hero-tagline-end{font-size:12px;}
+  .feat-hero-sub{font-size:11.5px;}
   .btn-hero-report{padding:11px 28px;}
   .scroll-ind-text{display:none;}
 }
@@ -993,13 +960,8 @@ select option{background:#fff;color:#172B4D;}
 
     <!-- Hero headline -->
     <div class="feat-hero-cta">
-      <div class="hero-badge"><span class="hero-badge-dot"></span>Vantage Circle QA</div>
       <h1 class="feat-hero-title">Report Bugs.<span> Ship Faster.</span></h1>
-      <div class="hero-tagline">
-        <span class="hero-tagline-main">Centralized QA bug tracking for Vantage Circle</span>
-        <span class="hero-tagline-sep">—</span>
-        <span class="hero-tagline-end">from first click to final fix.</span>
-      </div>
+      <p class="feat-hero-sub">Centralized QA bug tracking for Vantage Circle — from first click to final fix.</p>
     </div>
 
     <!-- Showcase: feature list + dashboard preview + mascot -->
