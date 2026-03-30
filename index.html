@@ -68,28 +68,81 @@ body{
 
 /* ── Page hero ──────────────────────────────────────────────────────── */
 .page-hero{
-  background:#fff;border:1px solid #BDD9F5;border-radius:10px;
-  padding:14px 20px 12px;margin-bottom:14px;
-  box-shadow:0 1px 4px rgba(10,37,96,.07);
+  background:linear-gradient(135deg,#0D3382 0%,#1558C8 55%,#1E6AD8 100%);
+  border:none;border-radius:12px;
+  padding:18px 24px 16px;margin-bottom:14px;
+  box-shadow:0 4px 20px rgba(13,51,130,.28),0 1px 0 rgba(255,255,255,.06) inset;
   position:relative;overflow:hidden;
 }
-.hero-deco{position:absolute;right:20px;top:50%;transform:translateY(-50%);pointer-events:none;animation:heroBugFloat 4s ease-in-out infinite;opacity:0.13;}
-@keyframes heroBugFloat{0%,100%{transform:translateY(-50%)}50%{transform:translateY(calc(-50% - 8px))}}
-.page-hero h1{font-size:20px;font-weight:700;color:#172B4D;letter-spacing:-.3px;margin-bottom:2px;}
-.page-hero p{font-size:13px;color:#6B778C;margin-bottom:10px;}
-.hero-steps{display:flex;align-items:center;gap:0;flex-wrap:wrap;gap:4px;}
-.hero-step{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8993A4;}
-.hero-step.active{color:#0052CC;font-weight:600;}
-.hero-step.done{color:#36B37E;font-weight:600;}
+/* Decorative background orbs */
+.page-hero::before{
+  content:'';position:absolute;right:-40px;top:-40px;
+  width:180px;height:180px;border-radius:50%;
+  background:rgba(255,255,255,.05);pointer-events:none;
+}
+.page-hero::after{
+  content:'';position:absolute;left:-20px;bottom:-50px;
+  width:140px;height:140px;border-radius:50%;
+  background:rgba(255,255,255,.04);pointer-events:none;
+}
+.hero-deco{
+  position:absolute;right:24px;top:50%;transform:translateY(-50%);
+  pointer-events:none;
+  animation:heroBugFloat 4s ease-in-out infinite;
+  opacity:0.18;
+}
+@keyframes heroBugFloat{
+  0%,100%{transform:translateY(-50%)}
+  50%{transform:translateY(calc(-50% - 8px))}
+}
+.page-hero h1{
+  font-size:21px;font-weight:800;color:#fff;
+  letter-spacing:-.4px;margin-bottom:4px;
+}
+.page-hero p{
+  font-size:13px;color:rgba(255,255,255,.68);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+/* Vantage Circle tag chip */
+.page-hero p::after{
+  content:'Vantage Circle';
+  font-size:10px;font-weight:700;letter-spacing:.4px;
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:4px;padding:1px 8px;color:rgba(255,255,255,.8);
+  white-space:nowrap;
+}
+/* Step pills */
+.hero-steps{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.hero-step{
+  display:flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:500;
+  color:rgba(255,255,255,.55);
+  padding:4px 11px 4px 4px;
+  border-radius:20px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);
+  transition:background .15s,border-color .15s;
+}
+.hero-step.active{
+  color:#fff;font-weight:600;
+  background:rgba(255,255,255,.16);
+  border-color:rgba(255,255,255,.28);
+}
+.hero-step.done{
+  color:rgba(100,230,160,.9);
+  background:rgba(54,179,126,.12);
+  border-color:rgba(54,179,126,.25);
+}
 .hero-step-num{
   width:20px;height:20px;border-radius:50%;
-  background:#DFE1E6;color:#6B778C;
+  background:rgba(255,255,255,.15);color:rgba(255,255,255,.7);
   font-size:10px;font-weight:700;
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
-.hero-step.active .hero-step-num{background:#0052CC;color:#fff;}
+.hero-step.active .hero-step-num{background:#fff;color:#0D3382;}
 .hero-step.done .hero-step-num{background:#36B37E;color:#fff;}
-.hero-step-sep{color:#BDD9F5;padding:0 6px;font-size:14px;}
+.hero-step-sep{color:rgba(255,255,255,.2);padding:0 2px;font-size:16px;font-weight:300;}
 
 /* ── Section bar ────────────────────────────────────────────────────── */
 .section-bar{
@@ -1110,7 +1163,7 @@ select option{background:#fff;color:#172B4D;}
       <circle cx="37" cy="45" r="2.5" fill="white" opacity="0.4"/>
     </svg>
     <h1>Bug Report</h1>
-    <p>Submit and track bugs found during QA testing · Vantage Circle</p>
+    <p>Submit and track bugs found during QA testing</p>
     <div class="hero-steps">
       <div class="hero-step active"><span class="hero-step-num">1</span><span>Session Info</span></div>
       <span class="hero-step-sep">›</span>
