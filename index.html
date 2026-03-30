@@ -524,9 +524,7 @@ select option{background:#fff;color:#172B4D;}
   from{opacity:0;transform:translateY(22px);}
   to{opacity:1;transform:translateY(0);}
 }
-@keyframes mascotFloat{
-  0%,100%{transform:translateY(0);}
-  50%{transform:translateY(-7px);}
+
 }
 
 /* ── Feature highlights banner — full-viewport hero ─────────────────── */
@@ -671,7 +669,6 @@ select option{background:#fff;color:#172B4D;}
 @media(prefers-reduced-motion:reduce){
   .benefit-item{opacity:1;animation:none;}
   .feat-showcase{opacity:1;animation:none;}
-  .feat-mascot svg{animation:none !important;}
 }
 
 /* Feature list (left column) — distinct panel with clear separation */
@@ -817,16 +814,12 @@ select option{background:#fff;color:#172B4D;}
 .dp-status-dot.done{color:#36B37E;}
 .dp-status-dot.done::before{background:#36B37E;}
 
-/* Bug mascot */
-.feat-mascot{
-  flex:0 0 80px;display:flex;align-items:flex-end;justify-content:center;
-  padding:0 12px 16px;
-  border-left:1px solid rgba(255,255,255,.08);
-}
-.feat-mascot svg{
-  animation:mascotFloat 3.8s ease-in-out infinite;
-  animation-delay:.9s;
-  will-change:transform;
+/* Right info panel */
+.feat-list-right{
+  flex:0 0 200px;display:flex;flex-direction:column;justify-content:center;
+  padding:20px 18px;
+  background:rgba(255,255,255,.05);
+  border-left:1px solid rgba(255,255,255,.1);
 }
 
 /* (feat-cta replaced by .feat-hero-cta + .scroll-indicator above) */
@@ -840,7 +833,7 @@ select option{background:#fff;color:#172B4D;}
   .benefit-icon{width:42px;height:42px;}
   .feat-showcase{flex-direction:row;}
   .feat-list{flex:0 0 145px;border-right:1px solid rgba(255,255,255,.1);border-bottom:none;padding:14px 12px;}
-  .feat-mascot{display:none;}
+  .feat-list-right{display:none;}
   .benefits-row{margin-bottom:0;}
   .dp-summary{display:none;}
   .dash-preview-wrap{padding:12px;}
@@ -1095,47 +1088,20 @@ select option{background:#fff;color:#172B4D;}
         </div>
       </div>
 
-      <!-- Right: bug mascot -->
-      <div class="feat-mascot" aria-hidden="true">
-        <svg width="78" height="88" viewBox="0 0 64 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Body -->
-          <ellipse cx="32" cy="52" rx="13" ry="17" fill="#2B6CB0" opacity="0.9"/>
-          <!-- Head -->
-          <circle cx="32" cy="29" r="10" fill="#2B6CB0" opacity="0.9"/>
-          <!-- Eyes -->
-          <circle cx="28.5" cy="28" r="3.2" fill="white"/>
-          <circle cx="35.5" cy="28" r="3.2" fill="white"/>
-          <circle cx="29.5" cy="28.5" r="1.6" fill="#071A45"/>
-          <circle cx="36.5" cy="28.5" r="1.6" fill="#071A45"/>
-          <circle cx="30.3" cy="27.7" r="0.6" fill="white"/>
-          <circle cx="37.3" cy="27.7" r="0.6" fill="white"/>
-          <!-- Smile -->
-          <path d="M28 34 Q32 38.5 36 34" stroke="white" stroke-width="1.6" stroke-linecap="round" fill="none"/>
-          <!-- Antennae -->
-          <path d="M29 20 C27 15 23 12 20 10" stroke="#4C9AFF" stroke-width="1.8" stroke-linecap="round"/>
-          <path d="M35 20 C37 15 41 12 44 10" stroke="#4C9AFF" stroke-width="1.8" stroke-linecap="round"/>
-          <circle cx="20" cy="10" r="2.8" fill="#4C9AFF"/>
-          <circle cx="44" cy="10" r="2.8" fill="#4C9AFF"/>
-          <!-- Center line -->
-          <line x1="32" y1="36" x2="32" y2="68" stroke="rgba(255,255,255,0.35)" stroke-width="1.4" stroke-linecap="round"/>
-          <!-- Legs left -->
-          <line x1="20" y1="46" x2="9"  y2="42" stroke="#4C9AFF" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="20" y1="53" x2="8"  y2="53" stroke="#4C9AFF" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="20" y1="61" x2="9"  y2="66" stroke="#4C9AFF" stroke-width="1.8" stroke-linecap="round"/>
-          <!-- Legs right -->
-          <line x1="44" y1="46" x2="55" y2="42" stroke="#4C9AFF" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="44" y1="53" x2="56" y2="53" stroke="#4C9AFF" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="44" y1="61" x2="55" y2="66" stroke="#4C9AFF" stroke-width="1.8" stroke-linecap="round"/>
-          <!-- Spots -->
-          <circle cx="27" cy="48" r="2.8" fill="rgba(255,255,255,0.2)"/>
-          <circle cx="37" cy="48" r="2.8" fill="rgba(255,255,255,0.2)"/>
-          <circle cx="27" cy="58" r="2.8" fill="rgba(255,255,255,0.2)"/>
-          <circle cx="37" cy="58" r="2.8" fill="rgba(255,255,255,0.2)"/>
-          <!-- Magnifying glass -->
-          <circle cx="51" cy="67" r="7.5" fill="none" stroke="#4C9AFF" stroke-width="2.2"/>
-          <line x1="56.5" y1="72.5" x2="62" y2="78" stroke="#4C9AFF" stroke-width="2.8" stroke-linecap="round"/>
-          <line x1="47" y1="64" x2="55" y2="70" stroke="rgba(76,154,255,0.25)" stroke-width="4" stroke-linecap="round"/>
-        </svg>
+      <!-- Right: info panel -->
+      <div class="feat-list-right">
+        <div class="feat-list-item">
+          <h3>Proof Attachments</h3>
+          <p>Link screenshots or recordings directly to every bug report for clear evidence</p>
+        </div>
+        <div class="feat-list-item">
+          <h3>Sprint Tracking</h3>
+          <p>Organise bugs by sprint so nothing slips through across release cycles</p>
+        </div>
+        <div class="feat-list-item">
+          <h3>Instant CSV Export</h3>
+          <p>Download full bug reports as CSV anytime for sharing or sprint reviews</p>
+        </div>
       </div>
 
     </div>
