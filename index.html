@@ -456,11 +456,10 @@ select option{background:#fff;color:#172B4D;}
   50%{transform:translateY(-7px);}
 }
 
-/* ── Feature highlights banner — Jira-inspired navy palette ─────────── */
-/*   Primary: #091E42 (Jira darkest navy) → #0747A6 (Jira dark blue)    */
+/* ── Feature highlights banner ──────────────────────────────────────── */
 .feat-banner{
-  background:linear-gradient(160deg,#091E42 0%,#0C2B6E 50%,#0747A6 100%);
-  border-bottom:2px solid rgba(255,255,255,.06);
+  background:linear-gradient(160deg,#1448A8 0%,#1A5CC0 50%,#1E68D0 100%);
+  border-bottom:2px solid rgba(255,255,255,.1);
 }
 .feat-banner-inner{
   max-width:900px;margin:0 auto;padding:32px 20px 28px;
@@ -476,11 +475,11 @@ select option{background:#fff;color:#172B4D;}
   gap:11px;text-align:center;padding:0 16px;
   border-right:1px solid rgba(255,255,255,.12);
   opacity:0;
-  animation:featFadeUp .8s cubic-bezier(.22,.68,0,1.2) forwards;
+  animation:featFadeUp .6s cubic-bezier(.22,.68,0,1.2) forwards;
 }
-.benefit-item:nth-child(1){animation-delay:.12s;}
-.benefit-item:nth-child(2){animation-delay:.34s;}
-.benefit-item:nth-child(3){animation-delay:.56s;}
+.benefit-item:nth-child(1){animation-delay:.1s;}
+.benefit-item:nth-child(2){animation-delay:.24s;}
+.benefit-item:nth-child(3){animation-delay:.38s;}
 .benefit-item:last-child{border-right:none;}
 .benefit-icon{
   width:50px;height:50px;
@@ -509,8 +508,8 @@ select option{background:#fff;color:#172B4D;}
   border-radius:10px;
   overflow:hidden;
   opacity:0;
-  animation:featFadeUp .85s cubic-bezier(.22,.68,0,1.2) forwards;
-  animation-delay:.7s;
+  animation:featFadeUp .65s cubic-bezier(.22,.68,0,1.2) forwards;
+  animation-delay:.5s;
 }
 
 /* Reduced-motion: skip animations */
@@ -671,7 +670,7 @@ select option{background:#fff;color:#172B4D;}
 }
 .feat-mascot svg{
   animation:mascotFloat 3.8s ease-in-out infinite;
-  animation-delay:1.2s;
+  animation-delay:.9s;
   will-change:transform;
 }
 
