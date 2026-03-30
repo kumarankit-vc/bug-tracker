@@ -31,42 +31,52 @@ body{
 .gate-blob.b3{width:240px;height:240px;top:60%;left:58%;
   background:radial-gradient(circle,rgba(56,189,248,.10) 0%,transparent 65%);}
 .gate-box{
-  background:#fff;border:1px solid rgba(255,255,255,.1);
-  border-radius:16px;padding:44px 40px;
-  width:min(420px,calc(100vw - 32px));
+  background:rgba(8,16,40,0.68);
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:22px;padding:48px 44px;
+  width:min(400px,calc(100vw - 32px));
   text-align:center;
-  box-shadow:0 24px 64px rgba(0,0,0,.4),0 2px 0 rgba(255,255,255,.06) inset;
+  box-shadow:0 40px 80px rgba(0,0,0,.55), 0 1px 0 rgba(255,255,255,.07) inset;
   position:relative;z-index:1;
 }
-.gate-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px;}
-.gate-brand{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:#0A2560;letter-spacing:-.3px;}
-.gate-tagline{font-size:11px;font-weight:600;color:#94A3B8;letter-spacing:.7px;text-transform:uppercase;margin-bottom:24px;}
-.gate-box h2{font-size:18px;font-weight:700;color:#172B4D;margin-bottom:6px;}
-.gate-box p{font-size:13px;color:#64748B;line-height:1.55;margin-bottom:18px;}
-.gate-features{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:24px;}
-.gate-features span{font-size:11px;font-weight:500;color:#475569;
-  background:#F1F5F9;border:1px solid #E2E8F0;
-  padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.gate-icon{
+  width:52px;height:52px;border-radius:14px;
+  background:linear-gradient(145deg,#1E40AF 0%,#2563EB 100%);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 18px;
+  box-shadow:0 8px 24px rgba(37,99,235,.38);
+}
+.gate-wordmark{
+  font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;
+  color:rgba(255,255,255,.35);letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:22px;
+}
+.gate-box h2{font-size:19px;font-weight:700;color:#F1F5F9;margin-bottom:7px;letter-spacing:-.2px;}
+.gate-box p{font-size:12.5px;color:rgba(148,163,184,.65);line-height:1.6;margin-bottom:26px;}
+.gate-sep{height:1px;background:rgba(255,255,255,.07);margin:0 0 26px;}
 .gate-input{
   width:100%;font-family:'Inter',sans-serif;
-  font-size:15px;text-align:center;letter-spacing:4px;
-  background:#F8FAFC;color:#172B4D;
-  border:1.5px solid #E2E8F0;
-  border-radius:8px;padding:12px 14px;outline:none;
-  margin-bottom:12px;transition:border-color .15s,box-shadow .15s;
+  font-size:15px;text-align:center;letter-spacing:5px;
+  background:rgba(255,255,255,.05);
+  color:#F1F5F9;
+  border:1.5px solid rgba(255,255,255,.11);
+  border-radius:10px;padding:13px 16px;outline:none;
+  margin-bottom:14px;transition:border-color .15s,box-shadow .15s;
 }
-.gate-input:focus{border-color:#3B82F6;box-shadow:0 0 0 3px rgba(59,130,246,.15);}
+.gate-input::placeholder{color:rgba(255,255,255,.18);letter-spacing:3px;}
+.gate-input:focus{border-color:rgba(59,130,246,.55);box-shadow:0 0 0 3px rgba(59,130,246,.14);}
 .gate-input.shake{animation:shake .3s;}
 .gate-btn{
   width:100%;background:linear-gradient(135deg,#1A3A8A 0%,#2563EB 100%);color:#fff;border:none;
-  font-family:'Inter',sans-serif;font-size:14px;font-weight:600;
-  padding:12px;border-radius:8px;cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:14px;font-weight:600;letter-spacing:.1px;
+  padding:13px;border-radius:10px;cursor:pointer;
   transition:opacity .15s,box-shadow .15s;
-  box-shadow:0 4px 14px rgba(37,99,235,.35);
+  box-shadow:0 4px 18px rgba(37,99,235,.42);
 }
-.gate-btn:hover{opacity:.9;box-shadow:0 6px 20px rgba(37,99,235,.45);}
-.gate-err{font-size:12px;color:#DC2626;margin-top:10px;display:none;font-weight:500;}
-.gate-footer{font-size:11px;color:#94A3B8;margin-top:20px;padding-top:16px;border-top:1px solid #F1F5F9;}
+.gate-btn:hover{opacity:.88;box-shadow:0 6px 24px rgba(37,99,235,.52);}
+.gate-err{font-size:12px;color:#FC8181;margin-top:10px;display:none;font-weight:500;}
+.gate-footer{font-size:12px;color:rgba(148,163,184,.45);margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,.06);}
 
 /* ── Page ───────────────────────────────────────────────────────────── */
 .page{max-width:1400px;margin:0 auto;padding:0 20px 60px;}
@@ -402,8 +412,8 @@ tbody tr.row-critical:hover{background:#FFF3F0;}
 @media(max-width:480px){
   .stats{grid-template-columns:1fr 1fr;}
   .hdr-actions{gap:6px;}
-  .gate-box{padding:32px 22px;margin:0 12px;border-radius:12px;}
-  .gate-brand{font-size:20px;}
+  .gate-box{padding:36px 28px;margin:0 12px;border-radius:16px;}
+  .gate-wordmark{font-size:12px;}
   .report-link,.logout-btn{font-size:12px;padding:5px 10px;}
   .tb-row{flex-wrap:wrap;gap:6px;}
   .ctrl,.ctrl-sel{flex:1;min-width:130px;}
@@ -423,8 +433,8 @@ tbody tr.row-critical:hover{background:#FFF3F0;}
   .stat .lbl{font-size:10px;}
   .report-link{display:none;}
   .logout-btn{font-size:11px;padding:4px 8px;}
-  .gate-box{padding:28px 18px;margin:0 8px;border-radius:12px;}
-  .gate-brand{font-size:18px;}
+  .gate-box{padding:32px 20px;margin:0 8px;border-radius:14px;}
+  .gate-wordmark{font-size:11px;}
   .gate-input{font-size:14px;padding:9px 12px;}
   .gate-btn{font-size:13px;padding:9px;}
   .ctrl,.ctrl-sel{font-size:12px;padding:5px 8px;}
@@ -441,34 +451,20 @@ tbody tr.row-critical:hover{background:#FFF3F0;}
   <div class="gate-blob b2"></div>
   <div class="gate-blob b3"></div>
   <div class="gate-box">
-    <div class="gate-logo">
-      <svg width="36" height="36" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="34" height="34" rx="9" fill="#0052CC"/>
-        <ellipse cx="17" cy="21" rx="7.5" ry="8.5" fill="white"/>
-        <circle cx="17" cy="11.5" r="3.5" fill="white"/>
-        <path d="M15 9.5 C13.5 7.5 11 6 9 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/>
-        <path d="M19 9.5 C20.5 7.5 23 6 25 5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/>
-        <line x1="17" y1="13" x2="17" y2="29" stroke="#0052CC" stroke-width="1.2" stroke-linecap="round"/>
-        <circle cx="13.5" cy="19" r="1.5" fill="#0052CC" opacity="0.45"/>
-        <circle cx="13.5" cy="24" r="1.5" fill="#0052CC" opacity="0.45"/>
-        <circle cx="20.5" cy="19" r="1.5" fill="#0052CC" opacity="0.45"/>
-        <circle cx="20.5" cy="24" r="1.5" fill="#0052CC" opacity="0.45"/>
+    <div class="gate-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
       </svg>
-      <span class="gate-brand">Bugify</span>
     </div>
-    <div class="gate-tagline">Bug Tracking · Vantage Circle QA</div>
-    <h2>Admin Access</h2>
-    <p>Enter your password to unlock the dashboard and view all reported bugs.</p>
-    <div class="gate-features">
-      <span>📊 Analytics</span>
-      <span>🔍 Smart Filters</span>
-      <span>📤 CSV Export</span>
-      <span>🧑‍💻 Tester Breakdown</span>
-    </div>
+    <div class="gate-wordmark">Bugify</div>
+    <h2>Dashboard Access</h2>
+    <p>Enter your password to view bug reports and QA analytics.</p>
+    <div class="gate-sep"></div>
     <input class="gate-input" type="password" id="gateInput" placeholder="••••••••" maxlength="40"/>
     <button class="gate-btn" id="gateBtn">Unlock Dashboard</button>
     <div class="gate-err" id="gateErr">Incorrect password. Please try again.</div>
-    <div class="gate-footer">QA testers? <a href="index.html" style="color:#3B82F6;text-decoration:none;font-weight:500;">Submit a bug →</a></div>
+    <div class="gate-footer">QA tester? <a href="index.html" style="color:rgba(96,165,250,.75);text-decoration:none;font-weight:500;">Submit a bug →</a></div>
   </div>
 </div>
 
