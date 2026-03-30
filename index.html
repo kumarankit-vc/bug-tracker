@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover"/>
 <title>Bugify — Bug Report</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ── Reset ──────────────────────────────────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0}
@@ -544,6 +544,28 @@ select option{background:#fff;color:#172B4D;}
   max-width:900px;margin:0 auto;padding:22px 20px 14px;width:100%;
 }
 
+/* ── Hero headline (Bebas Neue advertising font) ────────────────────── */
+.feat-hero-cta{
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+}
+.feat-hero-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:54px;font-weight:400;
+  color:#fff;
+  letter-spacing:3px;line-height:1.05;
+  margin-bottom:10px;
+  text-shadow:0 2px 20px rgba(0,0,0,.25);
+}
+.feat-hero-title span{
+  color:rgba(180,215,255,.85);
+}
+.feat-hero-sub{
+  font-size:13.5px;color:rgba(255,255,255,.62);
+  max-width:390px;line-height:1.65;
+}
+
 /* ── Cylindrical pill CTA — sits below showcase ─────────────────────── */
 .feat-cta-center{
   display:flex;align-items:center;justify-content:center;
@@ -822,6 +844,8 @@ select option{background:#fff;color:#172B4D;}
   .benefits-row{margin-bottom:0;}
   .dp-summary{display:none;}
   .dash-preview-wrap{padding:12px;}
+  .feat-hero-title{font-size:38px;letter-spacing:2px;}
+  .feat-hero-sub{font-size:12.5px;}
   .btn-hero-report{font-size:13px;padding:12px 36px;}
   .scroll-indicator{padding:8px 0 0;}
 }
@@ -831,6 +855,8 @@ select option{background:#fff;color:#172B4D;}
   .feat-list{flex:0 0 120px;padding:12px 10px;}
   .feat-list-item h3{font-size:11px;}
   .feat-list-item p{font-size:10px;}
+  .feat-hero-title{font-size:30px;letter-spacing:1.5px;}
+  .feat-hero-sub{font-size:11.5px;}
   .btn-hero-report{padding:11px 28px;}
   .scroll-ind-text{display:none;}
 }
@@ -941,6 +967,12 @@ select option{background:#fff;color:#172B4D;}
         </div>
         <span class="benefit-label">Increase team productivity</span>
       </div>
+    </div>
+
+    <!-- Hero headline -->
+    <div class="feat-hero-cta">
+      <h1 class="feat-hero-title">Report Bugs.<span> Ship Faster.</span></h1>
+      <p class="feat-hero-sub">Centralized QA bug tracking for Vantage Circle — from first click to final fix.</p>
     </div>
 
     <!-- Showcase: feature list + dashboard preview + mascot -->
