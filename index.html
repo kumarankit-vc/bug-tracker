@@ -540,47 +540,45 @@ select option{background:#fff;color:#172B4D;}
 }
 .feat-banner-inner{
   flex:1;display:flex;flex-direction:column;
+  gap:18px;
   max-width:900px;margin:0 auto;padding:22px 20px 14px;width:100%;
 }
 
-/* ── Centered hero CTA (between benefits and dashboard preview) ───── */
-.feat-hero-cta{
-  flex:1;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  text-align:center;padding:6px 20px 10px;
-  min-height:90px;
-}
-.feat-hero-title{
-  font-family:'Space Grotesk',sans-serif;
-  font-size:32px;font-weight:800;color:#fff;
-  letter-spacing:-.5px;margin-bottom:8px;line-height:1.15;
-}
-.feat-hero-sub{
-  font-size:13.5px;color:rgba(255,255,255,.65);
-  margin-bottom:22px;max-width:380px;line-height:1.65;
+/* ── Cylindrical pill CTA — sits below showcase ─────────────────────── */
+.feat-cta-center{
+  display:flex;align-items:center;justify-content:center;
 }
 .btn-hero-report{
-  display:inline-flex;align-items:center;gap:10px;
-  background:#fff;color:#0D2E80;
+  display:inline-flex;align-items:center;gap:12px;
+  background:linear-gradient(180deg,#fff 0%,#EAF0FF 100%);
+  color:#0D2E80;
   border:none;font-family:'Inter',sans-serif;
-  font-size:15px;font-weight:700;
-  padding:13px 32px;border-radius:8px;cursor:pointer;
-  box-shadow:0 4px 24px rgba(0,0,0,.26);
-  transition:background .18s,transform .15s,box-shadow .18s;
+  font-size:15px;font-weight:700;letter-spacing:.25px;
+  padding:15px 60px;
+  border-radius:50px;
+  cursor:pointer;
+  box-shadow:0 6px 28px rgba(0,0,0,.3),
+             0 1px 0 rgba(255,255,255,.9) inset,
+             0 -1px 0 rgba(0,0,0,.06) inset;
+  transition:transform .2s cubic-bezier(.22,.68,0,1.2),
+             box-shadow .2s,background .15s;
 }
-.btn-hero-report svg{transition:transform .18s;}
+.btn-hero-report svg{transition:transform .2s;}
 .btn-hero-report:hover{
-  background:#EBF2FF;transform:translateY(-2px);
-  box-shadow:0 8px 32px rgba(0,0,0,.32);
+  background:linear-gradient(180deg,#fff 0%,#D8E8FF 100%);
+  transform:translateY(-3px) scale(1.025);
+  box-shadow:0 16px 48px rgba(0,0,0,.38),
+             0 1px 0 rgba(255,255,255,.9) inset;
 }
-.btn-hero-report:hover svg{transform:translateX(4px);}
-.btn-hero-report:active{transform:translateY(0);}
+.btn-hero-report:hover svg{transform:translateX(5px);}
+.btn-hero-report:active{transform:scale(.97);box-shadow:0 3px 14px rgba(0,0,0,.26);}
 
-/* ── Scroll indicator ───────────────────────────────────────────────── */
+/* ── Scroll indicator — always pinned to bottom of hero ─────────────── */
 .scroll-indicator{
   display:flex;flex-direction:column;align-items:center;gap:7px;
   padding:10px 0 2px;cursor:pointer;
   opacity:.48;transition:opacity .22s;user-select:none;
+  margin-top:auto;
 }
 .scroll-indicator:hover{opacity:1;}
 .scroll-ind-text{
@@ -824,9 +822,7 @@ select option{background:#fff;color:#172B4D;}
   .benefits-row{margin-bottom:0;}
   .dp-summary{display:none;}
   .dash-preview-wrap{padding:12px;}
-  .feat-hero-title{font-size:24px;}
-  .feat-hero-sub{font-size:12.5px;margin-bottom:16px;}
-  .btn-hero-report{font-size:13px;padding:11px 22px;}
+  .btn-hero-report{font-size:13px;padding:12px 36px;}
   .scroll-indicator{padding:8px 0 0;}
 }
 @media(max-width:480px){
@@ -835,7 +831,7 @@ select option{background:#fff;color:#172B4D;}
   .feat-list{flex:0 0 120px;padding:12px 10px;}
   .feat-list-item h3{font-size:11px;}
   .feat-list-item p{font-size:10px;}
-  .feat-hero-title{font-size:22px;}
+  .btn-hero-report{padding:11px 28px;}
   .scroll-ind-text{display:none;}
 }
 @media(max-width:390px){
@@ -945,18 +941,6 @@ select option{background:#fff;color:#172B4D;}
         </div>
         <span class="benefit-label">Increase team productivity</span>
       </div>
-    </div>
-
-    <!-- Centered hero CTA -->
-    <div class="feat-hero-cta">
-      <h1 class="feat-hero-title">Report Bugs. Ship Faster.</h1>
-      <p class="feat-hero-sub">Centralized QA bug tracking for Vantage Circle — from first click to final fix.</p>
-      <button class="btn-hero-report" onclick="document.getElementById('report-form').scrollIntoView({behavior:'smooth'})">
-        Start Reporting
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-        </svg>
-      </button>
     </div>
 
     <!-- Showcase: feature list + dashboard preview + mascot -->
@@ -1122,6 +1106,16 @@ select option{background:#fff;color:#172B4D;}
         </svg>
       </div>
 
+    </div>
+
+    <!-- Cylindrical Start Reporting button — below dashboard preview -->
+    <div class="feat-cta-center">
+      <button class="btn-hero-report" onclick="document.getElementById('report-form').scrollIntoView({behavior:'smooth'})">
+        Start Reporting
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </button>
     </div>
 
     <!-- Scroll indicator -->
