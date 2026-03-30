@@ -13,7 +13,7 @@ html{scroll-behavior:smooth;overflow-x:hidden;-webkit-text-size-adjust:100%;text
 /* ── Base ───────────────────────────────────────────────────────────── */
 body{
   font-family:'Inter',sans-serif;
-  background:#E0F2FF;
+  background:linear-gradient(to bottom,#C8E4FB 0px,#E0F2FF 90px) #E0F2FF;
   color:#172B4D;
   min-height:100vh;font-size:14px;line-height:1.5;
   overflow-x:hidden;
@@ -22,9 +22,9 @@ body{
 /* ── Top navigation bar ─────────────────────────────────────────────── */
 .topbar{
   background:linear-gradient(135deg,#0A2560 0%,#0D3080 100%);
-  border-bottom:2px solid #0A2560;
+  border-bottom:1px solid rgba(255,255,255,.08);
   position:sticky;top:0;z-index:20;
-  box-shadow:0 2px 12px rgba(10,37,96,.25);
+  box-shadow:0 1px 0 rgba(255,255,255,.06),0 2px 16px rgba(10,37,96,.2);
 }
 .topbar-inner{
   max-width:900px;margin:0 auto;padding:0 20px;
@@ -457,12 +457,15 @@ select option{background:#fff;color:#172B4D;}
 }
 
 /* ── Feature highlights banner ──────────────────────────────────────── */
+/* Gradient starts at #0E3386 (close to topbar #0D3080 — seamless join)  */
+/* then opens to #2878F0 at the base — clearly lighter, vivid sky-blue   */
 .feat-banner{
-  background:linear-gradient(160deg,#1448A8 0%,#1A5CC0 50%,#1E68D0 100%);
-  border-bottom:2px solid rgba(255,255,255,.1);
+  background:linear-gradient(175deg,#0E3386 0%,#1A5ED4 52%,#2878F0 100%);
+  box-shadow:0 8px 32px rgba(10,37,96,.22);
+  position:relative;
 }
 .feat-banner-inner{
-  max-width:900px;margin:0 auto;padding:32px 20px 28px;
+  max-width:900px;margin:0 auto;padding:28px 20px 26px;
 }
 
 /* Benefits row */
@@ -503,8 +506,8 @@ select option{background:#fff;color:#172B4D;}
 /* Showcase area */
 .feat-showcase{
   display:flex;align-items:stretch;gap:0;
-  background:rgba(0,0,0,.22);
-  border:1px solid rgba(255,255,255,.1);
+  background:rgba(0,0,0,.18);
+  border:1px solid rgba(255,255,255,.14);
   border-radius:10px;
   overflow:hidden;
   opacity:0;
