@@ -45,7 +45,7 @@ function doGet(e) {
       return ContentService.createTextOutput(cached).setMimeType(ContentService.MimeType.JSON);
     }
     const result = JSON.stringify({ status: "ok", data: getAllBugs() });
-    cache.put(GAS_CACHE_KEY, result, GAS_CACHE_TTL);
+    try { cache.put(GAS_CACHE_KEY, result, GAS_CACHE_TTL); } catch(e) {}  // ignore if >100KB
     return ContentService.createTextOutput(result).setMimeType(ContentService.MimeType.JSON);
   } catch(err) {
     return json({ status: "error", message: err.message });
