@@ -593,7 +593,7 @@ tbody tr.row-critical:hover{background:#FFF3F0;}
 
   <!-- Table -->
   <div class="tbl-wrap">
-    <div class="loading-row" id="loadingRow"><div class="loader"></div>Loading bugs…</div>
+    <div class="loading-row" id="loadingRow"><div class="loader"></div>Loading bugs… (may take up to 30 s on first load)</div>
     <div class="tbl-scroll">
       <table id="bugTable" style="display:none">
         <thead>
@@ -719,16 +719,27 @@ function setCache(data) {
   try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch {}
 }
 
-// ── Fetch helper with 25-second timeout ──────────────────────────────────────
-// fetch() waits forever by default. AbortController lets us cancel it after
-// 25 seconds so the user sees an error + retry button instead of a stuck spinner.
-function fetchGAS() {
+// ── Fetch helper with timeout + one auto-retry ───────────────────────────────
+// GAS can take 30-40 s on a cold start (idle container spin-up). A single
+// 25-second attempt will always fail in that case. Strategy:
+//   • Attempt 1: 30 s — covers warm GAS and fast cold starts
+//   • If that fails, wait 2 s then Attempt 2: 40 s — GAS is warm by now
+// Only shows the error row if both attempts fail.
+function fetchWithTimeout(ms) {
   const ctrl  = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 25000);
+  const timer = setTimeout(() => ctrl.abort(), ms);
   return fetch(SCRIPT_URL, { signal: ctrl.signal })
     .then(r => r.json())
     .finally(() => clearTimeout(timer))
     .catch(() => null);
+}
+
+async function fetchGAS() {
+  const first = await fetchWithTimeout(30000);
+  if (first) return first;
+  // First attempt timed out — GAS was cold. Wait briefly, then retry.
+  await new Promise(r => setTimeout(r, 2000));
+  return fetchWithTimeout(40000);
 }
 
 // ── State ─────────────────────────────────────────────────────────
