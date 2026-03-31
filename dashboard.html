@@ -702,7 +702,7 @@ function unlock() {
 // FRESH  = saved within the last 30 min  → render + skip waiting for network
 // STALE  = older than 30 min             → render immediately, then fetch & update
 // NONE   = nothing saved at all          → show spinner, wait for GAS response
-const CACHE_KEY = 'bt_bugs_v4';
+const CACHE_KEY = 'bt_bugs_v5';     // bumped — forces fresh fetch with corrected date format
 const CACHE_TTL = 30 * 60 * 1000;  // 30 min = "fresh" threshold
 
 // Returns { data, fresh } if anything is saved, null if nothing exists at all.
@@ -753,6 +753,11 @@ if (sessionStorage.getItem('unlocked') === '1') unlock();
 // Handles both FIELD_MAP keys (description) and legacy toCamel keys
 // (descriptionSummary, proofLink, etc.) in case GAS was not redeployed.
 function normBug(b) {
+  // Normalize submittedAt to ISO string regardless of source format
+  // (GAS may return Sheets Date objects serialized as locale strings in old cache)
+  const rawDate   = b.submittedAt || '';
+  const parsedDt  = rawDate ? new Date(rawDate) : null;
+  const submittedAt = (parsedDt && !isNaN(parsedDt)) ? parsedDt.toISOString() : rawDate;
   return {
     bugId:       b.bugId                              || '',
     tester:      b.tester                             || '',
@@ -767,7 +772,7 @@ function normBug(b) {
     proof:       b.proof       || b.proofLink          || '',
     status:      b.status                             || 'Open',
     assignedTo:  b.assignedTo                         || '',
-    submittedAt: b.submittedAt                        || '',
+    submittedAt,
   };
 }
 
@@ -841,8 +846,7 @@ async function loadBugs(force = false) {
     if (!silentUpdate) {
       btn.classList.remove('updating'); btn.textContent = '↻ Refresh';
     }
-    // Pre-fire the next request so it's warm for the next manual refresh
-    prefetch = fetchGAS();
+    // Note: no pre-warm needed — GAS CacheService makes repeat fetches fast.
   }
 }
 
@@ -932,14 +936,22 @@ function applyFilters() {
     }
     if (fromDate || toDate) {
       const sd = parseDate(b.submittedAt);
-      if (!sd) return false;
-      if (fromDate && sd < fromDate) return false;
-      if (toDate   && sd > toDate)   return false;
+      // Only apply date filter if the bug has a parseable date.
+      // Bugs with no date are always included so manually-added rows don't vanish.
+      if (sd) {
+        if (fromDate && sd < fromDate) return false;
+        if (toDate   && sd > toDate)   return false;
+      }
     }
     return true;
   });
 
   bugs.sort((a, b) => {
+    if (sortCol === 'submittedAt') {
+      const at = parseDate(a.submittedAt)?.getTime() || 0;
+      const bt = parseDate(b.submittedAt)?.getTime() || 0;
+      return sortAsc ? at - bt : bt - at;
+    }
     const av = a[sortCol] || '', bv = b[sortCol] || '';
     return sortAsc ? (av < bv ? -1 : av > bv ? 1 : 0) : (av > bv ? -1 : av < bv ? 1 : 0);
   });
@@ -1106,8 +1118,19 @@ document.querySelectorAll('thead th[data-col]').forEach(th => {
 
 // ── Filter/search listeners ───────────────────────────────────────
 // Selects fire immediately; free-text search is debounced 400 ms
-['fSprint','fProduct','fSev','fStatus','fDateFrom','fDateTo']
-  .forEach(id => document.getElementById(id).addEventListener('input', applyFilters));
+['fSprint','fProduct','fSev','fStatus'].forEach(id =>
+  document.getElementById(id).addEventListener('input', applyFilters));
+
+['fDateFrom','fDateTo'].forEach(id => document.getElementById(id).addEventListener('input', () => {
+  const from = document.getElementById('fDateFrom').value;
+  const to   = document.getElementById('fDateTo').value;
+  const info = document.getElementById('dateRangeInfo');
+  if (from && to)   info.textContent = `${from} → ${to}`;
+  else if (from)    info.textContent = `From ${from}`;
+  else if (to)      info.textContent = `Until ${to}`;
+  else              info.textContent = '';
+  applyFilters();
+}));
 
 // Tester pills — toggle active state on click, then re-filter
 document.getElementById('fTesterGroup').addEventListener('click', e => {

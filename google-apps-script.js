@@ -1,31 +1,32 @@
 // ═══════════════════════════════════════════════════════════════════════════
-//  BUG TRACKER — Google Apps Script  (optimised batch submission)
+//  BUG TRACKER — Google Apps Script
 //  Paste into: script.google.com → New Project
 //  Deploy → New Deployment → Web App → Anyone → Deploy
 //
-//  STATUS UPDATE WORKFLOW
-//  ─────────────────────
-//  Testers open their named sheet in Google Sheets and change the value
-//  in the "Status" column (column 11) using the dropdown.  The
-//  onEditTrigger() function automatically mirrors that change into the
-//  Master Bug Sheet so the dashboard reflects it on the next refresh.
+//  SYNC MECHANISM
+//  ──────────────
+//  syncMaster() reads every tester sheet and pushes all rows into the
+//  Master Bug Sheet — adding new rows and updating changed ones.
+//  A time-based trigger runs this automatically every 5 minutes.
 //
 //  ONE-TIME ADMIN SETUP (run these from the Apps Script editor):
-//    1. Run  setupTrigger()    — installs the installable onEdit trigger
-//    2. Run  setupValidation() — adds the Status dropdown to every
-//                                existing tester sheet
+//    1. Run  setupTimeTrigger() — auto-syncs master every 5 minutes
+//    2. Run  syncMaster()       — immediately sync everything right now
+//    3. Run  setupValidation()  — adds Status dropdown to all tester sheets
 // ═══════════════════════════════════════════════════════════════════════════
 
-const SHEET_ID      = "1SZNcbevA00xKFU5usbAtSCwlyowqRpxm8tiwCVM1BEY";
-const MASTER_TAB    = "Master Bug Sheet";
+const SHEET_ID       = "1SZNcbevA00xKFU5usbAtSCwlyowqRpxm8tiwCVM1BEY";
+const MASTER_TAB     = "Master Bug Sheet";
 const VALID_STATUSES = ["Open", "In Progress", "Fixed", "Verified", "Closed", "Reopened"];
+const GAS_CACHE_KEY  = "all_bugs_json";
+const GAS_CACHE_TTL  = 60; // seconds — matches the 1-min sync interval
 
 // ── POST: receive bug(s) from form ───────────────────────────────────────────
 function doPost(e) {
   try {
     const body = JSON.parse(e.postData.contents);
     const bugs  = body.batch ? body.batch : [body];
-    const ss    = SpreadsheetApp.openById(SHEET_ID); // open once per request
+    const ss    = SpreadsheetApp.openById(SHEET_ID);
     const ids   = bugs.map(bug => appendBug(ss, bug));
     return json({ status: "ok", count: ids.length, ids });
   } catch(err) {
@@ -34,15 +35,24 @@ function doPost(e) {
 }
 
 // ── GET: fetch all bugs for dashboard ────────────────────────────────────────
+// Checks CacheService first — avoids re-reading the sheet on every request.
+// Cache is invalidated by syncMaster() and appendBug() after any write.
 function doGet(e) {
   try {
-    return json({ status: "ok", data: getAllBugs() });
+    const cache  = CacheService.getScriptCache();
+    const cached = cache.get(GAS_CACHE_KEY);
+    if (cached) {
+      return ContentService.createTextOutput(cached).setMimeType(ContentService.MimeType.JSON);
+    }
+    const result = JSON.stringify({ status: "ok", data: getAllBugs() });
+    cache.put(GAS_CACHE_KEY, result, GAS_CACHE_TTL);
+    return ContentService.createTextOutput(result).setMimeType(ContentService.MimeType.JSON);
   } catch(err) {
     return json({ status: "error", message: err.message });
   }
 }
 
-// ── Append a single bug to master + tester sheet ─────────────────────────────
+// ── Append a single bug to master + tester sheet (called by doPost) ──────────
 function appendBug(ss, data) {
   const master = getOrCreate(ss, MASTER_TAB);
   ensureHeaders(master, true);
@@ -65,77 +75,119 @@ function appendBug(ss, data) {
     data.assignedTo  || "",
   ];
 
-  // Master sheet row (includes Tester + Submitted At)
   master.appendRow([...baseRow, data.tester || "", ts]);
   formatRow(master, master.getLastRow(), data.severity, 14);
 
-  // Per-tester sheet row (no Tester column, has Submitted At)
   const tSheet = getOrCreate(ss, data.tester || "Unknown");
   ensureHeaders(tSheet, false);
   tSheet.appendRow([...baseRow, ts]);
   formatRow(tSheet, tSheet.getLastRow(), data.severity, 13);
 
+  invalidateCache();
   return bugId;
 }
 
-// ── onEdit installable trigger: tester sheet Status → Master ─────────────────
-// Fires whenever any cell is edited in the spreadsheet.
-// Watches column 11 (Status) in every tester sheet and mirrors the new value
-// into the matching row of the Master Bug Sheet.
-function onEditTrigger(e) {
-  const range     = e.range;
-  const sheet     = range.getSheet();
-  const sheetName = sheet.getName();
+// ── CORE SYNC: rebuild master from all tester sheets ─────────────────────────
+// Scans every tester sheet row by row.
+// - If Bug ID not in master → appends it
+// - If Bug ID already in master → updates all fields from tester sheet
+// Safe to run multiple times (idempotent).
+function syncMaster() {
+  const ss     = SpreadsheetApp.openById(SHEET_ID);
+  const master = getOrCreate(ss, MASTER_TAB);
+  ensureHeaders(master, true);
 
-  // Ignore edits made directly in the master sheet
-  if (sheetName === MASTER_TAB) return;
+  // Build a lookup: bugId → 1-based row number in master
+  const masterData  = master.getDataRange().getValues();
+  const masterIndex = {};
+  const bugIdCol    = masterData[0].indexOf("Bug ID"); // 0-indexed
+  for (let i = 1; i < masterData.length; i++) {
+    const id = String(masterData[i][bugIdCol]).trim();
+    if (id) masterIndex[id] = i + 1; // store as 1-based
+  }
 
-  const row = range.getRow();
-  const col = range.getColumn();
+  let added = 0, updated = 0, deleted = 0;
+  const testerBugIds = new Set(); // all Bug IDs that exist across tester sheets
 
-  // Only react to the Status column (col 11); skip header row
-  if (row < 2 || col !== 11) return;
+  ss.getSheets().forEach(sheet => {
+    const name = sheet.getName();
+    if (name === MASTER_TAB) return;
+    if (sheet.getLastRow() < 2) return;
 
-  const bugId = sheet.getRange(row, 1).getValue();
-  if (!bugId) return;
+    const numCols = Math.max(sheet.getLastColumn(), 13);
+    const rows    = sheet.getRange(2, 1, sheet.getLastRow() - 1, numCols).getValues();
 
-  const newStatus = String(range.getValue()).trim();
-  if (!VALID_STATUSES.includes(newStatus)) return;
+    rows.forEach(tRow => {
+      const bugId = String(tRow[0]).trim();
+      if (!bugId) return;
 
-  // Mirror into Master Bug Sheet
-  const ss     = e.source;
-  const master = ss.getSheetByName(MASTER_TAB);
-  if (!master) return;
+      testerBugIds.add(bugId);
 
-  const data      = master.getDataRange().getValues();
-  const headers   = data[0];
-  const bugIdCol  = headers.indexOf("Bug ID");  // 0-indexed
-  const statusCol = headers.indexOf("Status");  // 0-indexed
-  if (bugIdCol < 0 || statusCol < 0) return;
+      // Tester sheet cols (0-indexed): 0=Bug ID … 10=Status, 11=Assigned To, 12=Submitted At
+      // Master sheet cols (1-indexed): 1=Bug ID … 11=Status, 12=Assigned To, 13=Tester, 14=Submitted At
+      const masterRow = [
+        tRow[0]  || "",                          // Bug ID
+        tRow[1]  || "",                          // Sprint
+        tRow[2]  || "",                          // Module
+        tRow[3]  || "",                          // Product
+        tRow[4]  || "",                          // Platform
+        tRow[5]  || "",                          // Description
+        tRow[6]  || "",                          // Expected
+        tRow[7]  || "",                          // Actual
+        tRow[8]  || "",                          // Severity
+        tRow[9]  || "",                          // Proof Link
+        tRow[10] || "Open",                      // Status
+        tRow[11] || "",                          // Assigned To
+        name,                                    // Tester (= sheet name)
+        tRow[12] || new Date().toISOString(),    // Submitted At
+      ];
 
-  for (let i = 1; i < data.length; i++) {
-    if (String(data[i][bugIdCol]) === String(bugId)) {
-      master.getRange(i + 1, statusCol + 1).setValue(newStatus);
-      Logger.log("Updated " + bugId + " → " + newStatus);
-      break;
+      if (masterIndex[bugId]) {
+        // Update existing row in place
+        master.getRange(masterIndex[bugId], 1, 1, 14).setValues([masterRow]);
+        formatRow(master, masterIndex[bugId], String(tRow[8]), 14);
+        updated++;
+      } else {
+        // Append new row
+        master.appendRow(masterRow);
+        const newRow = master.getLastRow();
+        formatRow(master, newRow, String(tRow[8]), 14);
+        masterIndex[bugId] = newRow;
+        added++;
+      }
+    });
+  });
+
+  // Delete rows from master whose Bug ID no longer exists in any tester sheet.
+  // Scan bottom-to-top so row deletions don't shift indices.
+  const freshMaster = master.getDataRange().getValues();
+  for (let i = freshMaster.length - 1; i >= 1; i--) {
+    const id = String(freshMaster[i][bugIdCol]).trim();
+    if (id && !testerBugIds.has(id)) {
+      master.deleteRow(i + 1); // +1 because getValues is 0-indexed, sheet rows are 1-indexed
+      deleted++;
+      Logger.log("Deleted from master: " + id);
     }
   }
+
+  invalidateCache();
+  Logger.log("syncMaster done — added: " + added + ", updated: " + updated + ", deleted: " + deleted + " [" + new Date().toISOString() + "]");
 }
 
-// ── Install the installable onEdit trigger (run once from Script Editor) ──────
-// Simple onEdit triggers cannot use SpreadsheetApp.openById(), so an
-// installable trigger is required.  Run this function once as the admin.
-function setupTrigger() {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  // Remove duplicates before creating
+// ── Set up a time-based trigger: syncMaster runs every 5 minutes ─────────────
+// Run this once from the Apps Script editor. No need to run again.
+function setupTimeTrigger() {
+  // Remove any existing syncMaster time triggers to avoid duplicates
   ScriptApp.getProjectTriggers()
-    .filter(t => t.getHandlerFunction() === "onEditTrigger")
+    .filter(t => t.getHandlerFunction() === "syncMaster")
     .forEach(t => ScriptApp.deleteTrigger(t));
-  ScriptApp.newTrigger("onEditTrigger")
-    .forSpreadsheet(ss)
-    .onEdit()
+
+  ScriptApp.newTrigger("syncMaster")
+    .timeBased()
+    .everyMinutes(1)
     .create();
-  Logger.log("✅ onEditTrigger installed.");
+
+  Logger.log("✅ Time trigger installed: syncMaster will run every 1 minute.");
 }
 
 // ── Add Status dropdown validation to a single sheet ─────────────────────────
@@ -146,11 +198,10 @@ function addStatusValidation(sheet) {
     .setAllowInvalid(false)
     .setHelpText("Choose a status: " + VALID_STATUSES.join(", "))
     .build();
-  // Apply to col 11, rows 2 → lastRow (+ 500 buffer for future rows)
   sheet.getRange(2, 11, lastRow + 498, 1).setDataValidation(rule);
 }
 
-// ── Apply Status dropdown to ALL existing tester sheets (run once by admin) ───
+// ── Apply Status dropdown to ALL existing tester sheets (run once) ────────────
 function setupValidation() {
   const ss = SpreadsheetApp.openById(SHEET_ID);
   ss.getSheets().forEach(sheet => {
@@ -159,9 +210,12 @@ function setupValidation() {
   Logger.log("✅ Status validation applied to all tester sheets.");
 }
 
+// ── Invalidate the GAS response cache ────────────────────────────────────────
+function invalidateCache() {
+  CacheService.getScriptCache().remove(GAS_CACHE_KEY);
+}
+
 // ── Read all bugs from master sheet ──────────────────────────────────────────
-// Explicit header → field key mapping so dashboard always gets consistent names
-// regardless of how headers were written (avoids toCamel ambiguity with "/" and spaces)
 const FIELD_MAP = {
   "Bug ID":                 "bugId",
   "Sprint":                 "sprint",
@@ -192,16 +246,16 @@ function getAllBugs() {
       const obj = {};
       headers.forEach((h, i) => {
         const key = FIELD_MAP[String(h)] || toCamel(String(h));
-        obj[key] = String(row[i] || "");
+        // Convert Date objects (returned by Sheets for date-formatted cells) to ISO strings
+        // so the dashboard can sort them correctly.
+        obj[key] = row[i] instanceof Date ? row[i].toISOString() : String(row[i] || "");
       });
       return obj;
     })
     .filter(b => b.bugId);
 }
 
-// ── Generate unique sequential Bug ID using script properties ────────────────
-// Format: {PREFIX}-{NNNN}  e.g. KUM-0001
-// Uses PropertiesService so IDs never collide even under concurrent submissions.
+// ── Generate unique sequential Bug ID ────────────────────────────────────────
 function generateBugId(testerName) {
   const prefix = (testerName || "BUG").replace(/\s+/g, "").substring(0, 3).toUpperCase();
   const key    = "seq_" + prefix;
@@ -216,7 +270,7 @@ function getOrCreate(ss, name) {
   return ss.getSheetByName(name) || ss.insertSheet(name);
 }
 
-// ── Ensure header row exists (skips if already set up) ───────────────────────
+// ── Ensure header row exists ──────────────────────────────────────────────────
 function ensureHeaders(sheet, isMaster) {
   if (sheet.getLastRow() > 0) return;
   const h = isMaster
@@ -237,7 +291,6 @@ function ensureHeaders(sheet, isMaster) {
     [100,100,160,140,100,300,240,240,100,220,120,180,160,180,80]
       .forEach((w, i) => sheet.setColumnWidth(i + 1, w));
   } else {
-    // New tester sheet: pre-apply Status dropdown to rows 2–1000
     addStatusValidation(sheet);
   }
 }
