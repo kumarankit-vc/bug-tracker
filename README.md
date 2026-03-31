@@ -1,4 +1,4 @@
-# Bug Tracker
+# Bug Tracker 🧪
 
 A lightweight, web-based bug tracking system designed for QA teams at Vantage Circle. Built with vanilla JavaScript and Google Sheets backend for simplicity and ease of use.
 
