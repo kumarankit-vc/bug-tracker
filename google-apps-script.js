@@ -314,6 +314,62 @@ function toCamel(str) {
     .replace(/\s+(.)/g, (_, c) => c.toUpperCase());
 }
 
+// ── ONE-TIME UTIL: redistribute non-Apr-1 dates across Jan 1 – Mar 30 2026 ───
+// Run once from the Apps Script editor → select redistributeDates → Run.
+function redistributeDates() {
+  const ss     = SpreadsheetApp.openById(SHEET_ID);
+  const master = ss.getSheetByName(MASTER_TAB);
+  if (!master) { Logger.log("Master sheet not found"); return; }
+
+  const data          = master.getDataRange().getValues();
+  const headers       = data[0];
+  const bugIdCol      = headers.indexOf("Bug ID");
+  const testerCol     = headers.indexOf("Tester");
+  const submittedCol  = headers.indexOf("Submitted At"); // 0-based
+
+  const START = new Date("2026-01-01T00:00:00.000Z").getTime();
+  const END   = new Date("2026-03-30T23:59:59.000Z").getTime();
+
+  // Collect 1-based master row indices that are NOT April 1 2026
+  const toUpdate = [];
+  for (let i = 1; i < data.length; i++) {
+    const raw    = data[i][submittedCol];
+    const isoStr = raw instanceof Date ? raw.toISOString() : String(raw || "");
+    if (!isoStr.startsWith("2026-04-01")) toUpdate.push(i); // 0-based data index
+  }
+
+  const n = toUpdate.length;
+  Logger.log("redistributeDates: " + n + " entries to update");
+
+  toUpdate.forEach((dataIdx, pos) => {
+    const fraction = n > 1 ? pos / (n - 1) : 0;
+    const newTs    = new Date(START + Math.floor(fraction * (END - START))).toISOString();
+
+    // Update master sheet (dataIdx+1 = 1-based sheet row)
+    master.getRange(dataIdx + 1, submittedCol + 1).setValue(newTs);
+
+    // Update corresponding tester sheet row
+    const bugId      = String(data[dataIdx][bugIdCol]).trim();
+    const testerName = String(data[dataIdx][testerCol]).trim();
+    const tSheet     = ss.getSheetByName(testerName);
+    if (!tSheet) return;
+
+    const tData    = tSheet.getDataRange().getValues();
+    const tHeaders = tData[0];
+    const tBugCol  = tHeaders.indexOf("Bug ID");
+    const tTsCol   = tHeaders.indexOf("Submitted At");
+    for (let j = 1; j < tData.length; j++) {
+      if (String(tData[j][tBugCol]).trim() === bugId) {
+        tSheet.getRange(j + 1, tTsCol + 1).setValue(newTs);
+        break;
+      }
+    }
+  });
+
+  invalidateCache();
+  Logger.log("redistributeDates complete — " + n + " entries updated.");
+}
+
 // ── JSON response helper ──────────────────────────────────────────────────────
 function json(obj) {
   return ContentService
