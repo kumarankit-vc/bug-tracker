@@ -779,7 +779,7 @@ function normBug(b) {
     description: b.description || b.descriptionSummary || '',
     expected:    b.expected    || b.expectedResult     || '',
     actual:      b.actual      || b.actualResult       || '',
-    severity:    b.severity                           || '',
+    severity:    b.severity                           || 'Medium',
     proof:       b.proof       || b.proofLink          || '',
     status:      b.status                             || 'Open',
     assignedTo:  b.assignedTo                         || '',
