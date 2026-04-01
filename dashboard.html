@@ -1033,10 +1033,7 @@ function renderPage() {
   const dto    = document.getElementById('fDateTo').value;
   const infoEl = document.getElementById('dateRangeInfo');
   if (dfrom || dto) {
-    const parts = [];
-    if (dfrom) parts.push('From ' + dfrom);
-    if (dto)   parts.push('To '   + dto);
-    infoEl.textContent = parts.join(' → ') + ' — ' + filteredBugs.length + ' bug' + (filteredBugs.length === 1 ? '' : 's');
+    infoEl.textContent = filteredBugs.length + ' bug' + (filteredBugs.length === 1 ? '' : 's');
   } else { infoEl.textContent = ''; }
 
   document.getElementById('loadingRow').style.display = 'none';
@@ -1135,16 +1132,10 @@ document.querySelectorAll('thead th[data-col]').forEach(th => {
 ['fSprint','fProduct','fSev','fStatus'].forEach(id =>
   document.getElementById(id).addEventListener('input', applyFilters));
 
-['fDateFrom','fDateTo'].forEach(id => document.getElementById(id).addEventListener('input', () => {
-  const from = document.getElementById('fDateFrom').value;
-  const to   = document.getElementById('fDateTo').value;
-  const info = document.getElementById('dateRangeInfo');
-  if (from && to)   info.textContent = `${from} → ${to}`;
-  else if (from)    info.textContent = `From ${from}`;
-  else if (to)      info.textContent = `Until ${to}`;
-  else              info.textContent = '';
-  applyFilters();
-}));
+['fDateFrom','fDateTo'].forEach(id => {
+  const el = document.getElementById(id);
+  ['input','change'].forEach(ev => el.addEventListener(ev, applyFilters));
+});
 
 // Tester pills — toggle active state on click, then re-filter
 document.getElementById('fTesterGroup').addEventListener('click', e => {
@@ -1163,9 +1154,8 @@ document.getElementById('fSearch').addEventListener('input', () => {
 });
 
 document.getElementById('btnClearDate').addEventListener('click', () => {
-  document.getElementById('fDateFrom').value        = '';
-  document.getElementById('fDateTo').value          = '';
-  document.getElementById('dateRangeInfo').textContent = '';
+  document.getElementById('fDateFrom').value = '';
+  document.getElementById('fDateTo').value   = '';
   applyFilters();
 });
 
